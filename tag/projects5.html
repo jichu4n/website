@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Season of Code - Projects</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/merging-n810-device-drivers.html" rel="bookmark">
+      Merging N810 device drivers
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-10T14:52:52-08:00">
+          Feb 10, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/merging-n810-device-drivers.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I&#8217;ve begun work on incorporating N810 device drivers into the Android OMAP kernel. I am basically following the list of individual components of the N810 on <a href="http://elinux.org/N800">this page</a> from the eLinux wiki. It took quite a while (~3h) just to make everything compile. Some random notes follow.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>lm8323</strong>, keyboard driver for the N810: The driver for the lm8323 is included in the stock Android OMAP tree under <code>drivers/input/keyboard</code> as <code>CONFIG_KEYBOARD_LM8323</code> (<code>Device Drivers &#8594; Input device support &#8594; Generic input layer &#8594; Keyboards</code>). It requires <code>CONFIG_I2C</code> (<code>Device Drivers &#8594; I2C support</code>) and <code>CONFIG_LEDS_CLASS</code> (<code>Device Drivers &#8594; LED Support &#8594; LEDS Class Support</code>).
+</p>
+</li>
+<li>
+<p>
+<strong>tsc2005</strong>, touchscreen driver for the N810: I backported the TSC2005 driver from linux-omap 2.6.37. This was complicated by
+</p>
+</li>
+<li>
+<p>
+The GPIO API changed sometime in Nov 2008; I had to manually replace the following functions following compilation errors:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>omap_gpio_request(int) &#8594; gpio_request(int, const char *)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_gpio_free(int) &#8594; gpio_free(int)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_get_gpio_datain(int) &#8594; gpio_get_value(int)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_set_gpio_dataout(int, int) &#8594; gpio_set_value(int, int)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_set_gpio_direction(int, int) &#8594; gpio_direction_input(int, int), gpio_direction_output(int, int)</code>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+The TSC2005 driver relies on a series of macros, constants and functions in a <code>mux.h</code>; I had to backport most of the functionality from <code>arch/arm/mach-omap2/mux2420.{h,c}</code> in linux-omap 2.6.37. The porting wasn&#8217;t smooth.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>I have also have had to manually merge the N810-specific structures and routines
+from <code>arch/arm/mach-omap2/board-n810.c</code> in the Maemo source tree into
+<code>arch/arm/mach-omap2/board-n8x0.c</code> in the Android OMAP tree. This was
+complicated by the fact that the latter contained code for both the N800 and the
+N810 and there were conflicts; in the <code>n8x0_ts_set_config</code> function, for
+instance, there was no runtime detection of which touch screen, the TSC2301 in
+the N800 or the TSC2005 in the N810, needs to be initialized; the code for the
+former was compiled in, since tmr&#8217;s patch was just for N800&#8217;s.</p></div>
+<div class="paragraph"><p>The result:
+<a href="/assets/files/nitdroid/7bc11a1aaba032747343f821600215d4f6180010.diff">this</a>
+is the newest diff against the <code>archive/android-omap-2.6.32</code> branch of the
+Android OMAP tree (commit 69a7364c16c5aeb246dbb4c4e7696e39841492f5), featuring:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+TSC2005
+</p>
+</li>
+<li>
+<p>
+Modified <code>board-n8x0.c</code> with (rudimentary) N810 support
+</p>
+</li>
+<li>
+<p>
+Now actually compiles.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The <a href="/assets/files/nitdroid/config-20110210">config</a> file.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 10, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/merging-n810-device-drivers.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/merging-n810-device-drivers.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html" rel="bookmark">
+      Integrating tmr's N800 patch
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-10T04:44:45-08:00">
+          Feb 10, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I integrated tmr&#8217;s N800 patch (in <a href="http://talk.maemo.org/showthread.php?t=49660">this thread</a> I mentioned in the previous post) into the <code>archive/android-omap-2.6.32</code> branch of the Android OMAP tree (commit 69a7364c16c5aeb246dbb4c4e7696e39841492f5). The output of just running <code>patch</code> with tmr&#8217;s patch is found <a href="/assets/files/nitdroid/tmr_patch_log.txt">here</a> and the output of <code>git diff</code> is <a href="/assets/files/nitdroid/tmr_patch_mod.diff">here</a>.</p></div>
+<div class="paragraph"><p>I don&#8217;t have a working <code>.config</code> yet, and I haven&#8217;t actually tried building the kernel. Will do that another time.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 10, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/confusion.html" rel="bookmark">
+      Confusion
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-10T00:56:32-08:00">
+          Feb 10, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/confusion.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I haven&#8217;t made much progress with NITDroid these past two days. This comes from a rather confusing situation that I will now attempt to explain in an effort to clear my own mind.</p></div>
+<div class="paragraph"><p>Firstly, it appears that patching the linux-omap tree is unnecessary; the linux-omap tree appears to contain a default configuration for the N810 under <code>arch/arm/configs/</code>, sometimes named <code>nokia_2420_defconfig</code> (2.6.37). and sometimes <code>n8x0_defconfig</code> (2.6.32). None of the kernels compiled from these configs actually work (as in they do not even boot the device), however, which is very confusing. According to <a href="http://talk.maemo.org/showthread.php?t=36445">this page</a>, the driver for the touchscreen on board the N810, TSC2005, was removed from linux-omap after 2.6.29 (which I have verified); it was, however, merged back into the tree by version 2.6.35 according to <a href="http://elinux.org/N800">this page</a>, which I have also verified.</p></div>
+<div class="paragraph"><p>Another unfortunate complication is that in the android-omap tree, only the 2.6.29 (Android 2.1 Eclair), 2.6.32 (Android 2.2 Froyo), and the current unstable 2.6.38 branches are available. It would seem that Google has yet to come up with the OMAP version of Android 2.3 Gingerbread, which means I will have to stick to porting Froyo (kernel version 2.6.32) instead.</p></div>
+<div class="paragraph"><p>Putting these two pieces of information together, the challenges are thus:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+I have no working kernel / kernel configuration to start with. Neither the stock Maemo kernel based on linux-omap 2.6.21, nor the vanilla linux-omap kernels fully work.
+</p>
+</li>
+<li>
+<p>
+I will have to either backport the touchscreen driver from linux-omap 2.6.35 or forward port the touchscreen driver from linux-omap 2.6.29 to 2.6.32.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>This is where I&#8217;ve been stuck at since yesterday. However, I just discovered <a href="http://talk.maemo.org/showthread.php?t=49660">this thread</a> that gives a (supposedly) working patch against linux-omap 2.6.34-rc3 for the N800; the 2nd post gives a patch for the N810, but unfortunately against the vanilla Linux kernel 2.6.33-rc1. I will investigate them further tomorrow - or do (belated) homework, or sleep. One of these things.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 10, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/confusion.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/confusion.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/the-maemo-kernel.html" rel="bookmark">
+      The Maemo kernel
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-08T02:37:53-08:00">
+          Feb 08, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/the-maemo-kernel.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I poked around earlier this afternoon and thanks to the information
+<a href="http://forums.internettablettalk.com/showthread.php?p=286993">here</a> and
+<a href="http://maemo.org/maemo_release_documentation/maemo4.1.x/node12.html">here</a>,
+realized I should have run <code>make nokia_2420_defconfig</code> rather than <code>make
+n800_defconfig</code>. Further, <a href="http://wiki.maemo.org/Compiling_the_kernel">this
+page</a> pointed out that we don&#8217;t need to actually flash the new kernel onto the
+device; rather we can simply boot the device from it using</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre>flasher-3.5 -l -b -k ...../zImage
+</pre></div></div></div>
+<div class="paragraph"><p>The unfortunate thing, however, is that when booting the device off the kernel I
+built in this manner sound would not work and more importantly the device would
+freeze and then reboot about 30 seconds after the home screen loads. I do not
+know if this reflects a problem in the configuration of the kernel or an
+incompatibility between my kernel and the stock Maemo userspace. I suspected it
+was the latter; more specifically, I suspected that since I am only flashing the
+kernel, the modules included in the userspace image obviously could not
+function. I therefore tried compiling a bunch of things into the kernel itself
+instead of as modules, but to no avail. Further investigation pending.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 08, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/the-maemo-kernel.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/the-maemo-kernel.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html" rel="bookmark">
+      Building a cross-compiler toolchain for the N810 and initial kernel compilation
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-07T04:38:38-08:00">
+          Feb 07, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>It turns out that setting up a cross-compiler toolchain is not as easy as it seemed - it took me over 6 hours to figure out. Anyway this all started because none of the the cross-compiler toolchains available in the Arch repos (<code>cross-arm-elf-<strong></code> in community, <code>cross-arm-none-eabi-</strong></code> and <code>arm-2010-arm-none-eabi</code> in the AUR) could compile the Maemo kernel, which I was testing the toolchains on. So I had to build my own.</p></div>
+<div class="paragraph"><p>In general, building a cross-compiler toolchain involves the following steps:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Build binutils with the configure argument <code>--target=TARGET</code>. This is because GCC depends on binutils to generate and link binary code.
+</p>
+</li>
+<li>
+<p>
+Build GCC, pass 1. Only a small GCC with minimal functionality is built here (again with <code>--target=TARGET</code>), as we do not yet have glibc compiled for the target platform and the more advanced features of GCC require glibc. After this step, it is now possible to build actual binaries and libraries for the target platform.
+</p>
+</li>
+<li>
+<p>
+Build glibc with the configure argument <code>--host=TARGET</code> using the freshly built 1st-pass GCC.
+</p>
+</li>
+<li>
+<p>
+Build GCC, pass 2. This GCC will be linked against the newly built glibc.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>In this case, however, I only need the toolchain to build the Linux kernel, which does not depend on glibc but rather has its own version of the C library (klibc). Therefore, I only need to do steps #1 and #2 above.</p></div>
+<div class="paragraph"><p>Binutils was fairly straight-forward. I basically stole the PKGBUILD from the <code>cross-arm-elf-binutils</code> package in the community repository of Arch and changed the compile target from <code>arm-elf</code> to <code>arm-linux-gnueabi</code> which Maemo apparently calls itself. The PKGBUILD is as follows:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Maintainer: Chuan Ji</span>
+
+<span class="nv">_target</span><span class="o">=</span>arm-linux-gnueabi
+<span class="nv">pkgname</span><span class="o">=</span>cross-<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-binutils
+<span class="nv">pkgver</span><span class="o">=</span>2.21
+<span class="nv">pkgrel</span><span class="o">=</span>1
+<span class="nv">pkgdesc</span><span class="o">=</span><span class="s2">&quot;A set of programs to assemble and manipulate binary and object files&quot;</span>
+<span class="nv">arch</span><span class="o">=(</span>i686 x86_64<span class="o">)</span>
+<span class="nv">license</span><span class="o">=(</span>GPL<span class="o">)</span>
+<span class="nv">options</span><span class="o">=(</span>!libtool<span class="o">)</span>
+<span class="nv">url</span><span class="o">=</span><span class="s2">&quot;http://sources.redhat.com/binutils&quot;</span>
+<span class="nv">depends</span><span class="o">=(</span><span class="s1">&#39;glibc&#39;</span> <span class="s1">&#39;bzip2&#39;</span><span class="o">)</span>
+<span class="nb">source</span><span class="o">=(</span>ftp://ftp.gnu.org/gnu/binutils/binutils-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>.tar.bz2<span class="o">)</span>
+<span class="nv">md5sums</span><span class="o">=(</span><span class="s1">&#39;c84c5acc9d266f1a7044b51c85a823f5&#39;</span><span class="o">)</span>
+
+build<span class="o">()</span> <span class="o">{</span>
+  <span class="nb">cd</span> <span class="nv">$srcdir</span>/binutils-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>
+
+  <span class="o">[</span> <span class="nv">$NOEXTRACT</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">||</span> ./configure --prefix<span class="o">=</span>/usr
+        --program-prefix<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-
+        --enable-shared
+        --disable-multilib
+        --with-lib-path<span class="o">=</span>/usr/lib/binutils/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
+        --with-local-prefix<span class="o">=</span>/usr/lib/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
+        --disable-nls
+        --target<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
+        --host<span class="o">=</span><span class="nv">$CHOST</span>
+        --build<span class="o">=</span><span class="nv">$CHOST</span>
+
+  make configure-host
+  make <span class="nv">tooldir</span><span class="o">=</span><span class="nv">$pkgdir</span>/usr
+  make <span class="nv">prefix</span><span class="o">=</span><span class="nv">$pkgdir</span>/usr <span class="nv">tooldir</span><span class="o">=</span><span class="nv">$pkgdir</span>/usr install
+
+  rm -f <span class="nv">$pkgdir</span>/usr/man/man1/<span class="o">{</span>dlltool,nlmconv,windres<span class="o">}</span>*
+
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/ar
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/as
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/ld
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/nm
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/objdump
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/ranlib
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/strip
+  rm -f <span class="nv">$pkgdir</span>/usr/bin/objcopy
+  rm -f <span class="nv">$pkgdir</span>/usr/lib/libiberty.a
+  rm -rf <span class="nv">$pkgdir</span>/usr/share
+<span class="o">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>The GCC PKGBUILD took <em>forever</em> to figure out. At first it would complain about not being able to find headers; I had to add <code>--with-newlib</code> to stop that. Then it started complaining about not being able to find <code>pthread.h</code> which is part of glibc; the switch <code>--disable-threads</code> took care of that. The hardest error, however, was when compiling libgcc would abort with the error</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>......ld: crt1.o: No such file: No such file or directory</code></pre>
+</div></div>
+<div class="paragraph"><p>But <code>crt1.o</code> is a part of glibc, and I logically should be able to build GCC such that it does not depend on glibc. After trying and failing for hours, I finally realized the culprit was the switch <code>--enable-shared</code>; changing that to <code>--disable-shared</code> finally fixed the build. The resulting PKGBUILD is as follows:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Maintainer: Chuan Ji</span>
+
+<span class="nv">_target</span><span class="o">=</span><span class="s2">&quot;arm-linux-gnueabi&quot;</span>
+<span class="nv">pkgname</span><span class="o">=</span>cross-<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-gcc-base
+<span class="nv">pkgver</span><span class="o">=</span>4.5.2
+<span class="nv">pkgrel</span><span class="o">=</span>1
+<span class="nv">pkgdesc</span><span class="o">=</span><span class="s2">&quot;The GNU Compiler Collection&quot;</span>
+<span class="nv">arch</span><span class="o">=(</span>i686 x86_64<span class="o">)</span>
+<span class="nv">license</span><span class="o">=(</span><span class="s1">&#39;GPL&#39;</span> <span class="s1">&#39;LGPL&#39;</span><span class="o">)</span>
+<span class="nv">url</span><span class="o">=</span><span class="s2">&quot;http://gcc.gnu.org&quot;</span>
+<span class="nv">depends</span><span class="o">=(</span><span class="s2">&quot;cross-</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span><span class="s2">-binutils&quot;</span> <span class="s1">&#39;libmpc&#39;</span> <span class="s1">&#39;libelf&#39;</span> <span class="s1">&#39;cloog-ppl&#39;</span><span class="o">)</span>
+<span class="nv">options</span><span class="o">=(</span>!libtool !emptydirs zipman docs !strip<span class="o">)</span>
+<span class="nb">source</span><span class="o">=(</span>ftp://gcc.gnu.org/pub/gcc/releases/gcc-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>/gcc-core-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>.tar.bz2<span class="o">)</span>
+<span class="nv">md5sums</span><span class="o">=(</span><span class="s1">&#39;aa9e36bec080452372bfba793428ee82&#39;</span><span class="o">)</span>
+
+build<span class="o">()</span> <span class="o">{</span>
+  <span class="nb">cd</span> <span class="nv">$srcdir</span>/gcc-<span class="nv">$pkgver</span>
+
+  <span class="nb">export </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -pipe&quot;</span>
+  <span class="nb">export </span><span class="nv">CXXFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -pipe&quot;</span>
+
+  <span class="o">[[</span> -d gcc-build <span class="o">]]</span> <span class="o">||</span> mkdir gcc-build
+  <span class="nb">cd </span>gcc-build
+
+  ../configure --prefix<span class="o">=</span>/usr
+        --program-prefix<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-
+        --target<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
+        --host<span class="o">=</span><span class="nv">$CHOST</span>
+        --build<span class="o">=</span><span class="nv">$CHOST</span>
+        --disable-shared --disable-nls
+        --disable-threads
+        --enable-languages<span class="o">=</span>c --enable-multilib
+        --with-local-prefix<span class="o">=</span>/usr/lib/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
+        --with-as<span class="o">=</span>/usr/bin/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-as --with-ld<span class="o">=</span>/usr/bin/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-ld
+        --enable-softfloat
+        --with-float<span class="o">=</span>soft
+        --with-newlib
+        --enable-interwork
+        --enable-addons
+
+  make all-gcc all-target-libgcc
+  make <span class="nv">DESTDIR</span><span class="o">=</span><span class="nv">$pkgdir</span> install-gcc install-target-libgcc
+
+  rm -f <span class="nv">$pkgdir</span>/usr/share/man/man7/fsf-funding.7*
+  rm -f <span class="nv">$pkgdir</span>/usr/share/man/man7/gfdl.7*
+  rm -f <span class="nv">$pkgdir</span>/usr/share/man/man7/gpl.7*
+  rm -rf <span class="nv">$pkgdir</span>/usr/share/info
+
+  cp -r <span class="nv">$pkgdir</span>/usr/libexec/* <span class="nv">$pkgdir</span>/usr/lib/
+  rm -rf <span class="nv">$pkgdir</span>/usr/libexec
+
+  <span class="c"># strip it manually</span>
+  <span class="nv">$pkgdir</span>/usr/bin/* 2&gt;/dev/null <span class="o">||</span> <span class="nb">true</span>
+<span class="nb">  </span>find <span class="nv">$pkgdir</span>/usr/lib -type f -exec /usr/bin/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-strip <span class="o">{}</span> <span class="p">;</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">true</span>
+<span class="o">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>I submitted both packages to the AUR; the binutils package is found <a href="https://aur.archlinux.org/packages.php?ID=46227">here</a>, and the GCC package is found <a href="https://aur.archlinux.org/packages.php?ID=46226">here</a>.</p></div>
+<div class="paragraph"><p>With the built packages, I was able to compile the Maemo kernel after a small change to <code>scripts/mod/sumversion.c</code>. This fix was because the compilation would fail with the message <code>PATH_MAX</code> undefined; inserting a simple <code>#include &lt;limits.h&gt;</code> solved the problem. Strangely enough, the kernel configuration generated by <code>make n800_defconfig</code> in the kernel tree does not even compile. I had to manually modify the <code>.config</code> file.</p></div>
+<div class="paragraph"><p>Unfortunately, after flashing the generated kernel, the device now gets stuck on the hands screen on bootup. Will investigate further some other time. It&#8217;s too late and I&#8217;ve got class tomorrow&#8230;</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 07, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+<div>
+  <ul class="pager">
+    <li class="previous"><a href="http://seasonofcode.com/tag/projects4.html">&larr; Previous</a></li>
+    <li class="next"><a href="http://seasonofcode.com/tag/projects6.html">Next &rarr;</a></li>
+  </ul>
+</div>
+    </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

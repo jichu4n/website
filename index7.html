@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-userland-update-iii.html" rel="bookmark">
+      NITDroid userland update III
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-09T04:14:09-07:00">
+          May 09, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/nitdroid-userland-update-iii.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I figured out the touchscreen today. I started off with
+<a href="http://groups.google.com/group/android-internals/msg/7c6ff76e0381e95a">this
+thread</a> from almost exactly 3 years ago. It turns out that most of the suggested
+kernel patch is unnecessary; for some unknown reason, the patch tries to merge
+the keyboard input device and the touchscreen input device into one single
+device in <code>/dev/input/</code>. Based on this understanding of the patch, I
+hypothesized that the reason Android was ignoring my touchscreen events while
+perfectly responding to my keyboard events was that it expected only one
+composite input device from the kernel, and was only polling on the keyboard
+device instead of the touchscreen device. So I commented out the calls to
+<code>input_register_device(&#8230;)</code> in both <code>drivers/input/keyboard/lm8323.c</code> and
+<code>drivers/cbus/retu-pwrbutton.c</code> and tried again; still no good.</p></div>
+<div class="paragraph"><p>I knew the touchscreen driver was definitely sending events to
+<code>/dev/input/event0</code> because I had inserted <code>printk</code> calls in the driver and
+could see the appropriate events being generated. The problem thus lay with the
+Android userland. Based on
+<a href="http://groups.google.com/group/android-porting/browse_thread/thread/67f903dae875d3b4/b6d1ec3e845a5021">this thread</a>,
+I next sprinkled <code>frameworks/base/services/java/KeyInputQueue.java</code> and
+<code>frameworks/base/services/WindowManagerService.java</code> with <code>Slog</code> calls. After a
+number of painfully slow [ change source code &#8594; recompile &#8594; copy to microSD
+card &#8594; unmount microSD card &#8594; remove microSD card from SD card adapter &#8594;
+insert microSD card into miniSD card adapter &#8594; insert microSD card into the
+N810 &#8594; boot up the N810 &#8594; write on the touchscreen &#8594; open up back cover &#8594;
+take out battery &#8594; reattach battery &#8594; reattach back cover &#8594; remove microSD
+card from miniSD card adapter &#8594; insert microSD card into SD card adapter &#8594;
+insert SD card into computer &#8594; mount microSD card &#8594; repair file system on
+microSD card &#8594; checkout log ] cycles, it turns out that the input event handler
+thread (<code>KeyInputQueue.mThread</code>) was getting all the events and was passing them
+to <code>WindowManagerService.preprocessEvent()</code>, which, unfortunately, told it to
+throw them away because our good friend the <code>PowerManagerService</code> believes <em>the
+screen was off</em>. So for now I made <code>PowerManagerService.isScreenOn()</code> in
+<code>frameworks/base/services/PowerManagerService.java</code> to just return true, and the
+touchscreen started working.</p></div>
+<div class="paragraph"><p>So the conclusion is that of the changes in the patch suggested in the
+<a href="http://groups.google.com/group/android-internals/msg/7c6ff76e0381e95a">above thread</a>,
+only those recalculating the <code>x</code> and <code>y</code> values in the function
+<code>tsc2005_ts_update_pen_state(&#8230;)</code> and the lines setting <code>x_max</code> and <code>y_max</code> to
+800 and 480 respectively in <code>tsc2005_ts_init(&#8230;)</code> are necessary. Both changes
+are in <code>drivers/input/touchscreen/tsc2005.c</code>. All the other suggested changes
+are irrelevant and should be disregarded. In the Android userland code,
+<code>PowerManagerService</code> needs to be figured out.</p></div>
+<div class="paragraph"><p>And here&#8217;s a short video I put on YouTube showing my Froyo build booting up and
+responding to the touchscreen:</p></div>
+<div align="center">
+  <iframe width="480" height="390"
+          src="http://www.youtube.com/embed/1NDW4IrBwmI"
+          frameborder="0"
+          allowfullscreen></iframe>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 09, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update-iii.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update-iii.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-userland-update-ii-first-bootable-froyo-image.html" rel="bookmark">
+      NITDroid userland update II - FIRST BOOTABLE FROYO IMAGE!!!!
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-08T04:35:59-07:00">
+          May 08, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/nitdroid-userland-update-ii-first-bootable-froyo-image.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I was able to make huge progress with NITDroid today. After installing a Debian
+chroot as my new development environment (schroot and debootstrap from Arch
+repos; see <a href="https://help.ubuntu.com/community/BasicChroot">here</a>) and
+grabbing the newest version of Froyo, version 2.2.2_r1, I started again where I
+left off three months ago - with a bootable kernel and a userland that boots to
+a blank black screen after the startup animation. I was convinced the problem
+lay with the framebuffer driver and I spent many hours learning about
+framebuffer drivers and investigating the omap_fb driver. I sprinkled the driver
+with <code>printk</code> statements, but could find nothing wrong at all. I had previous
+suspected that the driver was unable to allocate a virtual buffer twice the size
+of the actual resolution, but this was not the case.</p></div>
+<div class="paragraph"><p>Then I had the (long overdue) idea of adding a service to <code>init.rc</code> that saved
+Android logs to a file on the SD card:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>service logcat /system/bin/logcat -f /data/all.log
+    oneshot</code></pre>
+</div></div>
+<div class="paragraph"><p>And indeed, the video driver was fine (of course, after the patch found on
+<a href="http://elinux.org/Android_on_OMAP#Page_flipping_frame_buffer">this great page</a>
+on eLinux.org). The <em>real</em> problem, however, was this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>E/BatteryService(  754): Could not open /sys/class/power_supply</code></pre>
+</div></div>
+<div class="paragraph"><p>And, accordingly, somewhere later:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>I/SystemServer(  754): Battery Service
+W/dalvikvm(  754): No implementation found for native Lcom/android/server/BatteryService;.native_update ()V
+W/dalvikvm(  754): threadid=7: thread exiting with uncaught exception (group=0x400207f0)
+E/AndroidRuntime(  754): *** FATAL EXCEPTION IN SYSTEM PROCESS: android.server.ServerThread
+E/AndroidRuntime(  754): java.lang.UnsatisfiedLinkError: native_update
+E/AndroidRuntime(  754):        at com.android.server.BatteryService.native_update(Native Method)
+E/AndroidRuntime(  754):        at com.android.server.BatteryService.update(BatteryService.java:208)
+E/AndroidRuntime(  754):        at com.android.server.BatteryService.&lt;init&gt;(BatteryService.java:134)
+E/AndroidRuntime(  754):        at com.android.server.ServerThread.run(SystemServer.java:146)
+E/AndroidRuntime(  754): Error reporting crash
+E/AndroidRuntime(  754): java.lang.NullPointerException
+E/AndroidRuntime(  754):        at android.os.DropBoxManager.isTagEnabled(DropBoxManager.java:262)
+E/AndroidRuntime(  754):        at com.android.server.am.ActivityManagerService.addErrorToDropBox(ActivityManagerService.java:9190)
+E/AndroidRuntime(  754):        at com.android.server.am.ActivityManagerService.handleApplicationCrash(ActivityManagerService.java:9101)
+E/AndroidRuntime(  754):        at com.android.internal.os.RuntimeInit$UncaughtHandler.uncaughtException(RuntimeInit.java:76)
+E/AndroidRuntime(  754):        at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:887)
+E/AndroidRuntime(  754):        at java.lang.ThreadGroup.uncaughtException(ThreadGroup.java:884)
+I/Process (  754): Sending signal. PID: 754 SIG: 9
+I/ServiceManager(  670): service 'SurfaceFlinger' died
+I/ServiceManager(  670): service 'usagestats' died
+I/ServiceManager(  670): service 'entropy' died
+I/ServiceManager(  670): service 'batteryinfo' died
+I/ServiceManager(  670): service 'power' died
+I/ServiceManager(  670): service 'package' died
+I/ServiceManager(  670): service 'activity' died
+I/ServiceManager(  670): service 'meminfo' died
+I/ServiceManager(  670): service 'cpuinfo' died
+I/ServiceManager(  670): service 'permission' died
+I/ServiceManager(  670): service 'account' died
+I/ServiceManager(  670): service 'content' died
+I/ServiceManager(  670): service 'telephony.registry' died
+E/installd(  678): eof
+E/installd(  678): failed to read size
+I/installd(  678): closing connection
+I/Zygote  (  749): Exit zygote because system server (754) has terminated
+I/ServiceManager(  670): service 'media.audio_flinger' died
+I/ServiceManager(  670): service 'media.player' died
+I/ServiceManager(  670): service 'media.camera' died
+I/ServiceManager(  670): service 'media.audio_policy' died</code></pre>
+</div></div>
+<div class="paragraph"><p>This sequence was repeated ad infinitum, as my <code>init.rc</code> read:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>service servicemanager /system/bin/servicemanager
+    user system
+    critical
+    onrestart restart zygote
+    onrestart restart media</code></pre>
+</div></div>
+<div class="paragraph"><p>It turns out that this is a common problem that has happened to many people
+porting Android to a new platform, as explained on
+<a href="http://groups.google.com/group/android-porting/browse_thread/thread/521b64a279388cee/ddc2a537ada2c5b9">this thread</a>,
+<a href="http://groups.google.com/group/android-porting/browse_thread/thread/abc0633915c8b047#">this thread</a>, and
+<a href="http://dev.omapzoom.org/?p=aboateng/omap3-linux-cam.git;a=commitdiff;h=eaff38c66985603eb4b53ceb25f6e837f0937efb">this thread</a>.
+The culprit is the C++ native implementation of the class <code>BatteryService</code>,
+found in <code>frameworks/base/services/jni/com_android_server_BatteryService.cpp</code>.
+In <code>register_android_server_BatteryService(JNIEnv* env)</code> (line 229), we find the
+following code:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre>    <span class="p">...</span>
+<span class="kt">DIR</span><span class="o">*</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">opendir</span><span class="p">(</span><span class="n">POWER_SUPPLY_PATH</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">LOGE</span><span class="p">(</span><span class="s">&quot;Could not open %sn&quot;</span><span class="p">,</span> <span class="n">POWER_SUPPLY_PATH</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+    <span class="p">...</span>
+</pre></div></div></div>
+<div class="paragraph"><p>where <code>POWER_SUPPLY_PATH</code> is <code>#define</code>'d as <code>/sys/class/power_supply</code> on line
+42. This corresponds, of course, to our first error message above. The totally
+stupid thing is the fact that this occurs in
+<code>register_android_server_BatteryService(JNIEnv *env)</code>, which is supposed to
+register a native C++ method <code>native_update()</code> defined in this file with the
+Java VM as part of the Java class <code>com.android.server.BatteryService</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">static</span> <span class="kt">void</span> <span class="nf">android_server_BatteryService_update</span><span class="p">(</span><span class="n">JNIEnv</span><span class="o">*</span> <span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="n">JNINativeMethod</span> <span class="n">sMethods</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="cm">/* name, signature, funcPtr */</span>
+    <span class="p">{</span><span class="s">&quot;native_update&quot;</span><span class="p">,</span> <span class="s">&quot;()V&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">android_server_BatteryService_update</span><span class="p">},</span>
+<span class="p">};</span>
+</pre></div></div></div>
+<div class="paragraph"><p>In <code>framework/base/services/java/com/android/server/BatteryService.java</code>, we have:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kd">class</span> <span class="nc">BatteryService</span> <span class="kd">extends</span> <span class="n">Binder</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="kd">private</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">native_update</span><span class="o">();</span>
+
+    <span class="kd">private</span> <span class="kd">synchronized</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">()</span> <span class="o">{</span>
+         <span class="n">native_update</span><span class="o">();</span>
+         <span class="o">...</span>
+    <span class="o">}</span>
+
+    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>In other words, what is going on is this. The service manager thread starts the
+battery service; the JVM then loads the corresponding native C++ code. But since
+my hacked kernel doesn&#8217;t currently support battery / power supply information
+(and therefore does not create the directory <code>/sys/class/power_supply</code> at all),
+the native code refuses to load, which causes the JVM to panic. Unfortunately
+this leads to the service manager being restarted itself; the same then happens
+again and again.</p></div>
+<div class="paragraph"><p>There are several natural solutions: 1) add proper power supply drivers for the
+N810 to the kernel, 2) add a dummy power supply 3) change the Java
+BatteryService class so that it does not call the native update method but uses
+dummy values, and 4) make the C++ code not check the actual battery status, but
+return empty values. Solution #1 is the way to go in the long run, of course;
+but right now I just want to get something rolling. This
+<a href="http://hi.baidu.com/aokikyon/blog/item/35ea0c12f8e7475bf919b8c1.html">Chinese blog</a>
+implemented solution #2. I chose solution 3, however, following
+<a href="http://blog.163.com/fhtx_2008/blog/static/7285544201012641765/">this other Chinese blog</a>.
+My updated <code>BatteryService.java</code> reads:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c1">// NITDROID: Native update disabled.</span>
+<span class="c1">// private native void native_update();</span>
+
+<span class="c1">// NITDROID: Dummy battery</span>
+<span class="kd">private</span> <span class="kd">synchronized</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">mBatteryLevel</span> <span class="o">=</span> <span class="n">BATTERY_SCALE</span> <span class="o">-</span> <span class="n">CRITICAL_BATTERY_LEVEL</span><span class="o">;</span>
+    <span class="n">mBatteryLevelCritical</span> <span class="o">=</span> <span class="n">mBatteryLevel</span> <span class="o">&lt;=</span> <span class="n">CRITICAL_BATTERY_LEVEL</span><span class="o">;</span>
+    <span class="n">mPlugType</span> <span class="o">=</span> <span class="n">BatteryManager</span><span class="o">.</span><span class="na">BATTERY_PLUGGED_AC</span><span class="o">;</span>
+    <span class="n">mDischargeStartTime</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+    <span class="n">mBatteryStatus</span> <span class="o">=</span> <span class="n">BatteryManager</span><span class="o">.</span><span class="na">BATTERY_STATUS_FULL</span><span class="o">;</span>
+    <span class="n">mBatteryHealth</span> <span class="o">=</span> <span class="n">BatteryManager</span><span class="o">.</span><span class="na">BATTERY_HEALTH_GOOD</span><span class="o">;</span>
+    <span class="n">mBatteryPresent</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="n">mBatteryVoltage</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+    <span class="n">mBatteryTemperature</span> <span class="o">=</span> <span class="mi">42</span><span class="o">;</span>
+    <span class="n">mBatteryTechnology</span> <span class="o">=</span> <span class="s">&quot;NITDroid&quot;</span><span class="o">;</span>
+    <span class="n">sendIntent</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Make, copy to SD card, load kernel, run. And guess what&#8230;I want to cry right
+now. This is what I live for. If there is a heaven, I am there now. FIRST
+BOOTABLE FROYO IMAGE ON THE N810!!!</p></div>
+<div class="paragraph"><div class="title">First bootable Froyo image (Android version 2.2.2_r1) on the N810:</div><p><span class="image">
+<a class="image" href="/assets/files/nitdroid/P1030162.JPG">
+<img src="/assets/files/nitdroid/P1030162_small.JPG" alt="Froyo Home screen on the Nokia N810" width="256" height="192" />
+</a>
+</span>
+<span class="image">
+<a class="image" href="/assets/files/nitdroid/P1030163.JPG">
+<img src="/assets/files/nitdroid/P1030163_small.JPG" alt="Android browser on the Nokia N810" width="256" height="192" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>Unfortunately, I am still far from done. Things that are missing, in order of priority:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+For some strange reason, although the touchscreen driver in the kernel
+definitely works (as I have booted the same kernel with the stock Maemo
+userspace and it worked there), the touchscreen does not work at all. This is of
+course most urgent.
+</p>
+</li>
+<li>
+<p>
+Sound does not work; the sound driver for the N810 in my current kernel does
+not even compile and I had to disable it.
+</p>
+</li>
+<li>
+<p>
+Power and battery drivers.
+</p>
+</li>
+<li>
+<p>
+Some sort of key remapping mechanism as the N810 has different hardware keys.
+</p>
+</li>
+<li>
+<p>
+WiFi.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>But for now, blissful sleep. So I guess I didn&#8217;t end up turning in that essay that was due Friday of last week after all&#8230;but that moment of just pure orgasmic euphoria was worth it all. Good night.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 08, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update-ii-first-bootable-froyo-image.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update-ii-first-bootable-froyo-image.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/man-page-browser-for-android.html" rel="bookmark">
+      Man page browser for Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-05T14:57:00-07:00">
+          May 05, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/man-page-browser-for-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Now is totally the wrong time for this, but I started thinking about a new project - creating a man page browser for Android that I could use as a quick reference for Linux commands, C functions, etc.. Currently I&#8217;m thinking of making it keep a database of man pages offline, although online storage is also possible (I would implement some sort of XML-RPC in PHP on my server; but then my server is slow&#8230;). Man pages would be stored in a SQLite database on the SD card, and indexed by page name and section. The content of the page would be stored in HTML and displayed using a <a href="http://developer.android.com/reference/android/webkit/WebView.html">WebView</a> widget with a <a href="http://developer.android.com/reference/android/webkit/WebViewClient.html">WebViewClient</a> that intercepts links to other man pages.</p></div>
+<div class="paragraph"><p>I decided the easiest way to create this man pages database was to grab it online. I hacked together a Python script that crawled the directory at <a href="http://linux.die.net/man/">linux.die.net/man</a>; it worked fine until for some reason after grabbing several hundred pages my computer would no longer connect to the server. I suppose they must have implemented some DOS-prevention mechanism, as I tried the running the crawler from another computer and the same happened. This was a problem, and instead I decided to write another script that crawled <a href="http://www.linuxmanpages.com/">www.linuxmanpages.com</a> instead. This time I was able to compile a full SQLite database weighing in at 100MB; with XZ compression this was reduced to 11MB and is an acceptable size. My app, then, would download this XZ file to the SD card on first run and extract it there.</p></div>
+<div class="paragraph"><p>In order to intercept links to other man pages, I have to make sure that such links are in a consistent format. I chose the format <code>/man/section/page</code> and had to reformat links in the linuxmanpages.com crawler.</p></div>
+<div class="paragraph"><p>I did some queries on my laptop and SQLite seems to manage them in a quite amazing speed, including some full text searches. The main screen on my app, then, will consist of a search box on top and a list of results below that gets updated as the user types; only the first several results are listed for speed and the rest will appear when the user starts scrolling the list. A separate full text search will be available separately.</p></div>
+<div class="paragraph"><p>This is still just an alpha-stage idea, but I think this will be fun :) Anyway some links:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="/assets/files/die_net.py">linux.die.net/man crawler</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/assets/files/linuxmanpages_com.py">linuxmanpages.com crawler</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/assets/files/linuxmanpages_com.db.xz">linuxmanpages.com database generated by the crawler, compressed using xz.</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Note that the crawlers need Python 3 to run.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 05, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/man-page-browser-for-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/man-page-browser-for-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/ugh.html" rel="bookmark">
+      Ugh...
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-04T03:50:15-07:00">
+          May 04, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/ugh.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Haven&#8217;t been able to work on NITDroid in a while&#8230;anyway I came across a couple of interesting links and I&#8217;ll look more into them when I get to it.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.kandroid.org/android_pdk/display_drivers.html">Android Porting Guide - Display Drivers</a> is a cool page that discusses implementing a framebuffer device driver for Android.
+</p>
+</li>
+<li>
+<p>
+<a href="http://git.kernel.org/?p=linux/kernel/git/stable/linux-2.6.32.y.git;a=blob;f=Documentation/fb/framebuffer.txt">The Frame Buffer Device</a> in the Linux kernel documentation. This really isn&#8217;t a link, but it gives a good overview of what a framebuffer device driver looks like in Linux.
+</p>
+</li>
+<li>
+<p>
+<a href="http://linuxconsole.sourceforge.net/fbdev/HOWTO/index.html">Linux Framebuffer Driver Writing HOWTO</a> was a wow-moment for me. Will have to follow this closer. I only hope it&#8217;s not too outdated as it was last updated in 2001.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>That&#8217;s it for now. This summer is going to be fun.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 04, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/ugh.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/ugh.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html" rel="bookmark">
+      EGL Context Preservation on Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-03-15T15:08:50-07:00">
+          Mar 15, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>This is really a little note for myself but I came across the issue of the
+preservation of the OpenGL context (or rather, the EGL context as we&#8217;re dealing
+with OpenGL ES) of an application. On desktop systems, G3D assumes its GL
+context is always preserved, either by the GPU or by the system. On Android,
+however, it turns out that there are two possible scenarios that will cause a
+running application to lose its EGL context. The first is when the user leaves
+the application, e.g., by pressing the Home button or in the case of an incoming
+call. There is in fact a function called setPreserveEGLContextOnPause(boolean)
+in GLSurfaceView, which does exactly what the name suggests; however, in the
+words of the API documentation, "whether the EGL context is actually preserved
+or not depends upon whether the Android device that the program is running on
+can support an arbitrary number of EGL contexts or not. Devices that can only
+support a limited number of EGL contexts must release the EGL context in order
+to allow multiple applications to share the GPU." There is also a
+getPreserveEGLContextOnPause() function, but the documentation does not specify
+whether this will return the actual preservation policy of the machine or only
+whatever value we have set earlier via setPreserveEGLContextOnPause(boolean). I
+looked up the source file in the Android source tree but these two functions are
+newly added in Android 3.0 (whose code, being in beta, is apparently not
+released to the public) and do not show up in the published code base.</p></div>
+<div class="paragraph"><p>The second way we could lose the EGL context is when the user locks the screen
+and the device goes to sleep. Again quoting the API documentation, "[t]he EGL
+context will typically be lost when the Android device awakes after going to
+sleep&#8230;Note that when the EGL context is lost, all OpenGL resources associated
+with that context will be automatically deleted." There does not appear to exist
+a way to prevent this.</p></div>
+<div class="paragraph"><p>Whenever we will have lost a context and need to render again, the
+onSurfaceCreated function in our renderer class is called with a newly created
+context; this is where a Java app would send all its resources to the GPU. In
+the case of the G3D library, I think the best we can do is to require our client
+application to always provide some sort of callback on Android that we will
+invoke to resend resources to the GPU, for instance in their GApp subclass.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Mar 15, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+<div>
+  <ul class="pager">
+    <li class="previous"><a href="http://seasonofcode.com/index6.html">&larr; Previous</a></li>
+    <li class="next"><a href="http://seasonofcode.com/index8.html">Next &rarr;</a></li>
+  </ul>
+</div>
+    </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

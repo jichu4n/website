@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Season of Code - Misc</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/man-page-browser-for-android.html" rel="bookmark">
+      Man page browser for Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-05T14:57:00-07:00">
+          May 05, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/man-page-browser-for-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Now is totally the wrong time for this, but I started thinking about a new project - creating a man page browser for Android that I could use as a quick reference for Linux commands, C functions, etc.. Currently I&#8217;m thinking of making it keep a database of man pages offline, although online storage is also possible (I would implement some sort of XML-RPC in PHP on my server; but then my server is slow&#8230;). Man pages would be stored in a SQLite database on the SD card, and indexed by page name and section. The content of the page would be stored in HTML and displayed using a <a href="http://developer.android.com/reference/android/webkit/WebView.html">WebView</a> widget with a <a href="http://developer.android.com/reference/android/webkit/WebViewClient.html">WebViewClient</a> that intercepts links to other man pages.</p></div>
+<div class="paragraph"><p>I decided the easiest way to create this man pages database was to grab it online. I hacked together a Python script that crawled the directory at <a href="http://linux.die.net/man/">linux.die.net/man</a>; it worked fine until for some reason after grabbing several hundred pages my computer would no longer connect to the server. I suppose they must have implemented some DOS-prevention mechanism, as I tried the running the crawler from another computer and the same happened. This was a problem, and instead I decided to write another script that crawled <a href="http://www.linuxmanpages.com/">www.linuxmanpages.com</a> instead. This time I was able to compile a full SQLite database weighing in at 100MB; with XZ compression this was reduced to 11MB and is an acceptable size. My app, then, would download this XZ file to the SD card on first run and extract it there.</p></div>
+<div class="paragraph"><p>In order to intercept links to other man pages, I have to make sure that such links are in a consistent format. I chose the format <code>/man/section/page</code> and had to reformat links in the linuxmanpages.com crawler.</p></div>
+<div class="paragraph"><p>I did some queries on my laptop and SQLite seems to manage them in a quite amazing speed, including some full text searches. The main screen on my app, then, will consist of a search box on top and a list of results below that gets updated as the user types; only the first several results are listed for speed and the rest will appear when the user starts scrolling the list. A separate full text search will be available separately.</p></div>
+<div class="paragraph"><p>This is still just an alpha-stage idea, but I think this will be fun :) Anyway some links:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="/assets/files/die_net.py">linux.die.net/man crawler</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/assets/files/linuxmanpages_com.py">linuxmanpages.com crawler</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/assets/files/linuxmanpages_com.db.xz">linuxmanpages.com database generated by the crawler, compressed using xz.</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Note that the crawlers need Python 3 to run.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 05, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/man-page-browser-for-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/man-page-browser-for-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/msys-and-ssh-server-under-windows-7.html" rel="bookmark">
+      MSYS and SSH server under Windows 7
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-03-14T03:29:05-07:00">
+          Mar 14, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/msys-and-ssh-server-under-windows-7.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>By order of The Professor, thou shalt install Windows 7 on thy lab machine. Alright, I can live with Windows, but I want my UNIX environment and I want SSH. I installed MinGW, MSYS, and got a basic UNIX environment working within a few minutes. It took me the better half of my weekend, however, to get an SSH server running that would allow me to use the Bash shell that comes with MSYS. I first tried <a href="http://www.freesshd.com/">freeSSHd</a>, but its terminal driver is crappy and I can&#8217;t even start Bash. <a href="http://mobassh.mobatek.net/">MobaSSH</a> comes with a copy of Cygwin, but my professor appears to have a grudge against Cygwin which is why I&#8217;m installing MinGW in the first place. I then tried <a href="http://www.kpym.com/">Kpym</a>; the personal version is so crippled I uninstalled it within five minutes. I tried <a href="http://sshwindows.sourceforge.net/">OpenSSH for Windows</a>, but it does not appear to work on Windows 7 at all. Finally, I discovered <a href="http://www.bitvise.com/winsshd">WinSSHD</a>. Setting the shell was a weird process; you had to go to Advanced Settings &#8594; Access Control &#8594; Windows Groups and change the default shell associated with "everyone" (I mean, what does this have to do with access control?) but when I changed the default shell to <code>C:MinGWmsys1.0bash.exe -il</code>, magic happened. However, vim was refusing to launch, and the vi binary that came with MSYS complained about the terminal type being unrecognizable. I screwed around a little bit and discovered that the solution was to open up the environment settings window from Control Panel and change the environment variable <code>CYGWIN</code> from <code>tty</code> to <code>notty</code>. The installer of WinSSHD adds this environment variable to Windows 7, but it appears to be entirely unnecessary and in my case counterproductive. Who cares though; the SSH server is running beautifully, and I can login directly to the MSYS Bash. Yay!!</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Mar 14, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/msys-and-ssh-server-under-windows-7.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/msys-and-ssh-server-under-windows-7.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/qemu.html" rel="bookmark">
+      QEMU
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-12T02:09:25-08:00">
+          Feb 12, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>,            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/qemu.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Still no luck with the kernel. I decided to try running things on QEMU, which supports emulating the N810, but the binary package in the Arch repositories has a bug (described on <a href="http://patchwork.ozlabs.org/patch/61224/">this page</a>)that needs to be patched. Therefore, a <a href="https://aur.archlinux.org/packages.php?ID=46419">new package</a> is now on AUR.</p></div>
+<div class="paragraph"><p>Instructions on emulating an N810 / N800 on QEMU can be found <a href="http://www.rkeene.org/projects/info/wiki/106">here</a> and <a href="http://marcin.juszkiewicz.com.pl/2008/04/11/nokia-n800-emulation/">here</a>.</p></div>
+<div class="paragraph"><p>UPDATE (02/12/2011): Whatever I set the R&amp;D flags to, the said method doesn&#8217;t work. All I get is a blank screen. Abandoning.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 12, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>,          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/qemu.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/qemu.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/compilation-benchmark.html" rel="bookmark">
+      Compilation benchmark
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-09T13:30:37-08:00">
+          Feb 09, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/compilation-benchmark.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Yesterday I set up a small LAN in my room behind a Linksys router Julian kindly lent me. I did a simple benchmark just now to figure out how I should best be utilizing my resources, and the benchmark was building the same <code>cross-arm-linux-gnueabi-gcc-base</code> package described in <a href="?p=45">an earlier post</a>. The results are:</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<thead>
+<tr>
+<th align="left" valign="top"> Host                           </th>
+<th align="left" valign="top"> CPU                              </th>
+<th align="left" valign="top"> RAM </th>
+<th align="left" valign="top"> Real Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Lenovo Thinkpad T400 (Longfox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Core 2 Duo T9400 @ 2.53GHz</p></td>
+<td align="left" valign="top"><p class="table">2GB</p></td>
+<td align="left" valign="top"><p class="table">6m35s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">IBM Thinkpad X40 (Profox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Pentium M LV @ 1.2GHz</p></td>
+<td align="left" valign="top"><p class="table">1GB</p></td>
+<td align="left" valign="top"><p class="table">17m43s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Dell GX270 (Busyfox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Pentium 4 @ 3.0GHz</p></td>
+<td align="left" valign="top"><p class="table">1GB</p></td>
+<td align="left" valign="top"><p class="table">13m03s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Lenovo Thinkpad X60 (Babyfox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Core Duo T2400 @ 1.83GHz</p></td>
+<td align="left" valign="top"><p class="table">1GB</p></td>
+<td align="left" valign="top"><p class="table">10m55s</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Of course, the benchmark is fairly unscientific; this is one particular job and
+I did not account for the fact that, for instance, Longfox, Profox and Babyfox
+were all running a full DE simultaneously. Since I am interested in finding out
+how these machines compare to each other when doing similar tasks to this build
+process, however, I think this is good enough for me.</p></div>
+<div class="paragraph"><p>Interestingly, Busyfox&#8217;s 3.0GHz P-4 was only ~1.5 times faster than Profox&#8217;s
+1.2GHz P-M; this ratio was also verified by the compilation of
+<code>cross-arm-linux-gnueabi-binutils</code> which took about 4m on Busyfox and about 6m
+on Profox. It would seem that the P-M is indeed considerably "faster" per clock
+cycle than the P-4; the exact ratio is (3.0/1.5)/1.2=1.67, or 67% "faster" per
+clock cycle.</p></div>
+<div class="paragraph"><p>On the other hand, on a closer inspection of Longfox, it appears that there is
+no concurrency in the building process; the source files are compiled serially
+and only one core appears to be used at any given time. This would mean that if
+both cores were fully leveraged the T9400 @ 2.53GHz should theoretically be
+~3.96 times faster than the P-4 at 3.0GHz; this means (3.0*3.96)/2.53=4.70 or
+470% percent "faster" per clock cycle, which marks a huge improvement.</p></div>
+<div class="paragraph"><p>Currently, since the speed difference between Profox and Busyfox is really
+negligeable from my perspective, and since Profox sits nicely on my desk and
+Busyfox is huge, loud, and screen-less anyway, I will keep Busyfox as a file
+server, store the NITDroid development files on Busyfox and mount them over
+NFSv4 on Profox. The reason for the latter is that the X40&#8217;s use a bizarre hard
+drive form factor that makes their drives really hard to replace, and the
+particular one in Profox has been clicking ominously for a while. This was what
+prompted me to buy Babyfox, an X60, as my main portable laptop a few months ago.
+Anyway to minimize heat dissipation I keep the CPU on Busyfox throttled at the
+minimum clock rate, a pathetic 375MHz (<code>sudo cpufreq-set -f 375MHz</code>), because
+the <code>ondemand</code> cpufreq governor does not work on <code>p4-clockmod</code>, which is the
+cpufreq module for P-4&#8217;s. Power control on the hard drive is set with <code>sudo
+hdparm -B1 -S120 /dev/sda</code>. I did test writes on Profox and it would seem that,
+with 11MB/s write speeds regardless of throttling settings or hdparm settings,
+network bandwith rather than CPU clock speed or hard drive power control appears
+to be the bottleneck. For my particular application though, this is really good
+enough.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 09, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/compilation-benchmark.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/compilation-benchmark.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/new-website.html" rel="bookmark">
+      New website!!
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-08T02:28:02-08:00">
+          Feb 08, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/new-website.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>This afternoon I decided to buy a domain and a year of shared hosting services from <a href="http://www.startlogic.com">StartLogic</a>. I&#8217;ve been working on the site since it was activated several hours ago; I added the <a href="http://wordpress.org/extend/plugins/sociable-30">Sociable</a> plugin and the <a href="http://mobilepress.co.za/">MobilePress</a> plugin to the WordPress install and the site is looking great. I modified several aspects of the desktop and mobile themes; I will setup a backup scheme soon. The registration of the domain cjix.info and a year of hosting cost altogether roughly $60. I&#8217;m pretty excited about the site though.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 08, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/new-website.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/new-website.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+<div>
+  <ul class="pager">
+    <li class="previous"><a href="http://seasonofcode.com/tag/misc.html">&larr; Previous</a></li>
+    <li class="next"><a href="http://seasonofcode.com/tag/misc3.html">Next &rarr;</a></li>
+  </ul>
+</div>
+    </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

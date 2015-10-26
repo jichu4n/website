@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux.html" rel="bookmark">
+      How To Set Default Fonts and Font Aliases on Linux
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-02-22T01:32:00-08:00">
+          Feb 22, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/linux.html">Linux</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="sect3">
+<h4 id="_font_woes">Font Woes</h4>
+<div class="paragraph"><p>It&#8217;s fairly straightforward to set the default font used in native apps on a
+modern Linux desktop, or the default fonts used to render web pages in your
+browser of choice.</p></div>
+<div class="paragraph"><p>But if you&#8217;re reading this, you probably know that that&#8217;s far from the end of
+the story. You might have noticed that Firefox and Chrome rudely ignore your
+font settings for many websites. This is because many (if not most) popular
+sites, including <a href="http://www.google.com">Google</a>, <a href="http://www.yahoo.com">Yahoo</a>,
+<a href="http://www.facebook.com">Facebook</a> or <a href="http://github.com">GitHub</a>, specify
+preferred fonts for text:</p></div>
+<div class="tableblock">
+<table rules="none"
+style="margin-left:auto; margin-right:auto;"
+width="80%"
+frame="void"
+cellspacing="0" cellpadding="4">
+<col width="16%" />
+<col width="83%" />
+<thead>
+<tr>
+<th align="left" valign="top"> Site                  </th>
+<th align="left" valign="top"> Font Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Google</p></td>
+<td align="left" valign="top"><p class="table"><code>arial, sans-serif</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Yahoo</p></td>
+<td align="left" valign="top"><p class="table"><code>Helvetica Neue, Helvetica, Arial</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Facebook</p></td>
+<td align="left" valign="top"><p class="table"><code>lucida grande, tahoma, verdana, arial, sans-serif</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">GitHub</p></td>
+<td align="left" valign="top"><p class="table"><code>Helvetica, arial, freesans, clean, sans-serif</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>(Retrieved on 02/21/2014)</p></div>
+<div class="paragraph"><p>You might immediately notice that the most commonly used fonts on these sites,
+Arial and Helvetica, are fonts that come bundled with Microsoft Windows, and are
+most likely <em>not</em> installed on your Linux system. In this case, what font is
+<em>actually</em> used is anyone&#8217;s guess. If they <em>are</em> installed (e.g., via a package
+like <a href="https://aur.archlinux.org/packages/ttf-ms-fonts/">ttf-ms-fonts</a> or directly
+copied from a Windows machine), well, you still probably want to display your
+favorite font instead :)</p></div>
+<div class="paragraph"><p>So, let&#8217;s find out what your default fonts and aliases are with <code>fc-match</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">for</span> family in serif sans-serif monospace Arial Helvetica Verdana <span class="s2">&quot;Times New Roman&quot;</span> <span class="s2">&quot;Courier New&quot;</span><span class="p">;</span> <span class="k">do</span>
+  <span class="nb">echo</span> -n <span class="s2">&quot;</span><span class="nv">$family</span><span class="s2">: &quot;</span>
+  <span class="nb">fc</span>-match <span class="s2">&quot;</span><span class="nv">$family</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+</pre></div></div></div>
+<div class="paragraph"><p>This is what I get on my machine by default:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>serif: DejaVuSerif.ttf: "DejaVu Serif" "Book"
+sans-serif: DejaVuSans.ttf: "DejaVu Sans" "Book"
+monospace: DejaVuSansMono.ttf: "DejaVu Sans Mono" "Book"
+Arial: DejaVuSans.ttf: "DejaVu Sans" "Book"
+Helvetica: n019003l.pfb: "Nimbus Sans L" "Regular"
+Verdana: DejaVuSans.ttf: "DejaVu Sans" "Book"
+Times New Roman: DejaVuSerif.ttf: "DejaVu Serif" "Book"
+Courier New: DejaVuSansMono.ttf: "DejaVu Sans Mono" "Book"</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_font_configuration_files">Font Configuration Files</h4>
+<div class="paragraph"><p>So, assuming you&#8217;ve installed your fonts of choice (via a package, copying to
+<code>/usr/share/fonts</code> or <code>~/.fonts</code> - please verify with the <code>fc-list</code> command),
+how do you set them as default in all apps and web sites?</p></div>
+<div class="paragraph"><p>Well, there are two places where fonts are configured: system-wide configuration
+resides in <code>/etc/fonts/</code>, and per-user configs are stored in
+<code>~/.config/fontconfig/fonts.conf</code> (note that this used to be <code>~/.fonts.conf</code>
+before <code>fontconfig</code> 2.10.1). For simplicity&#8217;s sake, we&#8217;ll do it in
+<code>~/.config/fontconfig/fonts.conf</code>.</p></div>
+<div class="paragraph"><p>Let&#8217;s open up <code>~/.config/fontconfig/fonts.conf</code>, or create it if it doesn&#8217;t
+already exist. Put the following skeleton structure in there:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="cp">&lt;?xml version=&#39;1.0&#39;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE fontconfig SYSTEM &#39;fonts.dtd&#39;&gt;</span>
+<span class="nt">&lt;fontconfig&gt;</span>
+<span class="nt">&lt;/fontconfig&gt;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>We will put all of our custom configuration between <code>&lt;fontconfig&gt;</code> and
+<code>&lt;/fontconfig&gt;</code>.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_setting_default_fonts">Setting Default Fonts</h4>
+<div class="paragraph"><p>First, let&#8217;s set the default serif, sans serif, and monospace fonts. I&#8217;ll use
+the beautiful <a href="http://en.wikipedia.org/wiki/Croscore_fonts">Chrome OS fonts</a> as an
+example
+(<a href="https://aur.archlinux.org/packages/ttf-chromeos-fonts/"><code>ttf-chromeos-fonts</code></a> if
+you&#8217;re running <a href="http://www.archlinux.org">Arch Linux</a>). Insert the following
+between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre>  <span class="c">&lt;!-- Set preferred serif, sans serif, and monospace fonts. --&gt;</span>
+  <span class="nt">&lt;alias&gt;</span>
+    <span class="nt">&lt;family&gt;</span>serif<span class="nt">&lt;/family&gt;</span>
+    <span class="nt">&lt;prefer&gt;&lt;family&gt;</span>Tinos<span class="nt">&lt;/family&gt;&lt;/prefer&gt;</span>
+  <span class="nt">&lt;/alias&gt;</span>
+  <span class="nt">&lt;alias&gt;</span>
+    <span class="nt">&lt;family&gt;</span>sans-serif<span class="nt">&lt;/family&gt;</span>
+    <span class="nt">&lt;prefer&gt;&lt;family&gt;</span>Arimo<span class="nt">&lt;/family&gt;&lt;/prefer&gt;</span>
+  <span class="nt">&lt;/alias&gt;</span>
+  <span class="nt">&lt;alias&gt;</span>
+    <span class="nt">&lt;family&gt;</span>sans<span class="nt">&lt;/family&gt;</span>
+    <span class="nt">&lt;prefer&gt;&lt;family&gt;</span>Arimo<span class="nt">&lt;/family&gt;&lt;/prefer&gt;</span>
+  <span class="nt">&lt;/alias&gt;</span>
+  <span class="nt">&lt;alias&gt;</span>
+    <span class="nt">&lt;family&gt;</span>monospace<span class="nt">&lt;/family&gt;</span>
+    <span class="nt">&lt;prefer&gt;&lt;family&gt;</span>Cousine<span class="nt">&lt;/family&gt;&lt;/prefer&gt;</span>
+  <span class="nt">&lt;/alias&gt;</span>
+</pre></div></div></div>
+</div>
+<div class="sect3">
+<h4 id="_aliasing_microsoft_fonts">Aliasing Microsoft Fonts</h4>
+<div class="paragraph"><p>Now, we will create aliases for commonly used fonts like Arial and Helvetica, so
+that our favorite fonts will always be used instead of these fonts, e.g. when
+requested by a web site.</p></div>
+<div class="paragraph"><p>Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>, after the
+previous snippet:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre>  <span class="c">&lt;!-- Aliases for commonly used MS fonts. --&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Arial<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Arimo<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Helvetica<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Arimo<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Verdana<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Arimo<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Tahoma<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Arimo<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="c">&lt;!-- Insert joke here --&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Comic Sans MS<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Arimo<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Times New Roman<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Tinos<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Times<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Tinos<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Courier New<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">mode=</span><span class="s">&quot;assign&quot;</span> <span class="na">binding=</span><span class="s">&quot;strong&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>Cousine<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Note that the Microsoft fonts are aliased directly to the our preferred
+substitute fonts. Aliasing to generic families (serif, sans-serif etc.) may or
+may not work depending on your configuration in <code>/etc/fonts</code> (they didn&#8217;t work
+for me), so it&#8217;s safer this way.</p></div>
+<div class="paragraph"><p>This list is of course by no means definitive; add/remove aliases as you like.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_the_result">The Result</h4>
+<div class="paragraph"><p>You&#8217;ll need to log out and back in for all applications to update. You should
+see the difference immediately:</p></div>
+<div class="paragraph"><div class="title">Google search results, before (Arial):</div><p><span class="image">
+<img src="/assets/files/font_config_before.png" alt="/assets/files/font_config_before.png" width="500" />
+</span></p></div>
+<div class="paragraph"><div class="title">Google search results, after (Arimo):</div><p><span class="image">
+<img src="/assets/files/font_config_after.png" alt="/assets/files/font_config_after.png" width="500" />
+</span></p></div>
+<div class="paragraph"><p>You can verify that the aliases have been set up correctly with <code>fc-match</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">for</span> family in serif sans-serif monospace Arial Helvetica Verdana <span class="s2">&quot;Times New Roman&quot;</span> <span class="s2">&quot;Courier New&quot;</span><span class="p">;</span> <span class="k">do</span>
+  <span class="nb">echo</span> -n <span class="s2">&quot;</span><span class="nv">$family</span><span class="s2">: &quot;</span>
+  <span class="nb">fc</span>-match <span class="s2">&quot;</span><span class="nv">$family</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+</pre></div></div></div>
+<div class="paragraph"><p>which should now give you something like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>serif: Tinos-Regular.ttf: "Tinos" "Regular"
+sans-serif: Arimo-Regular.ttf: "Arimo" "Regular"
+monospace: Cousine-Regular.ttf: "Cousine" "Regular"
+Arial: Arimo-Regular.ttf: "Arimo" "Regular"
+Helvetica: Arimo-Regular.ttf: "Arimo" "Regular"
+Verdana: Arimo-Regular.ttf: "Arimo" "Regular"
+Times New Roman: Tinos-Regular.ttf: "Tinos" "Regular"
+Courier New: Cousine-Regular.ttf: "Cousine" "Regular"</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_other_notes">Other Notes</h4>
+<div class="paragraph"><p>Some existing examples you may find online show the following syntax:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c">&lt;!-- Deprecated syntax --&gt;</span>
+<span class="nt">&lt;match</span> <span class="na">target=</span><span class="s">&quot;pattern&quot;</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&quot;family&quot;</span> <span class="na">qual=</span><span class="s">&quot;any&quot;</span><span class="nt">&gt;&lt;string&gt;</span>Arial<span class="nt">&lt;/string&gt;&lt;/test&gt;</span>
+  ...
+<span class="nt">&lt;/match&gt;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>This will produce an error message like</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Fontconfig error: "/home/username/.config/fontconfig/fonts.conf", line 38: invalid attribute 'name'</code></pre>
+</div></div>
+<div class="paragraph"><p>The fix is to change <code>&lt;match target="pattern" name="family"&gt;</code> to just <code>&lt;match&gt;</code>,
+as shown above.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 22, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/linux.html">Linux</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/unicode-io-and-locales-in-python.html" rel="bookmark">
+      Unicode I/O and Locales in Python
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-02-20T17:51:00-08:00">
+          Feb 20, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/python.html">Python</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/unicode-io-and-locales-in-python.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I recently ran into a weird error when running some Python code in a chroot jail.</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="s">&#39;你好&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/tmp/asdf&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div></div></div>
+<div class="paragraph"><p>gave me</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "/usr/lib/python3.3/encodings/ascii.py", line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe4 in position 0: ordinal not in range(128)</code></pre>
+</div></div>
+<div class="paragraph"><p>The same happened with interprocess I/O:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+    <span class="s">&#39;/usr/bin/cat&#39;</span><span class="p">,</span>
+    <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">universal_newlines</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">proc</span><span class="p">:</span>
+  <span class="p">(</span><span class="n">cmd_stdout</span><span class="p">,</span> <span class="n">cmd_stderr</span><span class="p">)</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="s">&#39;你好&#39;</span><span class="p">)</span>
+</pre></div></div></div>
+<div class="paragraph"><p>gave me</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+  File "/usr/lib/python3.3/subprocess.py", line 578, in check_output
+    output, unused_err = process.communicate(timeout=timeout)
+  File "/usr/lib/python3.3/subprocess.py", line 908, in communicate
+    stdout = _eintr_retry_call(self.stdout.read)
+  File "/usr/lib/python3.3/subprocess.py", line 479, in _eintr_retry_call
+    return func(*args)
+  File "/usr/lib/python3.3/encodings/ascii.py", line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe4 in position 0: ordinal not in range(128)</code></pre>
+</div></div>
+<div class="paragraph"><p>It turns out that Python <code>str</code>'s are encoded to/decoded from raw bytes during
+I/O (<code>print</code>, file I/O, IPC, etc) using the <em>default</em> system locale encoding.
+The advantage is that, if your system locale is set up correctly, everything
+just works - there&#8217;s no explicit encoding/decoding between strings and bytes.
+The downside is that your Python code that runs fine on one machine can fail
+mysteriously on a different machine.</p></div>
+<div class="paragraph"><p>In my case, the chroot jail yielded:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ locale
+LANG=C
+LC_CTYPE="C"
+LC_NUMERIC="C"
+LC_TIME="C"
+LC_COLLATE="C"
+LC_MONETARY="C"
+LC_MESSAGES="C"
+LC_PAPER="C"
+LC_NAME="C"
+LC_ADDRESS="C"
+LC_TELEPHONE="C"
+LC_MEASUREMENT="C"
+LC_IDENTIFICATION="C"
+LC_ALL=</code></pre>
+</div></div>
+<div class="sect3">
+<h4 id="_solution_a">Solution A</h4>
+<div class="paragraph"><p>The simplest solution is to set the system locale, either just for the Python
+program or for your shell. For example,</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Run ./my_program.py with a custom LANG value.</span>
+<span class="nv">LANG</span><span class="o">=</span>en_US.utf-8 ./my_program.py
+</pre></div></div></div>
+<div class="paragraph"><p>or</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Set locale for current shell session.</span>
+<span class="nb">export </span><span class="nv">LANG</span><span class="o">=</span>en_US.utf-8
+./my_program.py
+</pre></div></div></div>
+<div class="paragraph"><p>In fact, it&#8217;s probably a good idea to add the <code>export</code> line to your <code>~/.bashrc</code>,
+or follow however your Linux distro decides locales should be set.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_solution_b">Solution B</h4>
+<div class="paragraph"><p>On the other hand, you can explicitly set the encoding used during I/O in your
+Python code.</p></div>
+<div class="paragraph"><p>For file I/O, in Python 3.x, you can set the <code>encoding</code> argument of
+<a href="http://docs.python.org/3.3/library/functions.html#open"><code>open</code></a>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Python 3.x</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/tmp/asdf&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;你好&#39;</span><span class="p">)</span>
+</pre></div></div></div>
+<div class="paragraph"><p>In Python 2.x, you can use
+<a href="http://docs.python.org/2/library/codecs.html#codecs.open"><code>codecs.open</code></a>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Python 2.x</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;/tmp/asdf&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;你好&#39;</span><span class="p">)</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Alternatively, you can use raw mode for file I/O:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/tmp/asdf&#39;</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;你好&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+</pre></div></div></div>
+<div class="paragraph"><p>For IPC with <code>subprocess</code>, you must <strong>not</strong> use <code>universal_newlines=True</code>, as that
+will always attempt to encode/decode using the system locale. Instead:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+    <span class="s">&#39;/usr/bin/cat&#39;</span><span class="p">,</span>
+    <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span> <span class="k">as</span> <span class="n">proc</span><span class="p">:</span>
+  <span class="p">(</span><span class="n">cmd_stdout_bytes</span><span class="p">,</span> <span class="n">cmd_stderr_bytes</span><span class="p">)</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="s">&#39;你好&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+  <span class="p">(</span><span class="n">cmd_stdout</span><span class="p">,</span> <span class="n">cmd_stderr</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
+      <span class="n">cmd_stdout_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">cmd_stderr_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+</pre></div></div></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 20, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/python.html">Python</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/unicode-io-and-locales-in-python.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/unicode-io-and-locales-in-python.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html" rel="bookmark">
+      Disabling Screen-Off Animation In Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2013-02-02T02:41:49-08:00">
+          Feb 02, 2013
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I am impressed by the amazing progress Android&#8217;s UI has made since its
+inception. With each iteration, likewise in software as in hardware, its
+usability and aesthetics have steadily improved to the point where I can now
+confidently buy one for my mom to replace the iPhone I recommended to her only
+last year.</p></div>
+<div class="paragraph"><p>On the other hand, one particular "feature" I intensely dislike is the
+screen-off animation that emulates the brief white flash you see when an old CRT
+TV monitor is powering off. Introduced in Gingerbread (2.3), it seems not to
+bother most people as much as it bothers me, and even seems to be quite popular
+(e.g., <a href="http://forum.xda-developers.com/showthread.php?t=1890526">this thread</a>).</p></div>
+<div class="paragraph"><p>I was glad to learn though that a number of people find it as annoying as I do,
+for example in
+<a href="http://forum.cyanogenmod.org/topic/64185-any-way-to-disable-the-screen-off-animation-in-101/">this thread</a>
+and <a href="http://code.google.com/p/cyanogenmod/issues/detail?id=6519">this bug</a>.</p></div>
+<div class="paragraph"><p>As a CyanogenMod fan, I was quite happy with the straightforward checkbox in the
+Settings app in CyanogenMod 9 that toggled whether to play this animation. In
+CM10, this option was removed, but there was an easy hack involving changing
+window animation scale in the developer settings, as explained in the
+<a href="http://code.google.com/p/cyanogenmod/issues/detail?id=6519">second link above</a>.</p></div>
+<div class="paragraph"><p>So when I updated to CM10.1 M1, I was very unpleasantly surprised to find that
+this hack does not work any more either. I tried to immediately downgrade to
+CM10, but then discovered that doing so requires a full data wipe (of
+course&#8230;). A quick search pulled up
+<a href="http://forum.xda-developers.com/showthread.php?t=1989397">this thread</a> which
+proposes a simple prop edit, but the following posts in the thread suggest mixed
+results.</p></div>
+<div class="paragraph"><p>So, stuck with CM10.1, and really disgusted at this turn of events, I finally
+decided to put on my hax0r gloves and get this annoying "feature" out of my face
+once and for all.</p></div>
+<div class="paragraph"><p><strong>Poking Around</strong></p></div>
+<div class="paragraph"><p>I went to <a href="http://androidxref.com/">androidxref.com</a> and started searching
+the Android source code for "screen off animation". (OK, I actually started out
+with <em>grep</em>, but it didn&#8217;t take me long to realize
+<a href="http://androidxref.com/">androidxref.com</a> was about sixty million times
+faster - it&#8217;s really pretty cool.)</p></div>
+<div class="paragraph"><p>I quickly found why changing the window animation scale in <strong>Jelly Bean 4.1 (and
+CM10)</strong> disables the screen-off animation. The two snippets of of code
+implementing this behavior are at
+<a href="http://androidxref.com/4.0.4/xref/frameworks/base/services/java/com/android/server/PowerManagerService.java#470">line 470</a> and
+<a href="http://androidxref.com/4.0.4/xref/frameworks/base/services/java/com/android/server/PowerManagerService.java#2228">line 2228</a>
+of <code>PowerManagerService.java</code>.</p></div>
+<div class="paragraph"><p>In <strong>Jelly Bean 4.2 (and CM10.1)</strong>, however, these parts of the code have been
+completely refactored. The snippet of code that launches the screen-off
+animation is now found at
+<a href="http://androidxref.com/4.2_r1/xref/frameworks/base/services/java/com/android/server/power/DisplayPowerController.java#704">line 704</a>
+of <code>DisplayPowerController.java</code>. Note that this new <code>DisplayPowerController</code>
+class has been factored out of the old <code>PowerManagerService</code> class, and both
+have moved into a separate <code>power</code> sub-directory.</p></div>
+<div class="paragraph"><p><strong>The Hacking</strong></p></div>
+<div class="paragraph"><p><em>Disclaimer: I am <strong>NOT</strong> responsible for anything that happens to your phone or
+you or your house or your relationship with your wife if you follow the
+instructions down here. If you don&#8217;t know what you&#8217;re doing and are scared of
+bricking your phone, just give up and go watch Superbowl. Please.</em></p></div>
+<div class="paragraph"><p>What did <em>not</em> change, I found, is that this code gets packaged into
+<code>/system/framework/services.jar</code> on the Android system. So, let&#8217;s take a look at
+this file as found in the CM10.1 image on my phone:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Copy services.jar from phone to current directory.</span>
+adb pull /system/framework/services.jar
+<span class="c"># Disassemble.</span>
+apktool d services.jar
+</pre></div></div></div>
+<div class="paragraph"><p>(<code><a href="http://code.google.com/p/android-apktool/">apktool</a></code> is a tool that
+extracts and disassembles Android APK/JAR files, and is available for Linux,
+Windows and OS X.) This produces a directory, <code>services.jar.out</code>, which contains
+the disassembled code of <code>services.jar</code> we just pulled from a connected phone. I
+dived into the <code>DisplayPowerController</code> code and edited the <em>else</em> clause at
+<a href="http://androidxref.com/4.2_r1/xref/frameworks/base/services/java/com/android/server/power/DisplayPowerController.java#704">line 704</a>
+to essentially just say <code>setScreenOn(false);</code> directly instead of running
+the animation first. If you look at the dissassembled code, you&#8217;d realize Dalvik
+bytecode is really quite readable and easy to hack, especially since the line
+number hints allow you to directly map a line in the Java source code to the
+corresponding Dalvik instructions. I just had the Java source file on
+<a href="http://androidxref.com">androidxref.com</a> open in a browser tab for reference
+and killed instructions line by line. You can
+<a href="http://www.mediafire.com/?5e8s5kzblav4a5g">download my patch here</a> and apply
+it like this:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre>patch -d services.jar.out -Np1 &lt; path/to/disable_screen_off_animation.patch
+</pre></div></div></div>
+<div class="paragraph"><p>(For CM10.1 nightlies (after the MR1.1 merge) and CM10.1 M2, use
+<a href="http://www.mediafire.com/download.php?drw5t67v24tb4x9">this patch</a> instead.
+The same piece of code was shuffled around to
+<a href="https://github.com/CyanogenMod/android_frameworks_base/blob/f6f6b1d37c1d5a8ba687e4d09761eb762f7269af/services/java/com/android/server/power/DisplayPowerController.java#L777">line 777</a>. For CM10.1 M3, use
+<a href="http://www.mediafire.com/download.php?3xghfg9yfqyj9o7">this patch</a> instead.)</p></div>
+<div class="paragraph"><p>Now re-assemble the code and push it back on to the device:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Re-assemble modified sources as services-mod.jar.</span>
+apktool b services.jar.out services-mod.jar
+<span class="c"># Copy services-mod.jar to /sdcard/ on phone.</span>
+adb push services-mod.jar /sdcard/
+<span class="c"># Remount /system partition as read-write in order to modify it.</span>
+adb shell su -c <span class="s1">&#39;mount -o rw,remount /system&#39;</span>
+<span class="c"># Overwrite original services.jar on phone with services-mod.jar as root.</span>
+adb shell su -c <span class="s1">&#39;cp /sdcard/services-mod.jar /system/framework/services.jar&#39;</span>
+<span class="c"># Reboot phone for this to take effect.</span>
+adb reboot
+</pre></div></div></div>
+<div class="paragraph"><p>When the phone reboots, it will say Android is upgrading and will rebuild Dalvik
+cache for each application, so it might take a while. But hey, it&#8217;s worth it.</p></div>
+<div class="paragraph"><p><strong>Parting Words</strong></p></div>
+<div class="paragraph"><p>The final product, if you just want to replace the <code>services.jar</code> on your phone, is here:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>CyanogenMod 10.1 M1</strong> - tested on Galaxy Nexus (maguro) and Nexus S (crespo), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?16dhrvk7esr77br">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>CyanogenMod 10.1 M2</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?kdd4af6h81bq8">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>CyanogenMod 10.1 M3</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?78cvqi6qe0s3yoy">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>CyanogenMod 10.1 RC1</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?w1527lnv5eoh8kl">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>Stock 4.2.2 (takju/JDQ39)</strong> - for <a href="https://developers.google.com/android/nexus/images#takjujdq39">"takju" factory image from Google</a>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Note</strong>: use this to replace <code>services.<strong>odex</strong></code>, not <code>services.<strong>jar</strong></code>!
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.mediafire.com/?g5guv4hkcvt9owm">services-mod.odex</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>Stock 4.2.2 (yakju/JDQ39)</strong> - for <a href="https://developers.google.com/android/nexus/images#yakjujdq39">"yakju" factory image from Google</a>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Note</strong>: use this to replace <code>services.<strong>odex</strong></code>, not <code>services.<strong>jar</strong></code>!
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.mediafire.com/?8ttffv118tnxgp5">services-mod.odex</a>
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<div class="paragraph"><p>Apply the <code>services-mod.jar</code> to your phone like this (obviously assuming you
+have adb working and root):</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Copy services-mod.jar to /sdcard/ on phone.</span>
+adb push services-mod.jar /sdcard/
+<span class="c"># Remount /system partition as read-write in order to modify it.</span>
+adb shell su -c <span class="s1">&#39;mount -o rw,remount /system&#39;</span>
+<span class="c"># Overwrite original services.jar on phone with services-mod.jar as root.</span>
+adb shell su -c <span class="s1">&#39;cp /sdcard/services-mod.jar /system/framework/services.jar&#39;</span>
+<span class="c"># Reboot phone for this to take effect.</span>
+adb reboot
+</pre></div></div></div>
+<div class="paragraph"><p>Or, I suppose, you could just use ES File Explorer with root mode enabled, mount
+<code>/system</code> as read-write and copy the file to <code>/system/framework/services.jar</code> on
+the phone.</p></div>
+<div class="paragraph"><p>Note that a reboot is needed after you replace the <code>services.jar</code> whatever you
+do, and upon the first reboot the "Android is upgrading" dialog will pop up.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 02, 2013
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html" rel="bookmark">
+      Android Rooting: A Developer's Guide
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2012-11-21T00:58:12-08:00">
+          Nov 21, 2012
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p><img src="/assets/files/rooting_android_blue.jpg"
+align="right"
+style="max-width: 350px; width: 35%; margin: 1.5em 0 1.5em 1.5em;">
+First things first&#8201;&#8212;&#8201;this is not about how to apply a rooting method, e.g., a
+one-click-root, to an Android device. Rather, it is about how one could go about
+<em>developing</em> a rooting method for a device that no one has rooted before, and is
+told through my experiences with rooting a particular device&#8201;&#8212;&#8201;the Barnes &amp;
+Noble Nook Tablet 8GB. For context, you can read my original thread
+"<a href="http://forum.xda-developers.com/showthread.php?t=1529553">Root for Nook
+Tablet 8GB (w/ Android Market)</a> on XDA-Developers where I published my rooting
+method, which has reached a download count of&#8201;&#8212;&#8201;wait for it&#8201;&#8212;&#8201;OVER NINE
+THOUSAND!!!</p></div>
+<div class="paragraph"><p>For an overview of how rooting works behind the scenes, you may want to read my
+previous article
+<a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">How
+Rooting Works - A Technical Explanation of the Android Rooting Process</a> as
+background.</p></div>
+<div class="paragraph"><p>Sometime in late February (2012), on a visit to to a Barnes &amp; Noble store in
+Boston, I bought the then freshly released Nook Tablet 8GB entirely on impulse
+for $199. Being the hax0r that I am, the first thing I did when I got home was
+to try to root the device. It came as a nasty surprise, therefore, when I
+discovered that no one had yet succeeded in rooting the device. All I could find
+was a <a href="http://www.youtube.com/watch?v=x8e0OLWQYc4">YouTube video</a> showing
+that the existing rooting method for its cousin, the Nook Tablet 16GB, did not
+work. After waiting for a few days, the absolutely pathetic app store and
+handicaps instituted by B&amp;N finally motivated me to develop a rooting method for
+the device myself.</p></div>
+<div class="sect2">
+<h3 id="_the_plan">The Plan</h3>
+<div class="paragraph"><p>So, how do you go about rooting an Android device? As I explain in
+<a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">my
+previous article</a>, rooting is basically a two-step process:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Find exploit that allows execution of arbitrary code as root
+</p>
+</li>
+<li>
+<p>
+Use exploit to install <code>su</code> (with SUID bit set) and <code>Superuser.apk</code> as root
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>After <code>su</code> and <code>Superuser.apk</code> are installed correctly, apps that require root
+(such as <a href="http://matrixrewriter.com/android/">Titanium Backup</a> or
+<a href="https://play.google.com/store/apps/details?id=org.adaway&amp;hl=en">AdAway</a>)
+will invoke <code>su</code> to run code as the privileged user.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_the_process">The Process</h3>
+<div class="paragraph"><p>There are many generic or device-specific exploits that a hax0r may leverage to
+achieve privileged execution of arbitrary code. I would again refer you to
+<a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent
+presentation on various Android root exploits</a> that have been or may still be
+used for this purpose.</p></div>
+<div class="paragraph"><p>However, none of these methods that I knew of could work on the Nook Tablet,
+which is probably one of the most locked-down Android ROMs out there:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Bootloader is locked.
+</p>
+</li>
+<li>
+<p>
+ADB is disabled, and cannot be enabled from the UI.
+</p>
+</li>
+<li>
+<p>
+Installing non-market apps (raw APKs) is disabled, and cannot be enabled from the UI.
+</p>
+</li>
+<li>
+<p>
+No access to Google Play / Android Market (or any Google Apps).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>This rules out 1) root APKs and 2) the majority of exploits out there that
+require executing commands over ADB. It means that one cannot run any code on
+the device that does not come from B&amp;N period.</p></div>
+<div class="paragraph"><p>But of course there was another way in. Somebody on XDA-Developers had
+discovered that the bootloader of the Nook Tablet supported booting off an
+Android system located in partition images stored on an external microSD card.
+This mechanism is probably used to repair corrupted system partitions by B&amp;N
+customer support.</p></div>
+<div class="paragraph"><p>The solution, then, is clear: we create dummy system partition images that,
+instead of booting an Android system, installs <code>su</code> and <code>Superuser.apk</code> into the
+"normal" Android system in internal flash memory. More concretely, I modified
+the system initialization file inside the initrd inside the boot partition image
+to invoke a custom script that copied the relevant files into the <code>system</code>
+partition in the internal flash memory.</p></div>
+<div class="paragraph"><p>I based my work on
+<a href="http://forum.xda-developers.com/showthread.php?t=1517513">bauwks&#8217;s 2nduboot
+images</a> and used <a href="https://gitorious.org/ac100/abootimg">abootimg</a> to unpack
+files in the boot partition image <code>boot.img</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Extracts files in the boot partition image into the current directory.</span>
+abootimg -x ./boot.img
+<span class="c"># Extract files in the initrd cpio archive into the folder ./ramdisk/</span>
+aboot-unpack-initrd ./initrd.img
+</pre></div></div></div>
+<div class="paragraph"><p>I changed the system initialization file <code>init.omap4430.rc</code> in the initrd to
+mount the system partition of the internal flash memory at <code>/foo</code> rather than
+<code>/system</code>, because later system initialization steps attempt to remount
+<code>/system</code> as read-only and so on, and for some reason I could not disable that
+behavior:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>on fs
+    mkdir /foo
+    mount ext4 /dev/block/platform/mmci-omap-hs.1/by-name/system /foo wait</code></pre>
+</div></div>
+<div class="paragraph"><p>I added the following to the system initialization file <code>init.rc</code> in the initrd to start my rooting script:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>service root_script /sbin/busybox ash /assets/run.sh
+    oneshot</code></pre>
+</div></div>
+<div class="paragraph"><p>My rooting script, which I place in the directory <code>assets</code> in the initrd,
+installs not only <code>su</code>, but also Google Play and other Google apps which are
+missing from the Nook Tablet ROM:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Install su and Superuser.apk</span>
+/sbin/busybox cp /assets/su /foo/bin/
+/sbin/busybox cp /assets/su /foo/xbin/
+/sbin/busybox chmod <span class="m">06755</span> /foo/xbin/su
+/sbin/busybox chmod <span class="m">06755</span> /foo/bin/su
+/sbin/busybox cp /assets/Superuser.apk /foo/app/
+
+<span class="c"># Install Busybox.</span>
+/sbin/busybox cp /sbin/busybox /foo/xbin/
+/sbin/busybox chmod <span class="m">06755</span> /foo/xbin/busybox
+
+<span class="c"># Install Google Play and other Google apps.</span>
+/sbin/busybox cp /assets/*.apk /foo/app/
+/sbin/busybox cp /assets/com.google.android.maps..xml /foo/etc/permissions/
+/sbin/busybox cp /assets/com.google.android.maps.jar /foo/framework/
+/sbin/busybox cp /assets/libvoicesearch.so /foo/lib/
+
+<span class="c"># Done.</span>
+/sbin/busybox mount -o ro,remount /foo
+</pre></div></div></div>
+<div class="paragraph"><p>In accordance with the above script, I had placed all assets in the <code>assets</code>
+directory inside the initrd, and the Busybox binary in <code>sbin</code> inside the initrd.
+With all changes done, I pack everything back into a new boot.img:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Build initrd cpio archive</span>
+abootimg-pack-initrd initrd.img.new
+<span class="c"># Build new boot.img using previously extracted components</span>
+abootimg --create boot.img.new -f ./bootimg.cfg -k ./zImage -r ./initrd.img.new
+</pre></div></div></div>
+<div class="paragraph"><p>Then I replace the <code>boot.img</code> on the SD card image with my <code>boot.img.new</code>, and
+the rooting method is done.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_final_words">Final words</h3>
+<div class="paragraph"><p>The actual process, of course, was much, much more painful. The Nook Tablet&#8217;s
+bootloader is very picky; some microSD cards just won&#8217;t work, there is a file
+size limit on <code>boot.img</code>, etc.. It was also after much frustration that I
+discovered the mount-to-<code>/foo</code> trick. And I could not even keep track of how
+many factory restores I had to perform on the device to undo bad modifications.
+But it was still a lot of fun, and the euphoria at the end and the feeling of
+accomplishment when reply posts started rolling in and random people were
+donating $5 as a token of their appreciation could not be overstated.</p></div>
+<div class="paragraph"><p>Good luck rooting!</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Nov 21, 2012
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html" rel="bookmark">
+      Carrier programming on CDMA Android phones
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2012-11-15T23:57:36-08:00">
+          Nov 15, 2012
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Have you ever wondered how CDMA phones are programmed to a specific carrier for
+voice calls, SMS and data?</p></div>
+<div class="paragraph"><p>In the U.S., all major CDMA carriers operate on the same frequencies, which
+means that there is no inherent difference in hardware between phones sold by
+any of them, and that theoretically there is no reason why a Verizon Wireless
+phone cannot work on Sprint or MetroPCS or Virgin Mobile or Boost Mobile, for
+example. Unlike GSM phones with swappable SIM&#8217;s, however, a CDMA phone sold in
+the U.S. is typically locked to a particular carrier; so how is that done?</p></div>
+<div class="paragraph"><p>I was recently able to figure out the answer to this question when I
+successfully flashed a CDMA phone from Sprint to Verizon (an exploit I may
+document separately some day). As I have not been able to find a compilation of
+this information elsewhere, I am writing up this document in the hope that it
+will help others with flashing phones or porting ROMs to different carriers.</p></div>
+<div class="paragraph"><p>Note that this information is based on my research with the Jelly Bean (4.1 &amp;
+4.2), ICS (4.0) and Gingerbread (2.3.4) versions of Android and two major U.S.
+CDMA carriers, Verizon Wireless and Sprint. Hence, it may not be applicable to
+other phones or carriers; in particular, the section about CDMA chips do not
+apply to CDMA phones that require a SIM card, such as some Verizon Wireless LTE
+phones. In such cases, your comments and insights are welcome.</p></div>
+<div class="paragraph"><p>Finally, a disclaimer: I have no formal understanding of any of the intricacies
+of CDMA technology and therefore cannot guarantee the correctness or accuracy of
+this information. Use it at your own risk. I cannot be held responsible for any
+damage or legal consequences resulting from or related to the application of
+this information.</p></div>
+<div class="paragraph"><p>At a high level, there are two places where carrier information is stored on a
+CDMA Android phone: inside the CDMA chip (radio), and in Android OS system
+files.</p></div>
+<div class="sect2">
+<h3 id="_programming_the_cdma_chip">Programming the CDMA chip</h3>
+<div class="paragraph"><p>Every CDMA phone (obviously) has a CDMA chip (radio). This chip is responsible
+for carrying out voice calls and transferring data over 2G/3G, and in order to
+do that, it needs to know stuff like what phone number it represents, what
+towers to connect to, what account name to bill the 3G connection to, etc.. All
+of this information is stored directly inside the chip (unless you have a
+Verizon Wireless LTE phone with a SIM card), and not on any file system
+controlled by the OS; this is why even after a factory reset (which formats the
+internal flash file system) these settings persist. It is (I believe) not
+possible to change the information stored on the CDMA chip from the OS itself;
+instead, carriers provide a special number (e.g., *228 for Verizon Wireless)
+that, when called, will transfer the information to the chip. This is typically
+called "programming" the phone by U.S. carriers.</p></div>
+<div class="paragraph"><p>So what information exactly is stored inside the CDMA chip? Here&#8217;s an incomplete
+list:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>MEID</strong>: Unique serial number of the phone. This is like the MAC address of an
+  ethernet / WiFi card in that it is the sole identifier of the CDMA chip. It is
+  what carriers use to connect phone calls, deliver SMS&#8217;s, blacklist stolen
+  phones, etc.. A fatal flaw, however, is that it is actually possible to modify
+  (flash) the MEID of many, but not all, CDMA chips. If you flash the MEID of
+  phone A onto phone B, the carrier network has no way of distinguishing between
+  phone A and phone B, and phone B is able to make and receive calls, send and
+  receive messages etc. as phone A. Unsurprisingly, this is illegal in many
+  countries, including the U.S., and as such I will not discuss it here.
+</p>
+</li>
+<li>
+<p>
+<strong>Phone / account numbers</strong>: known as MDN and MIN, these store the phone and
+  account numbers associated with the phone.
+</p>
+</li>
+<li>
+<p>
+<strong>2G/3G data account information</strong>: user names and passwords used to connect to
+  data services. Some carriers have stronger (harder to impersonate)
+  authentication systems than others; for instance, Verizon Wireless requires
+  two encrypted passwords and a secret key in the EFS file system on the CDMA
+  chip; Boost Mobile only requires two passwords; while MetroPCS simply accepts
+  the SPC/MSL code (see below) as the password. Note that 2G and 3G are
+  unrelated systems with independent authentication; a phone can have valid 3G
+  credentials and thus connect to 3G while being denied a 2G connection.
+</p>
+</li>
+<li>
+<p>
+<strong>PRL (Preferred Roaming List)</strong>: a list of towers the phone can connect to. This
+  is of course carrier- and location-specific. In some cases, updating the PRL
+  (by calling a special number) can improve reception and save battery when the
+  phone moves to a new geographical area; see
+  <a href="http://www.verizonwireless.com/care/popups/prl.html">Verizon Wireless&#8217;s
+  explanation</a>, for example.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Software such as CDMA Workshop, DFS, QXDM/QPST can be used to read / write
+information stored on a CDMA chip from a computer. Often, however, a 6-digit
+passcode known as the SPC code or the MSL code is required. This SPC/MSL code,
+again stored inside the CDMA chip, is either randomly assigned by the carrier
+(this is the case for Verizon Wireless and Sprint) or deterministically computed
+based on the MEID (MetroPCS). In the former case, there are a variety of tricks
+for retrieving the SPC/MSL code from the phone itself,; Google is your friend
+there. In the latter case, there are sites for computing the code from the MEID.
+Once it is known, the SPC/MSL code can be changed to any 6-digit number; some
+phones may even allow you to overwrite the SPC/MSL code without knowing it
+first.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_carrier_configuration_in_the_android_os">Carrier configuration in the Android OS</h3>
+<div class="paragraph"><p>To figure out what system files in the Android OS contain carrier information, I
+inspected source code and images of ROMS for the Samsung Galaxy Nexus (Sprint
+and Verizon Wireless), the Samsung Nexus S 4G (Sprint), the HTC Incredible
+(Verizon Wireless), and the Motorola Droid 3 (Verizon Wireless). I found three
+places that store carrier-specific information.</p></div>
+<div class="paragraph"><p>The first is <code>/system/build.prop</code>. Sprint phones contain the following lines:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ro.cdma.home.operator.numeric=310120
+ro.cdma.home.operator.alpha=Sprint</code></pre>
+</div></div>
+<div class="paragraph"><p>while Verizon Wireless phones contain the following lines instead:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ro.cdma.home.operator.numeric=310004
+ro.cdma.home.operator.alpha=Verizon
+ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83</code></pre>
+</div></div>
+<div class="paragraph"><p>These settings apply to phone calls. If one adopts the Sprint configuration on a
+Verizon Wireless phone, for example, the phone would ring very briefly on a
+call, but would be unable to actually make or receive calls. The
+<code>ro.cdma.homesystem</code> specifies a list of indices into the PRL that represent
+"home" or non-roaming networks.</p></div>
+<div class="paragraph"><p>The second configuration file is <code>eri.xml</code>, which is compiled into the file
+<code>/res/xml/eri.xml</code> inside the system package
+<code>/system/framework/framework-res.apk</code> on an Android system. This file tells the
+OS what it needs to display about a particular network (as an index into the
+PRL); for an example, take a look at
+<a href="https://android.googlesource.com/device/samsung/toroplus/<code>/refs/tags/android-4.2_r1/overlay/frameworks/base/core/res/res/xml/eri.xml">the
+stock +eri.xml</code> for the Sprint Galaxy Nexus</a> or
+<a href="https://github.com/CyanogenMod/android_device_samsung_toro/blob/ics/overlay/frameworks/base/core/res/res/xml/eri.xml">the
+CyanogenMod <code>eri.xml</code> for the Verizon Wireless Galaxy Nexus</a>. In particular,
+this file instructs the OS whether to consider a network (tower) to be roaming
+(so whether a roaming icon is displayed), and gives the name of the network
+(tower) to be shown in the UI. It must be stressed that this file <em>has no
+functional effect</em>; all it changes is how the OS displays information about
+networks. Since APK packages are just ZIP archives, it is easy to replace the
+<code>eri.xml</code> within to change roaming and name settings for networks; note,
+however, that the file inside the APK is not a plain text XML, but some compiled
+binary form; you may need to Google for the appropriate binary form pulled from
+another phone.</p></div>
+<div class="paragraph"><p>The last configuration file is <code>/system/etc/apns-conf.xml</code>. This file contains
+APN settings for 4G and MMS. See the stock APN settings file for the
+<a href="https://android.googlesource.com/device/samsung/crespo4g/+/refs/heads/jb-release/4g-apns-conf.xml">Sprint
+Nexus S 4G</a> or the
+<a href="https://github.com/CyanogenMod/android_vendor_cm/blob/ics/prebuilt/common/etc/apns-conf-cdma.xml">default
+CyanogenMod APN settings</a>.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Nov 15, 2012
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+<div>
+  <ul class="pager">
+    <li class="previous"><a href="http://seasonofcode.com/index2.html">&larr; Previous</a></li>
+    <li class="next"><a href="http://seasonofcode.com/index4.html">Next &rarr;</a></li>
+  </ul>
+</div>
+    </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

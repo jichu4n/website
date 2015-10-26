@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html" rel="bookmark">
+      DEBUG trap and PROMPT_COMMAND in Bash
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-06-08T11:50:00-07:00">
+          Jun 08, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/linux.html">Linux</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="sect2">
+<h3 id="_the_debug_trap">The DEBUG trap</h3>
+<div class="paragraph"><p>The DEBUG trap is an extremely handy feature of Bash. The idea is pretty
+straightforward: if you run</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nb">trap</span> <span class="s2">&quot;echo Hello&quot;</span> DEBUG
+</pre></div></div></div>
+<div class="paragraph"><p>then Bash will run <code>echo Hello</code> before it executes each subsequent command. For
+example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>~/Scratch $ ls
+Hello
+file1 file2
+~/Scratch $ echo Bye
+Hello
+Bye</code></pre>
+</div></div>
+<div class="paragraph"><p>A caveat, however, is that the DEBUG trap is triggered once per <em>simple</em>
+command; if you have command lists or control structures, the trap will be
+triggered multiple times. For example, using the setup above:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>~/Scratch $ echo 1 &amp;&amp; echo 2; echo 3
+Hello
+1
+Hello
+2
+Hello
+3
+~/Scratch $ if [ -e /etc/passwd ]; then echo "/etc/passwd exists"; fi
+Hello
+Hello
+/etc/passwd exists</code></pre>
+</div></div>
+<div class="paragraph"><p>What if we only want to run a command once per composite command, like the
+<a href="http://zsh.sourceforge.net/Doc/Release/Functions.html"><code>preexec</code></a> hook in
+<a href="http://en.wikipedia.org/wiki/Z_shell">zsh</a>?</p></div>
+<div class="paragraph"><p>Enter <code>PROMPT_COMMAND</code>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_prompt_command">PROMPT_COMMAND</h3>
+<div class="paragraph"><p>The idea behind <code>PROMPT_COMMAND</code> is also very simple: if you run</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nv">PROMPT_COMMAND</span><span class="o">=</span><span class="s2">&quot;echo Bye&quot;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>then Bash will execute <code>echo Bye</code> before it prints each subsequent prompt (i.e.,
+after it has finished executing the previous command line). For example, using
+the setup above:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>~/Scratch $ echo 1; echo 2
+Hello
+1
+Hello
+2
+Hello
+Bye</code></pre>
+</div></div>
+<div class="paragraph"><p>Note that the DEBUG trap is triggered again for <code>PROMPT_COMMAND</code>, in addition to
+the user-supplied commands.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_combining_the_debug_trap_and_code_prompt_command_code">Combining the DEBUG trap and <code>PROMPT_COMMAND</code></h3>
+<div class="paragraph"><p>By combining the DEBUG trap and <code>PROMPT_COMMAND</code>, we can now hack Bash to
+run some code right before and right after executing a full command. For
+example, try adding this to your <code>~/.bashrc</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># This will run before any command is executed.</span>
+<span class="k">function</span> PreCommand<span class="o">()</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$AT_PROMPT</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="k">return</span>
+  <span class="k">fi</span>
+  <span class="nb">unset </span>AT_PROMPT
+
+  <span class="c"># Do stuff.</span>
+  <span class="nb">echo</span> <span class="s2">&quot;Running PreCommand&quot;</span>
+<span class="o">}</span>
+<span class="nb">trap</span> <span class="s2">&quot;PreCommand&quot;</span> DEBUG
+
+<span class="c"># This will run after the execution of the previous full command line.  We don&#39;t</span>
+<span class="c"># want it PostCommand to execute when first starting a bash session (i.e., at</span>
+<span class="c"># the first prompt).</span>
+<span class="nv">FIRST_PROMPT</span><span class="o">=</span>1
+<span class="k">function</span> PostCommand<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">AT_PROMPT</span><span class="o">=</span>1
+
+  <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&quot;</span><span class="nv">$FIRST_PROMPT</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">unset </span>FIRST_PROMPT
+    <span class="k">return</span>
+  <span class="k">fi</span>
+
+  <span class="c"># Do stuff.</span>
+  <span class="nb">echo</span> <span class="s2">&quot;Running PostCommand&quot;</span>
+<span class="o">}</span>
+<span class="nv">PROMPT_COMMAND</span><span class="o">=</span><span class="s2">&quot;PostCommand&quot;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>The result:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>~/Scratch $ echo 1; echo 2 &amp;&amp; echo 3
+Running PreCommand
+1
+2
+3
+Running PostCommand</code></pre>
+</div></div>
+<div class="paragraph"><p>This gives rise to some neat applications, such as
+<a href="https://github.com/jichuan89/bash-command-timer">a command timer script</a> I wrote that
+prints out the execution time of each command: <div align="center"><img
+src="/assets/files/bash_command_timer_screenshot.gif" style="max-width: 657px;
+width: 100%"></div>
+Please feel free to
+<a href="https://github.com/jichuan89/bash-command-timer">check it out on GitHub</a> :)</p></div>
+<div class="paragraph"><p>Happy Bash hacking!</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Jun 08, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/linux.html">Linux</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html" rel="bookmark">
+      How X Window Managers Work, And How To Write One (Part I)
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-04-10T01:08:00-07:00">
+          Apr 10, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,            <a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Window managers are one of the core components of the modern Linux/BSD desktop.
+It is not an exaggeration to say that they define to a large degree our
+day-to-day user experience, as they are responsible for deciding how individual
+windows look, move around, react to input, and organize themselves. Hence,
+almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager">the
+first X window manager</a>, we still argue over the merits of different window
+managers, and new window managers continue to reinvent how we interact with our
+digital world.</p></div>
+<div class="paragraph"><p>In this series of posts, I hope to demystify how window managers work, and how
+you might go about writing one yourself.</p></div>
+<div class="paragraph"><p>I will be quoting quite heavily from the seminal
+<a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib
+Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O&#8217;Reilly.
+Despite its age, it remains amazingly relevant and is the best available
+introductory text to the internals of X, which has not changed over the past two
+decades as much as you&#8217;d think. Since you could buy the book plus shipping for
+less than the price of a cup of coffee, I strongly recommend it to anyone
+interested in learning more about X. In addition, its chapter 16 also covers the
+basics of window management.</p></div>
+<div class="sect2">
+<h3 id="_the_role_of_an_x_window_manager">The Role of an X Window Manager</h3>
+<div class="paragraph"><p>Let&#8217;s start with an examination of the role of the window manager in a modern
+Linux/BSD desktop environment.</p></div>
+<div class="sect3">
+<h4 id="_the_rights_of_x_window_managers">The Rights of X Window Managers</h4>
+<div class="paragraph"><p>Unlike other windowing systems such as Microsoft Windows or Mac OS X, X does not
+dictate a window manager or how a window manager should behave. This decision is
+to thank for the wild diversity of X window managers we see today.</p></div>
+<div class="quoteblock">
+<div class="content">X is somewhat unusual in that it does not mandate a particular type of window
+manager. Its developers have tried to make X itself as free of window management
+or user interface policy as possible.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §1.2.3
+</div></div>
+<div class="paragraph"><p>In fact, it does not even require a window manager to be present at all:</p></div>
+<div class="quoteblock">
+<div class="content">Unlike citizens, the window manager has rights but not responsibilities.
+Programs must be prepared to cooperate with any type of window manager or with
+none at all [&#8230;].</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §1.2.3
+</div></div>
+<div class="paragraph"><p>This is in stark contrast to the integrative approach of other GUI systems. On
+Mac OS X and <a href="https://unity.ubuntu.com/">Unity</a>, for example, an application could
+not possibly function without the window manager, as the latter is responsible
+for rendering a part of the application&#8217;s interface (e.g., menus).</p></div>
+</div>
+<div class="sect3">
+<h4 id="_the_responsibilities_of_x_window_managers">The Responsibilities of X Window Managers</h4>
+<div class="paragraph"><p>As you probably already know, X operates in a server-client model. An X <em>server</em>
+controls one or more physical display devices as well as input devices (mouse,
+keyboard, etc.). An application that wants to interact with these devices
+assumes the role of an X <em>client</em>. An X server and its clients may run on the
+same computer, in which case they communicate via
+<a href="http://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different
+computers, in which case they communicate through TCP/IP.</p></div>
+<div class="paragraph"><p><strong>A window manager is a regular X client.</strong> It doesn&#8217;t have any superuser
+privileges or keys to kernel backdoors; it is a normal user process that is
+allowed by the X server to call a set of special APIs. X ensures that no more
+than one window manager is running at any given point by denying a client access
+to these APIs if another client currently has access. The first client to
+attempt to access these APIs always succeeds.</p></div>
+<div class="paragraph"><p>A window manager communicates with the windows it manages through two X
+mechanisms: properties and events. We will discuss these in detail in later
+sections, but the takeaway is that the communication happens through the X
+server, not directly between the window manager and other applications.</p></div>
+<div class="paragraph"><p>This is illustrated by the following diagram:</p></div>
+<div class="paragraph" id="role-of-a-window-manager"><p><div align="center"><img
+src="https://docs.google.com/drawings/d/1Kv8kYF3IeWnsMSuF04goBPi1WudQV3llyK4R5lu_ips/pub?w=554&h=402"
+alt="Role of a Window Manager"
+style="max-width: 554px; width: 100%;"></div></p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_an_x_window_manager_manages_windows">How an X Window Manager Manages Windows</h3>
+<div class="paragraph"><p>Let&#8217;s now dive into the details of how a window manager does its job.</p></div>
+<div class="sect3">
+<h4 id="_the_window_hierarchy">The Window Hierarchy</h4>
+<div class="paragraph"><p>When we think about modern GUIs, we usually use the term <em>widgets</em> or <em>controls</em>
+to refer to UI elements such as buttons, scrollbars, or text boxes, and the term
+<em>windows</em> to refer to a container for such widgets that has its own name and
+can be independently moved around, closed, resized, etc..</p></div>
+<div class="paragraph"><p>X, however, was designed to be as low-level as possible. The fundamental UI
+model that X provides, upon which UI frameworks such as
+<a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an
+<em>hierarchy of rectangles</em>. In X terminology, all top level windows, UI elements,
+etc., are <em>windows</em>. A <em>window</em>, then, is any rectangular area that is an unit
+of user interaction and/or graphic display.</p></div>
+<div class="paragraph"><p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the
+<em>root window</em>, a virtual, invisible window that has the same size as the screen,
+and is always present. Top level windows are direct children of the root
+window. UI elements within a top level window are descendants of that window.</p></div>
+<div class="paragraph"><p><div align="center"><img src="/assets/files/wm_sample_dialog.png" alt="An
+example X window" style="max-width: 402px; width: 100%;"></div></p></div>
+<div class="paragraph"><p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a>
+desktop environment. The entire dialog is an X <em>window</em>. Each UI element in the
+dialog box - the magnifying glass icon, the text box, the green down arrow, the
+Close and Launch buttons, and the icons int those buttons - is also an X
+<em>window</em>.</p></div>
+<div class="paragraph"><p>The whole dialog window is a child of the root window. The magnifying glass
+icon, the text box, and the Close and Launch buttons are children of the dialog
+window. The green down arrow is a child of the text box window, and the icons in
+the Close and Launch buttons are children of those buttons respectively.</p></div>
+<div class="paragraph"><p>An important thing to note about X windows is that a child window is clipped to
+the boundaries of its parent:</p></div>
+<div class="quoteblock">
+<div class="content">A child may be positioned partially or completely outside its parent window, but
+output to the child is displayed and input received only in the area where the
+child overlaps with the parent.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §2.2.2
+</div></div>
+<div class="paragraph"><p>For example, if we increase the width of the text box in the dialog above by
+2x without changing the size of the dialog box, the portion of the text box that
+extends outside of the dialog box will become invisible, and clicking on it will
+not send an event to the text box.</p></div>
+<div class="paragraph"><p>A window manager manages top level windows - that is, direct children of the
+root window.</p></div>
+</div>
+<div class="sect3">
+<h4 id="substructure-redirection">Substructure Redirection</h4>
+<div class="paragraph"><p>In the absence of a window manager, when an application wants to reconfigure a
+window - move, resize, show/hide, etc. - its request is directly processed by
+the X server, and that&#8217;s the end of that. A window manager, however, needs to
+intercept these requests. For example, a window manager may need to know that a
+new top level window has been created and displayed, in order to draw window
+decorations around it. It may also need to know that an existing top level
+window has been resized, in order to update the window decorations to reflect
+the change.</p></div>
+<div class="paragraph"><p>A window manager can intercept such requests using a mechanism called
+<em>substructure redirection</em>.</p></div>
+<div class="paragraph"><p>This is how substructure redirection works. Suppose we have a window <em>W</em>, which
+has a child window <em>C</em>. If a program <em>M</em> registers for the substructure
+redirection of some types of requests on <em>W</em>, a matching request to modify <em>C</em>
+will <em>not</em> be executed by the X server.  Instead, the X server redirects this
+request to the program <em>M</em>, which can do whatever it wants with the request,
+including granting the request with modifications or denying the request. More
+formally,</p></div>
+<div class="quoteblock">
+<div class="content">The <em>structure</em>, as the term is used here, is the location, size, stacking
+order, border width, and mapping status of a window. The <em>substructure</em> is all
+these statistics about the children of a particular window. This is the complete
+set of information about screen layout that the window manager might need in
+order to implement its policy. <em>Redirection</em> means that an event is sent to the
+client selecting redirection (usually the window manager), and the original
+structure−changing request is not executed.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §16.2
+</div></div>
+<div class="paragraph"><p>Note that only direct children of a window <em>W</em> is affected by substructure
+redirection on <em>W</em>, not any windows further down the hierarchy.</p></div>
+<div class="paragraph"><p>This gets interesting when we consider substructure redirection on the root
+window:</p></div>
+<div class="quoteblock">
+<div class="content">When the window manager selects <code>SubstructureRedirectMask</code> on the root window,
+an attempt by any other client to change the configuration of any child of the
+root window will fail. Instead an event describing the layout change request
+will be sent to the window manager. The window manager then reads the event and
+determines whether to honor the request, modify it, or deny it completely. If it
+decides to honor the request, it calls the routine that the client called that
+triggered the event with the same arguments. If it decides to modify the
+request, it calls the same routine but with modified arguments.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §16.2
+</div></div>
+<div class="paragraph"><p>In other words, a window manager must register for substructure redirection on
+the root window, which causes all creation, destruction, reconfiguration etc. of
+top level windows - which are direct children of the root window - to be routed
+to the window manager. This is the magic hook into the X server that window
+managers rely on to do their job.</p></div>
+<div class="paragraph"><p>This relationship is shown in the following diagram:
+<div align="center"><img
+src="https://docs.google.com/drawings/d/1ykdjiN-__H5-aWjic73c23K6g2MguBKLgwh9C2n-I5k/pub?w=602&amp;h=273"
+alt="Role of a Window Manager"
+style="max-width: 602px; width: 100%;"></div></p></div>
+<div class="paragraph"><p>Finally, the X server only allows one running program to register for
+substructure redirection on any given window at any given time. An attempt to
+register for substructure redirection on a window will fail if another X client
+has already done the same on the same window, and has not unregistered,
+disconnected from the X server, or crashed. Since all window managers must
+register for substructure redirection on the root window, this latter acts as a
+locking mechanism that prevents two or more window managers from running
+simultaneously on the same screen.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_reparenting">Reparenting</h4>
+<div class="paragraph"><p>In the example dialog box above, we see a title bar with, for example, little
+buttons for closing, maximizing, and minimizing the window. These UI elements
+are not created by the application, but by the window manager, via a process
+known as <em>reparenting</em> or <em>framing</em>:</p></div>
+<div class="quoteblock">
+<div class="content">
+<div class="paragraph"><p>A window manager can decorate [top level] windows on the screen with titlebars
+and place little boxes on the titlebar with which the window can be moved or
+resized. This is only one possibility [&#8230;].</p></div>
+<div class="paragraph"><p>To do this, the window manager creates a child of the root somewhat larger than
+the top level window of the application. Then it calls
+<a href="http://manpages.ubuntu.com/manpages/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>,
+specifying the top level window of the application as <code><em>win</em></code> and the new parent
+[window it just created] as <code><em>parent</em></code>. <code><em>win</em></code> and all its descendants will
+then be descendants of <code><em>parent</em></code>.</p></div>
+</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §16.3
+</div></div>
+<div class="paragraph"><p>In other words, if we were to run an X application without a window manager
+present, the top level window of the application would be a direct child of the
+root window. With a window manager running, however, the top level window of the
+application may be <em>reparented</em> by the window manager; it becomes a child of a
+frame window which is created by the window manager, and which is itself a child
+of the root window. The window manager can add other UI elements inside this
+frame window alongside the application&#8217;s top level window as it sees fit.</p></div>
+<div class="paragraph"><p>Therefore, I had lied to you just now: the dialog box above is actually a child
+of a frame created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along
+with the other UI elements for window management.</p></div>
+<div class="paragraph"><p>Reparenting is what allows different window managers to draw different window
+decorations, and thereby achieve a consistent look-and-feel across windows.
+However, there are also window managers that do <em>not</em> reparent at all: these are
+called <em>non-reparenting</em> window managers. There are two reasons why a window
+manager would not want to reparent:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+If a window manager does not draw window decorations around top level
+   windows , it obviously has no need to reparent them. Examples:
+   <a href="http://xmonad.org">xmonad</a>, <a href="http://dwm.suckless.org">dwm</a>.
+</p>
+</li>
+<li>
+<p>
+Compositing window managers do not always need to reparent windows; we will
+   discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true
+   for all compositing window managers, however; for example, GNOME&#8217;s default
+   window manager, <a href="http://github.com/GNOME/mutter/">Mutter</a>, is a reparenting
+   comopositing window manager.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Let&#8217;s now consider substructure redirection in the context of reparenting. When
+a top level window <em>W</em> is first shown (<em>map</em>'ped in X jargon), the window manager
+is notified because it has registered for substructure redirection on the root
+window, and a top level window is a direct child of the root window. It then
+creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes a child of <em>F</em>, which
+itself is a child of the root window. But since now <em>W</em> is no longer a direct
+child of the root window, the window manager will no longer be able to intercept
+changes to <em>W</em>!</p></div>
+<div class="paragraph"><p>Therefore, a reparenting window manager must also register for substructure
+redirection on the frames it creates.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_compositing">Compositing</h4>
+<div class="paragraph"><p>Compositing window managers are a relatively new development. Compositing
+support in X  was added in late 2004, a full decade after the last edition of
+<a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib
+Programming Manual</a>. The first compositing window managers,
+<a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early
+2005.</p></div>
+<div class="paragraph"><p>So, what exactly does a compositing window manager do?</p></div>
+<div class="paragraph"><p>In our discussion above on substructure redirection and reparenting, we saw how
+a window manager can respond to various requests for a top level window - to
+display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But
+we didn&#8217;t talk about how to deal with what&#8217;s <em>inside</em> the top level windows.</p></div>
+<div class="paragraph"><p>Indeed, from the perspective of the window manager, top level windows are black
+boxes; they each manage their own descendant windows (UI elements), perhaps
+through a framework such as <a href="http://www.gtk.org">GTK+</a> or
+<a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere
+there. The application that creates a top level window is responsible for
+rendering and handling events for any descendant windows (UI elements), and does
+so directly through X. This is shown in <a href="#role-of-a-window-manager">the first graph above</a>.</p></div>
+<div class="paragraph"><p>As the computing power of graphics hardware grew, so did people&#8217;s expectations
+from their window managers. With hardware acceleration, it became possible to
+build much more computationally intensive user interfaces, such as the
+(in)famous Desktop Cube in <a href="http://www.compiz.org">Compiz</a>:
+<div align="center"><img src="/assets/files/wm_compiz.png"
+style="max-width: 640px; width: 100%;"></div>
+or the Shift Switcher:
+<div align="center"><img src="/assets/files/wm_compiz_2.png"
+style="max-width: 640px; width: 100%;"></div>
+Let&#8217;s take a moment to think about how we can implement an interface such as the
+Shift Switcher above. When the user triggers our wonderful interface, we need
+to:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Render each top level window and all its descendant windows (UI elements) to
+   an off-screen, in-memory buffer, instead of directly to the hardware.
+</p>
+</li>
+<li>
+<p>
+Transform (rotate, contort, etc.) each buffer according to our design.
+</p>
+</li>
+<li>
+<p>
+Composite the transformed buffers into a final buffer along with background
+   and anything else we need to display.
+</p>
+</li>
+<li>
+<p>
+Create an <em>overlay</em> window that covers the entire screen and hides all other
+   windows.
+</p>
+</li>
+<li>
+<p>
+Render the final buffer into the overlay window.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>There are a number of challenges:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+We must be able to retrieve the contents of top level windows. However, top
+  level windows render directly through X.
+</p>
+</li>
+<li>
+<p>
+We need to update our interface in real time as the contents of the
+  top level windows change. However, top level windows render directly through
+  X and do not notify window managers when their contents change.
+</p>
+</li>
+<li>
+<p>
+A top level window <em>A</em> may normally overlap with another top level window
+  <em>B</em>, and thus a portion of <em>B</em> isn&#8217;t currently visible. Our interface,
+  however, must capture the <em>full</em> rendering of <em>A</em> and <em>B</em>, regardless of
+  overlapping regions.
+</p>
+</li>
+<li>
+<p>
+The compositing process is computationally intensive and requires hardware
+  acceleration to function adequately.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>It is clear that none of this is possible without heavy cooperation from the X
+server. Enter
+<a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">the
+Composite extension</a>:</p></div>
+<div class="quoteblock">
+<div class="content">Many user interface operations would benefit from having pixel contents of
+window hierarchies available without respect to sibling and antecedent clipping.
+In addition, placing control over the composition of these pixel contents into a
+final screen image in an external application will enable a flexible system for
+dynamic application content presentation.</div>
+<div class="attribution">
+&#8212; X Composite Extension
+</div></div>
+<div class="paragraph"><p>The Composite extension provides is a mechanism to request the X server not to
+render a specific window and its descendants directly to hardware, but to a
+special buffer maintained by the X server, and do so without the normal clipping
+and overlap computations. This buffer can then be read and used by the client
+that made the request.</p></div>
+<div class="paragraph"><p>In fact, that&#8217;s exactly what a compositing window manager does: it will ask X to
+render each top level window to an off-screen, in-memory buffer and composite
+the results into an overlay window. And it needs to do this not just for fancy
+interfaces, but also to achieve effects like translucency, window animations,
+soft shadows, and the like.</p></div>
+<div class="paragraph"><p>This is illustrated in the following diagram:
+<div align="center"><img
+src="https://docs.google.com/drawings/d/1eK05Uzlr2ix4NpsiEBUu42IwZ3DEjX8MvYTiE3-chqA/pub?w=573&amp;h=509"
+style="max-width: 573px; width: 100%;"></div></p></div>
+<div class="paragraph"><p>Let&#8217;s end this section by considering whether a compositing window manager
+should reparent top level windows.</p></div>
+<div class="paragraph"><p>Since a compositing window manager knows the size and position of all top level
+windows, it&#8217;s trivial for it to just draw window decorations during compositing
+into the overlay window using graphics operations, without ever creating an
+actual frame window and reparenting. Some compositing window managers do operate
+this way.</p></div>
+<div class="paragraph"><p>On the other hand, a window manager may need to support both a compositing and a
+non-compositing mode, for compatibility with older or unsupported graphics
+hardware. In this case, it needs to implement reparenting and frame windows for
+non-compositing mode anyway, so additionally implementing drawing window
+decorations using graphics operations becomes redundant. This is why some other
+compositing window managers still choose to reparent.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ready_for_some_code">Ready For Some Code?</h3>
+<div class="paragraph"><p>If you&#8217;ve read everything up to this point, you&#8217;re probably holding back the
+urge to cry out "<em>Enough talk - show me some code!</em>" I don&#8217;t blame you.</p></div>
+<div class="paragraph"><p>In <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">the
+next installment</a> in this series, I will walk you through a basic
+implementation of a reparenting, non-compositing window manager. Impatient?
+Check out the code <a href="https://github.com/jichuan89/basic_wm">on GitHub</a> or browse
+the cross-referenced code <a href="http://code.openhub.net/project?pid=&amp;ipid=568869">on
+Open Hub</a>.</p></div>
+<div class="paragraph"><p><strong>Next chapter:</strong>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>How X
+Window Managers Work, And How To Write One (Part II)</strong></a></p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Apr 10, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,          <a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html" rel="bookmark">
+      The Most Popular Fonts On The Web: A Study
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-04-04T23:04:00-07:00">
+          Apr 04, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p><link rel="image_src"
+href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/embed/oimg?id=1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc&oid=65057078&zx=ey1naahah70j">
+If you&#8217;ve ever worked on a web site, you already know that choosing the right
+fonts is one of the most important aesthetic decisions in the design of a site.
+But, like all aesthetic decisions, it is a highly subjective.</p></div>
+<div class="paragraph"><p>I decided to try to bring a little bit of objectivity into the equation by
+finding out, empirically, what fonts the most popular sites on the web are using
+today.</p></div>
+<div class="sect2">
+<h3 id="_methodology">Methodology</h3>
+<div class="paragraph"><p>I wrote a Python program that crawls the front page of the 100,000 most popular
+web sites according to <a href="http://www.alexa.com/topsites">Alexa&#8217;s top sites list</a>.
+It parses the HTML using
+<a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>, and parses all
+in-line and linked CSS stylesheets using <a href="http://cthedot.de/cssutils/">cssutils</a>.
+It then looks for <code>font</code> and <code>font-family</code> rules in the CSS rules, and stores
+the normalized form of each font in those rules in order. The result is kept in
+a <a href="https://sqlite.org">SQLite</a> database for analysis.</p></div>
+<div class="paragraph"><p>This all sounds pretty straightforward, but in fact it took me two weeks to
+build a crawler that doesn&#8217;t choke on all the crazy crap people throw at
+browsers. I will write up some of the more interesting cases in a separate post.</p></div>
+<div class="paragraph"><p>The final crawl success rate was about 96%. The size of all HTML and stylesheets
+downloaded was about 30GB.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_the_most_popular_first_choice_fonts">The Most Popular First-Choice Fonts</h3>
+<div class="paragraph"><p>First, let&#8217;s take a look at the first-choice/most preferred fonts, i.e., the
+ones that appear first in <code>font-family</code> rules. These fonts most closely
+represent the intention of the web site designers without compatibility
+compromises.</p></div>
+<div class="paragraph"><p>For each font, we calculate the number of distinct web sites that have at least
+one CSS <code>font</code> or <code>font-family</code> rule that lists the font as the first choice.
+This means that if a site has two rules, one listing Arial and another
+listing Times, it will count towards both. Thus, the numbers add up to much
+higher than the total number of sites.</p></div>
+<div class="paragraph"><p>Without further ado, here&#8217;s the breakdown of the top fonts on the web:
+<div align="center"><iframe
+height=620
+style="max-width: 610px; width: 100%"
+src="//docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=65057078"
+seamless frameborder=0 scrolling=yes></iframe></div>
+(The chart is interactive - hover/click to see actual numbers.)</p></div>
+<div class="paragraph"><p>A couple of observations:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Sans-serif fonts dominate the web.</strong> The top 25 fonts list only includes 4
+  serif fonts, compared to 16 sans-serif fonts. The most popular serif-font,
+  Georgia, ranks #4 on the list with about 20% of sites.
+</p>
+</li>
+<li>
+<p>
+<strong>Monospace fonts get no love.</strong> Most sites don&#8217;t bother
+  specifying a custom monospace font; the most common monospace font
+  specification just uses the browser default (12%). The most popular monospace
+  font, Monaco, is featured on 7.2% of sites. Both of these are quite high, in
+  fact, considering that we only crawl the front page of these sites.
+</p>
+</li>
+<li>
+<p>
+<strong>The most popular fonts of each family:</strong>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Sans-serif:</strong> Arial (#1, 62%)
+</p>
+</li>
+<li>
+<p>
+<strong>Serif:</strong> Georgia (#4, 20%)
+</p>
+</li>
+<li>
+<p>
+<strong>Monospace:</strong> Monaco (#11, 7.2%)
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>Old Microsoft fonts still reign over the web.</strong> The top non-Microsoft font,
+  Helvetica Neue, ranks #6 with an impressive 18% of top web sites.
+</p>
+</li>
+<li>
+<p>
+<strong><a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a> is awesome</strong>. About
+  4.6% of the top 100K sites already use it for universal icons.
+</p>
+</li>
+<li>
+<p>
+<strong>The Chinese web is on the rise.</strong> 3 out of the top 25 fonts are Chinese fonts,
+  compared to 21 Latin fonts (and 1 symbol font). No other scripts made their
+  way into the list.
+</p>
+</li>
+</ul></div>
+<div class="sect3">
+<h4 id="_what_if_we_considered_8230">What If We Considered&#8230;</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Fonts in all positions</strong>: (<a href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=940843634">graph</a>) not much difference.
+</p>
+</li>
+<li>
+<p>
+<strong>The top 1,000 web sites only</strong>: (<a href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=1208179553">graph</a>) even more Arial (#1, 74%).
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_most_popular_heading_fonts">The Most Popular Heading Fonts</h3>
+<div class="paragraph"><p>Next, let&#8217;s look at first-choice fonts used in headings or titles.</p></div>
+<div class="paragraph"><p>I used a really crude metric to determine whether a CSS rule matches a heading:
+whether the CSS selector is for an <code>H1</code>&#8230;<code>H6</code> tag or contains the strings
+"heading" or "title". While this finds only a subset of actual headings, it is
+not a bad approximation as it matches rules on about 58% of the top 100,000
+web sites.</p></div>
+<div class="paragraph"><p>Let&#8217;s start with the graph:
+<div align="center"><iframe
+height=620
+style="max-width: 610px; width: 100%"
+src="//docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=1659247262"
+seamless frameborder=0 scrolling=yes></iframe></div>
+Observations:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Header fonts are more diverse.</strong> While Microsoft fonts still reign supreme, a
+  number or more exotic fonts are also on the list. In terms of distribution,
+  there&#8217;s a much longer tail. It may be a sign that designers pay a lot
+  more attention to fonts used in headings.
+</p>
+</li>
+<li>
+<p>
+<strong>Serif fonts are more popular in headings than elsewhere.</strong> While Arial still
+  claims to top spot with 27.31% of sites, the top serif font, Georgia, rises to
+  2nd place with 9% of sites.
+</p>
+</li>
+<li>
+<p>
+<strong>No monospace fonts in headings.</strong> Not surprising.
+</p>
+</li>
+<li>
+<p>
+Among Chinese fonts, <strong>宋体 is more commonly used for body text, while 雅黑 (or
+  Yahei) is more commonly used for heading text.</strong>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_concluding_thoughts">Concluding Thoughts</h3>
+<div class="paragraph"><p>Arial and friends are the <a href="http://screenfont.ca/fonts/today/interim/">most</a>
+<a href="http://pxlnv.com/blog/guaahhhhhhh-come-on/">hated</a>
+<a href="http://www.prepressure.com/fonts/interesting/most-hated">fonts</a>
+<a href="http://enjoytherandom.com/hipster-hitler-hates-arial/">ever</a>. Quoting
+<a href="http://www.marksimonson.com/notebook/view/the-scourge-of-arial">The Scourge of
+Arial</a>:</p></div>
+<div class="quoteblock">
+<div class="content">Despite its pervasiveness, a professional designer would rarely - at least for
+the moment - specify Arial.</div>
+<div class="attribution">
+</div></div>
+<div class="paragraph"><p>And yet, Arial is still the default font on the vast majority of sites on
+the web, followed closely by its friends. Why?</p></div>
+<div class="paragraph"><p>Quoting <a href="http://www.64notes.com/design/stop-helvetica-arial/">Stop Using Arial &amp;
+Helvetica</a>:</p></div>
+<div class="quoteblock">
+<div class="content">Some people actually have a reason to use them but most use it mindlessly - just
+because everyone else does. Often, no thought is given to design of the site,
+let alone typography.</div>
+<div class="attribution">
+</div></div>
+<div class="paragraph"><p>This is pretty sad. Paraphrasing
+<a href="http://www.dtelepathy.com/blog/graveyard/stop-using-lame-fonts">Stop Using Lame
+Fonts</a>, a good font stack has the potential to really make a site design shine,
+and it&#8217;s a shame web designers aren&#8217;t exploiting this opportunity.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_caveats">Caveats</h3>
+<div class="paragraph"><p>There are a couple of caveats with this dataset.</p></div>
+<div class="paragraph"><p>First, I am only surveying the landing page of each site. For many sites,
+notably those whose main interface is hidden behind a login (Facebook, Evernote,
+etc.), we may not be finding the styles that matter most to users. However, I
+figured since it would be pretty poor design to build a landing page that is
+aesthetically inconsistent with the rest of the site, it is not very likely that
+the font selection on the landing page would be too different from the fonts
+used elsewhere on the site. Of course, without creating fake accounts on these sites,
+we have no way to verify.</p></div>
+<div class="paragraph"><p>The numbers are not weighted by prominence on the web pages. One could argue
+that the font of the main body text on a page should carry more weight than that
+of the tiny disclaimer text at the bottom which no one reads. It would be tricky
+to determine what the right weight function is though.</p></div>
+<div class="paragraph"><p>The numbers are not weighted by the prominence of the web sites. For example, we
+could make it so that Google&#8217;s use of Arial would get more weight than some
+random obscure site&#8217;s use of Arial, as Google&#8217;s choice impacts many more users
+and was probably the result of deliberation by a team of expert designers.
+Again, it&#8217;s not entirely obvious how the weights should be assigned.</p></div>
+<div class="paragraph"><p>I am only looking at CSS rules in <code>&lt;style&gt;</code> tags or linked stylesheets. That
+means I am ignoring <code>style="&#8230;"</code> attributes in tags, <code>&lt;font&gt;</code> elements, or
+dynamically assigned fonts (i.e., through JavaScript). I would be surprised if
+this turns out to be a big loss though.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_next_steps">Next Steps</h3>
+<div class="paragraph"><p>I can think of quite a few other useful questions one might find the answer to
+from this dataset:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+What are the most common font pairings?
+</p>
+</li>
+<li>
+<p>
+What are the popular choices for heading fonts, given that I&#8217;ve chosen font X
+  as my body text font?
+</p>
+</li>
+<li>
+<p>
+What are the most common fonts on news sites/forums/productivity web
+  apps/social media sites?
+</p>
+</li>
+<li>
+<p>
+Is there any correlation between font choice and site popularity?
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>What do you think?</p></div>
+<div class="paragraph"><p>Please feel free to <a href="https://www.mediafire.com/?xqrk731716v078l">download</a> the top
+100 first-choice fonts as a CSV file.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Apr 04, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/python-multiprocessing-and-exceptions.html" rel="bookmark">
+      Python: Multiprocessing and Exceptions
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-03-10T22:54:00-07:00">
+          Mar 10, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/python.html">Python</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/python-multiprocessing-and-exceptions.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Python&#8217;s
+<a href="http://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a> module
+provides an interface for spawning and managing child processes that is familiar
+to users of the <a href="http://docs.python.org/3/library/threading.html"><code>threading</code></a>
+module. One problem with the <code>multiprocessing</code> module, however, is that
+<strong>exceptions in spawned child processes don&#8217;t print stack traces</strong>:</p></div>
+<div class="paragraph"><p>Consider the following snippet:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">somelib</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">somelib</span><span class="o">.</span><span class="n">somefunc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+  <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)))</span>
+</pre></div></div></div>
+<div class="paragraph"><p>and the following error message:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Traceback (most recent call last):
+  File "test.py", line 9, in &lt;module&gt;
+    print(pool.map(f, range(5)))
+  File "/usr/lib/python3.3/multiprocessing/pool.py", line 228, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/usr/lib/python3.3/multiprocessing/pool.py", line 564, in get
+    raise self._value
+ZeroDivisionError: division by zero</code></pre>
+</div></div>
+<div class="paragraph"><p>What triggered the <code>ZeroDivisionError</code>? Did <code>somelib.somefunc(x)</code> return 0, or
+did some other computation in <code>somelib.somefunc()</code> cause the exception? You will
+notice that we only see the stack trace of the main process, whereas the stack
+trace of the code that actually triggered the exception in the worker processes
+is not shown at all.</p></div>
+<div class="paragraph"><p>Luckily, Python provides a handy
+<a href="http://docs.python.org/3/library/traceback.html"><code>traceback</code></a> module for working
+with exceptions and stack traces. All we have to do is catch the exception
+inside the worker process, and print it. Let&#8217;s change the code above to read:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">somelib</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">somelib</span><span class="o">.</span><span class="n">somefunc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Caught exception in worker thread (x = </span><span class="si">%d</span><span class="s">):&#39;</span> <span class="o">%</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="c"># This prints the type, value, and stack trace of the</span>
+    <span class="c"># current exception being handled.</span>
+    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+    <span class="k">print</span><span class="p">()</span>
+    <span class="k">raise</span> <span class="n">e</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+  <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)))</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Now, if you run the same code again, you will see something like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Caught exception in worker thread (x = 0):
+Traceback (most recent call last):
+  File "test.py", line 7, in f
+    return 1 / somelib.somefunc(x)
+  File "/path/to/somelib.py", line 2, in somefunc
+    return 1 / x
+ZeroDivisionError: division by zero
+
+Traceback (most recent call last):
+  File "test.py", line 16, in &lt;module&gt;
+    print(pool.map(f, range(5)))
+  File "/usr/lib/python3.3/multiprocessing/pool.py", line 228, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/usr/lib/python3.3/multiprocessing/pool.py", line 564, in get
+    raise self._value
+ZeroDivisionError: division by zero</code></pre>
+</div></div>
+<div class="paragraph"><p>The printed traceback reveals <code>somelib.somefunc()</code> to be the actual culprit.</p></div>
+<div class="paragraph"><p>In practice, you may want to save the exception and the stack trace somewhere.
+For that, you can use the
+<a href="http://docs.python.org/3/library/traceback.html#traceback.print_exc"><code>file</code></a>
+argument of
+<a href="http://docs.python.org/3/library/traceback.html#traceback.print_exc"><code>print_exc</code></a>
+in combination with
+<a href="http://docs.python.org/3/library/io.html?highlight=stringio#io.StringIO"><code>StringIO</code></a>.
+For example:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">io</span>  <span class="c"># Import StringIO in Python 2</span>
+<span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">Work</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">exc_buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">exc_buffer</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="s">&#39;Uncaught exception in worker process:</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span>
+        <span class="n">exc_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+    <span class="k">raise</span> <span class="n">e</span>
+</pre></div></div></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Mar 10, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/python.html">Python</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/python-multiprocessing-and-exceptions.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/python-multiprocessing-and-exceptions.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html" rel="bookmark">
+      C++: Access Specifiers and Overriding
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-03-01T00:19:00-08:00">
+          Mar 01, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/c.html">C++</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Consider the following C++ code:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">A</span> <span class="p">{</span>
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">B</span><span class="o">:</span> <span class="k">public</span> <span class="n">A</span> <span class="p">{</span>
+ <span class="k">private</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;B::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">C</span><span class="o">:</span> <span class="k">public</span> <span class="n">B</span> <span class="p">{</span>
+ <span class="k">protected</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">B</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="n">B</span><span class="p">();</span>
+  <span class="c1">// This is NOT legal:</span>
+  <span class="c1">//   b-&gt;f();</span>
+  <span class="n">C</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">C</span><span class="p">();</span>
+  <span class="c1">// Nor is this:</span>
+  <span class="c1">//   c-&gt;f();</span>
+
+  <span class="c1">// Why is this legal?</span>
+  <span class="n">A</span> <span class="o">*</span><span class="n">a1</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="n">a1</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>  <span class="c1">// Prints &quot;B::f()&quot;</span>
+  <span class="n">A</span> <span class="o">*</span><span class="n">a2</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+  <span class="n">a2</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>  <span class="c1">// Prints &quot;C::f()&quot;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>My first reaction, and perhaps yours too, is that this code shouldn&#8217;t be legal.
+The base class <code>A</code> defines a public pure virtual method <code>f()</code> that must be
+overridden in derived classes. But the <code>f()</code> implementations in both derived
+classes are non-public; <code>B</code> and <code>C</code> actually <em>don&#8217;t</em> conform to the interface of
+the base class (unless casted to the base class), as shown in the first block in
+<code>main</code>.</p></div>
+<div class="paragraph"><p>It turns out, however, that in C++ a method in a derived class overrides a
+method in a base class <strong>regardless of the access specifiers of the two methods</strong>.
+In other words, it does not matter whether the method is declared in the base
+class as <code>public</code>, <code>protected</code>, or <code>private</code>, nor does it matter how the method
+is declared in the derived class; as long as they have the same signature, the
+method in the inherit class always overrides the method in the base class:</p></div>
+<div class="quoteblock">
+<div class="content">If a virtual member function <code>vf</code> is declared in a class <code>Base</code> and in a class
+<code>Derived</code>, derived directly or indirectly from <code>Base</code>, a member function <code>vf</code>
+with <strong>the same name</strong>, <strong>parameter-type-list</strong> (8.3.5), <strong>cv-qualification</strong>, and
+<strong>ref- qualifier</strong> (or absence of same) as <code>Base::vf</code> is declared, then
+<code>Derived::vf</code> is also virtual (whether or not it is so declared) and <strong>it
+<em>overrides</em> <code>Base::vf</code></strong>.</div>
+<div class="attribution">
+&#8212; C++ standard §10.3.2
+</div></div>
+<div class="paragraph"><p>(Emphasis mine.)</p></div>
+<div class="paragraph"><p>You will notice that access specifiers&#8201;&#8212;&#8201;<code>public</code>, <code>private</code>, etc.&#8201;&#8212;&#8201;are
+specifically omitted from the list of criteria for determining an override
+relationship. Thus, the above code works exactly as if both <code>B::f()</code> and
+<code>C::f()</code> had been declared <code>public</code>.</p></div>
+<div class="paragraph"><p>Another consequence of this rather bizarre omission is that the language
+actually allows you to <code>public</code>-ly inherit from a base class, and yet <em>not</em>
+conform to its public interface unless casted to the base class, as illustrated
+in the first block in <code>main</code> above. Or, from the derived class&#8217;s perspective,
+the language allows clients to legally access methods explicitly marked
+<code>private</code> or <code>protected</code> through a cast to the base class.</p></div>
+<div class="paragraph"><p>So, accidental omission or well thought-out design decision? Any ideas?</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Mar 01, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/c.html">C++</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+<div>
+  <ul class="pager">
+    <li class="previous"><a href="http://seasonofcode.com/index.html">&larr; Previous</a></li>
+    <li class="next"><a href="http://seasonofcode.com/index3.html">Next &rarr;</a></li>
+  </ul>
+</div>
+    </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

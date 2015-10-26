@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Compilation benchmark - Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+    <link href="http://seasonofcode.com/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Categories Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <link rel="canonical" href="http://seasonofcode.com/posts/compilation-benchmark.html">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+  <section id="content" class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/compilation-benchmark.html" rel="bookmark">
+      Compilation benchmark
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-09T13:30:37-08:00">
+          Feb 09, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/compilation-benchmark.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Yesterday I set up a small LAN in my room behind a Linksys router Julian kindly lent me. I did a simple benchmark just now to figure out how I should best be utilizing my resources, and the benchmark was building the same <code>cross-arm-linux-gnueabi-gcc-base</code> package described in <a href="?p=45">an earlier post</a>. The results are:</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<thead>
+<tr>
+<th align="left" valign="top"> Host                           </th>
+<th align="left" valign="top"> CPU                              </th>
+<th align="left" valign="top"> RAM </th>
+<th align="left" valign="top"> Real Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Lenovo Thinkpad T400 (Longfox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Core 2 Duo T9400 @ 2.53GHz</p></td>
+<td align="left" valign="top"><p class="table">2GB</p></td>
+<td align="left" valign="top"><p class="table">6m35s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">IBM Thinkpad X40 (Profox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Pentium M LV @ 1.2GHz</p></td>
+<td align="left" valign="top"><p class="table">1GB</p></td>
+<td align="left" valign="top"><p class="table">17m43s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Dell GX270 (Busyfox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Pentium 4 @ 3.0GHz</p></td>
+<td align="left" valign="top"><p class="table">1GB</p></td>
+<td align="left" valign="top"><p class="table">13m03s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Lenovo Thinkpad X60 (Babyfox)</p></td>
+<td align="left" valign="top"><p class="table">Intel Core Duo T2400 @ 1.83GHz</p></td>
+<td align="left" valign="top"><p class="table">1GB</p></td>
+<td align="left" valign="top"><p class="table">10m55s</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Of course, the benchmark is fairly unscientific; this is one particular job and
+I did not account for the fact that, for instance, Longfox, Profox and Babyfox
+were all running a full DE simultaneously. Since I am interested in finding out
+how these machines compare to each other when doing similar tasks to this build
+process, however, I think this is good enough for me.</p></div>
+<div class="paragraph"><p>Interestingly, Busyfox&#8217;s 3.0GHz P-4 was only ~1.5 times faster than Profox&#8217;s
+1.2GHz P-M; this ratio was also verified by the compilation of
+<code>cross-arm-linux-gnueabi-binutils</code> which took about 4m on Busyfox and about 6m
+on Profox. It would seem that the P-M is indeed considerably "faster" per clock
+cycle than the P-4; the exact ratio is (3.0/1.5)/1.2=1.67, or 67% "faster" per
+clock cycle.</p></div>
+<div class="paragraph"><p>On the other hand, on a closer inspection of Longfox, it appears that there is
+no concurrency in the building process; the source files are compiled serially
+and only one core appears to be used at any given time. This would mean that if
+both cores were fully leveraged the T9400 @ 2.53GHz should theoretically be
+~3.96 times faster than the P-4 at 3.0GHz; this means (3.0*3.96)/2.53=4.70 or
+470% percent "faster" per clock cycle, which marks a huge improvement.</p></div>
+<div class="paragraph"><p>Currently, since the speed difference between Profox and Busyfox is really
+negligeable from my perspective, and since Profox sits nicely on my desk and
+Busyfox is huge, loud, and screen-less anyway, I will keep Busyfox as a file
+server, store the NITDroid development files on Busyfox and mount them over
+NFSv4 on Profox. The reason for the latter is that the X40&#8217;s use a bizarre hard
+drive form factor that makes their drives really hard to replace, and the
+particular one in Profox has been clicking ominously for a while. This was what
+prompted me to buy Babyfox, an X60, as my main portable laptop a few months ago.
+Anyway to minimize heat dissipation I keep the CPU on Busyfox throttled at the
+minimum clock rate, a pathetic 375MHz (<code>sudo cpufreq-set -f 375MHz</code>), because
+the <code>ondemand</code> cpufreq governor does not work on <code>p4-clockmod</code>, which is the
+cpufreq module for P-4&#8217;s. Power control on the hard drive is set with <code>sudo
+hdparm -B1 -S120 /dev/sda</code>. I did test writes on Profox and it would seem that,
+with 11MB/s write speeds regardless of throttling settings or hdparm settings,
+network bandwith rather than CPU clock speed or hard drive power control appears
+to be the bottleneck. For my particular application though, this is really good
+enough.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 09, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/compilation-benchmark.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/compilation-benchmark.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article><div id="author-box">
+  <table id="author-box-content">
+    <tr>
+      <td class="hidden-xs">
+        <a rel="author" href="https://plus.google.com/115396580584561637180">
+          <div id="author-box-image"
+            style="background-image: url(//graph.facebook.com/593659245/picture?type=large)"></div>
+        </a>
+      </td>
+      <td id="author-box-info">
+        <p id="author-box-info-title">
+          About the author
+        </p>
+        <p id="author-box-info-bio">
+          
+I am a software engineer by profession and a passionate technology geek in
+my free time.
+
+        </p>
+        <p id="author-box-info-links">
+          Check out
+          <a href="/pages/about.html">my bio</a>, or find me on
+          <a href="https://plus.google.com/115396580584561637180">Google+</a>.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- Comment BEGIN -->
+<p></p><p></p>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'cjix';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<!-- Comment END -->
+  </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

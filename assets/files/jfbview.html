@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+ "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<title>man man page</title>
+<meta name="generator" content="roffit">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">JFBView - PDF and image viewer for the Linux framebuffer. <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">jfbview [OPTIONS] FILE <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">JFBView is a PDF and image viewer for the Linux framebuffer. It is very fast and has a number of advanced and unique features. <a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">
+<p class="level0"><span Class="bold">--help</span>, <span Class="bold">-h</span> Shows help message. 
+<p class="level0"><span Class="bold">--fb=</span>/path/to/dev Specifies the path to the output framebuffer device. The default is /dev/fb0. 
+<p class="level0"><span Class="bold">--page=</span>n, <span Class="bold">-p</span> n Go to page n on start up. 
+<p class="level0"><span Class="bold">--zoom=</span>n, <span Class="bold">-z</span> n Set initial zoom to be n percent. For example, "-z 75" sets zoom to 75%. 
+<p class="level0"><span Class="bold">--zoom_to_fit</span> Start in zoom-to-fit mode. 
+<p class="level0"><span Class="bold">--zoom_to_width</span> Start in zoom-to-width mode. This is the default. 
+<p class="level0"><span Class="bold">--rotation=</span>n, <span Class="bold">-r</span> n Set initial rotation to n degrees clockwise. 
+<p class="level0"><span Class="bold">--format=image</span> Forces the program to treat the input file as an image. 
+<p class="level0"><span Class="bold">--format=pdf</span> Forces the program to treat the input file as a PDF. By default, the file format is detected based on its extension. If the file does not have a ".pdf" (case is ignored) extension, this will force JFBView to load it as a PDF. 
+<p class="level0"><span Class="bold">--cache_size=</span>n Selects the number of pages to cache. JFBView has a in-memory cache of pages rendered at a particular zoom and rotation setting. However, you may wish to adjust the cache size down if this cache is consuming too much memory, or you may wish to adjust the cache size up for increased performance. If you have an older machine with limited RAM you may want to set it close to zero. <a name="KEY"></a><h2 class="nroffsh">KEY BINDINGS - MAIN VIEW</h2>
+<p class="level0">JFBView has a set of vi-like key bindings and many commands can be prefixed with a number. These are shown with a [n] prefix below. 
+<p class="level0"><span Class="bold">q</span> Quit. 
+<p class="level0"><span Class="bold">Tab</span> Open <span Class="bold">OUTLINE VIEW</span> (table of contents, i.e., TOC; see below). 
+<p class="level0"><span Class="bold">/</span> Open <span Class="bold">SEARCH VIEW</span> (see below). 
+<p class="level0">[n]<span Class="bold">arrow keys</span>, [n]<span Class="bold">h</span>/<span Class="bold">l</span>/<span Class="bold">k</span>/<span Class="bold">j</span> Move left/right/up/down. 
+<p class="level0">[n]<span Class="bold">Space</span>/<span Class="bold">^F</span> Move n screens down. Default is 1. 
+<p class="level0">[n]<span Class="bold">^B</span> Move n screens up. Default is 1. 
+<p class="level0">[n]<span Class="bold">PageDown</span>/<span Class="bold">PageUp</span> Go down / up n pages. Default is 1. 
+<p class="level0">[n]<span Class="bold">=</span>/<span Class="bold">+</span> Zoom in n times. Default is 1. 
+<p class="level0">[n]<span Class="bold">-</span> Zoom out n times. Default is 1. 
+<p class="level0"><span Class="bold">s</span> Zoom to screen width. 
+<p class="level0"><span Class="bold">a</span> Zoom to fit. 
+<p class="level0"><span Class="bold">HOME</span>/<span Class="bold">END</span> Go to first / last page in document. 
+<p class="level0">[n]<span Class="bold">G</span>/<span Class="bold">g</span> Go to page n. Default for <span Class="bold">G</span> is last page; default for <span Class="bold">g</span> is first page. 
+<p class="level0">[n]<span Class="bold">m</span> Save current position, zoom and rotation in document in bookmark n. The default is 0. 
+<p class="level0">[n]<span Class="bold">`</span> Restore saved position, zoom and rotation in bookmark n. The default is 0. 
+<p class="level0">[n]<span Class="bold">r</span> Set rotation to n degrees. Default is 0. 
+<p class="level0">[n]<span Class="bold">&gt;</span>/<span Class="bold">.</span> Rotate 90 degrees clockwise n times. Default is 1. 
+<p class="level0">[n]<span Class="bold">&lt;</span>/<span Class="bold">,</span> Rotate 90 degrees counter-clockwise n times. Default is 1. 
+<p class="level0">[n]<span Class="bold">z</span> Set zoom to n percent. 
+<p class="level0"><span Class="bold">e</span> Reload current file from disk. <a name="KEY"></a><h2 class="nroffsh">KEY BINDINGS - OUTLINE VIEW</h2>
+<p class="level0">The outline view is toggled by the <span Class="bold">Tab</span> key. 
+<p class="level0"><span Class="bold">Tab</span>/<span Class="bold">q</span>/<span Class="bold">Esc</span> Toggle outline view. 
+<p class="level0"><span Class="bold">j</span>/<span Class="bold">Down</span>, <span Class="bold">k</span>/<span Class="bold">Up</span> Move down or up. 
+<p class="level0"><span Class="bold">PageDown</span>/<span Class="bold">PageUp</span> Go down / up one page. 
+<p class="level0"><span Class="bold">Enter</span>/<span Class="bold">g</span> Go to selected item. 
+<p class="level0"><span Class="bold">Space</span> Fold/unfold selected item. 
+<p class="level0"><span Class="bold">zR</span> Unfold all. 
+<p class="level0"><span Class="bold">zM</span> Fold all. <a name="KEY"></a><h2 class="nroffsh">KEY BINDINGS - SEARCH VIEW - SEARCH TEXT</h2>
+<p class="level0">
+<p class="level0"><span Class="bold">Esc</span> Toggle search view. 
+<p class="level0"><span Class="bold">Enter</span> Start search. 
+<p class="level0"><span Class="bold">Tab</span>/<span Class="bold">Down</span>/<span Class="bold">PageDown</span> Go to search results. <a name="KEY"></a><h2 class="nroffsh">KEY BINDINGS - SEARCH VIEW - SEARCH RESULTS</h2>
+<p class="level0">
+<p class="level0"><span Class="bold">q</span>/<span Class="bold">Esc</span> Toggle search view. 
+<p class="level0"><span Class="bold">Space</span>/<span Class="bold">Enter</span>/<span Class="bold">g</span> Go to selected item. 
+<p class="level0"><span Class="bold">j</span>/<span Class="bold">Down</span>, <span Class="bold">k</span>/<span Class="bold">Up</span> Move down or up. 
+<p class="level0"><span Class="bold">PageDown</span>/<span Class="bold">PageUp</span> Go down / up one page. 
+<p class="level0"><span Class="bold">Tab</span>/<span Class="bold">/</span> Go to search text. <a name="BUGS"></a><h2 class="nroffsh">BUGS</h2>
+<p class="level0">This software is still experimental and thus likely contains lots of bugs. You are welcome to submit any bugs or improvement suggestions to the author. <a name="AUTHOR"></a><h2 class="nroffsh">AUTHOR</h2>
+<p class="level0">Chuan Ji (ji@chu4n.com) <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

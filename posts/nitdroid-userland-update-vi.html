@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>NITDroid userland update VI - Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+    <link href="http://seasonofcode.com/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Categories Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <link rel="canonical" href="http://seasonofcode.com/posts/nitdroid-userland-update-vi.html">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+  <section id="content" class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-userland-update-vi.html" rel="bookmark">
+      NITDroid userland update VI
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-10-25T03:19:00-07:00">
+          Oct 25, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/nitdroid-userland-update-vi.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I have been working on getting wireless to work on the N810 under Gingerbread. So far I have not been successful, but I have made a lot of progress along the way.</p></div>
+<div class="paragraph"><p>I started out basically follwing <a href="http://blog.linuxconsulting.ro/2010/04/porting-wifi-drivers-to-android.html">this great article on porting WiFi drivers to Android</a>. For some reason, if I compiled the driver for the wireless chip on the N810 (<code>p54spi</code>) directly into the kernel, the kernel refuses to boot. Therefore, I compiled it as a module, grabbed the firmware required from <a href="http://linuxwireless.org/en/users/Drivers/p54">the official site of the p54 driver</a> and add the corresponding changes to <code>Android.mk</code> and <code>BoardConfig.mk</code> as described in the <a href="http://blog.linuxconsulting.ro/2010/04/porting-wifi-drivers-to-android.html">aforementioned article</a>.</p></div>
+<div class="paragraph"><p>But, as <a href="http://blog.linuxconsulting.ro/2010/04/porting-wifi-drivers-to-android.html">the same article</a> explains, Android, rather than using the normal control functions in wpa_supplicant like a normal Linux system, expects wireless drivers to implement Android&#8217;s custom set of commands directly on top of SIOCSIWPRIV, and relies on those instead. I do not understand the rationale behind such a design decision; why reinvent the wheel when the wireless connectivity mechanism on modern Linux systems work just fine? But of course it is pointless arguing with Android, and I adapted the patch found in <a href="http://boundarydevices.com/blogs/android-wlan-the-rest-of-the-story">this article on porting WiFi drivers for the Nitrogen-E</a> (which is a <a href="http://boundarydevices.com/NitrogenE.php">a Freescale i.MX51 / Cortex-A8 based board</a>.</p></div>
+<div class="paragraph"><p>Unfortunately that was not enough either. As Android still thrashed around and refused to talk to the wireless chip, I discovered a line in my logcat output saying something like <code>ioctl[SIOCSIWPRIV] (cscan): -1</code>. Researching further lead me to <a href="http://randomshit.dreamhosters.com/TouchPad/Drivers/Wifi/AR6003Android.pdf">this PDF</a> (also archived <a href="/assets/files/nitdroid/AR6003Android.pdf">here</a>) which explained that Gingerbread added on top of Froyo <em>yet another</em> custom command over SIOCSIWPRIV, combo scan, that a driver needs to implement. In fact, Gingerbread will <em>only</em> use combo scanning to scan for APs when using WEXT. A patch for this is found <a href="https://github.com/CyanogenMod/android_external_wpa_supplicant_6/commit/cd46450b1674b462dcc278ae2f015d8449e5c158">here</a> or, less elegantly, by removing combo scanning from the WEXT driver of wpa_supplicant as in <a href="https://gitorious.org/picopc-android-gingerbread/external-wpa_supplicant_6/commit/5f5c50d722eedaedd75c1698b79f464310ce6478?format=patch">this patch</a>.</p></div>
+<div class="paragraph"><p>In addition, I had to patch libhardware_legacy to use <code>wlan0</code> instead of <code>sta</code> (seriously, why is that hard-coded in?) which libhardware_legacy uses as the interface name to determine the state of the wpa_supplicant process. The patch is as follows:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="gh">diff --git a/wifi/wifi.c b/wifi/wifi.c</span>
+<span class="gh">index 3f8708d..9d9d89c 100644</span>
+<span class="gd">--- a/wifi/wifi.c</span>
+<span class="gi">+++ b/wifi/wifi.c</span>
+<span class="gu">@@ -60,7 +60,7 @@ static char iface[PROPERTY_VALUE_MAX];</span>
+ #ifndef WIFI_FIRMWARE_LOADER
+ #define WIFI_FIRMWARE_LOADER           &quot;&quot;
+ #endif
+<span class="gd">-#define WIFI_TEST_INTERFACE            &quot;sta&quot;</span>
+<span class="gi">+#define WIFI_TEST_INTERFACE            &quot;wlan0&quot;</span>
+
+ #define WIFI_DRIVER_LOADER_DELAY       1000000
+</pre></div></div></div>
+<div class="paragraph"><p>Otherwise, I get errors like</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Unable to open connection to supplicant on "sta": No such file or directory</code></pre>
+</div></div>
+<div class="paragraph"><p>After all this effort, the device is able to scan correctly and does give a list of APs in Android GUI. From the logcat output I can see that it is also able to successfully associate with the AP:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>I/wpa_supplicant( 1205): Trying to associate with 1c:17:d3:fc:db:79 (SSID='Purple Help' freq=2412 MHz)
+D/wpa_supplicant( 1205): Cancelling scan request
+D/wpa_supplicant( 1205): WPA: clearing own WPA/RSN IE
+D/wpa_supplicant( 1205): Automatic auth_alg selection: 0x1
+D/wpa_supplicant( 1205): WPA: clearing AP WPA IE
+D/wpa_supplicant( 1205): WPA: clearing AP RSN IE
+D/wpa_supplicant( 1205): WPA: clearing own WPA/RSN IE
+D/wpa_supplicant( 1205): No keys have been configured - skip key clearing
+D/wpa_supplicant( 1205): wpa_driver_wext_set_drop_unencrypted
+D/wpa_supplicant( 1205): State: SCANNING -&gt; ASSOCIATING
+I/wpa_supplicant( 1205): CTRL-EVENT-STATE-CHANGE id=-1 state=3 BSSID=1c:17:d3:fc:db:79
+D/wpa_supplicant( 1205): wpa_driver_wext_set_operstate: operstate 0-&gt;0 (DORMANT)
+D/wpa_supplicant( 1205): WEXT: Operstate: linkmode=-1, operstate=5
+D/wpa_supplicant( 1205): wpa_driver_wext_associate
+D/wpa_supplicant( 1205): wpa_driver_wext_set_psk
+D/wpa_supplicant( 1205): Setting authentication timeout: 10 sec 0 usec
+D/wpa_supplicant( 1205): EAPOL: External notification - EAP success=0
+D/wpa_supplicant( 1205): EAPOL: External notification - EAP fail=0
+D/wpa_supplicant( 1205): EAPOL: External notification - portControl=ForceAuthorized
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=0 ifi_flags=0x1003 ([UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+D/wpa_supplicant( 1205): Wireless event: cmd=0x8b06 len=8
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=0 ifi_flags=0x1003 ([UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+D/wpa_supplicant( 1205): Wireless event: cmd=0x8b04 len=12
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=0 ifi_flags=0x1003 ([UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+D/wpa_supplicant( 1205): Wireless event: cmd=0x8b1a len=19
+D/wpa_supplicant( 1205): CMD: AP_SCAN 1
+D/wpa_supplicant( 1205): ap_scan = 1
+V/WifiMonitor(  925): Event [Trying to associate with 1c:17:d3:fc:db:79 (SSID='Purple Help' freq=2412 MHz)]
+V/WifiMonitor(  925): Event [CTRL-EVENT-STATE-CHANGE id=-1 state=3 BSSID=1c:17:d3:fc:db:79]
+D/wpa_supplicant( 1205): CMD: DRIVER SCAN-PASSIVE
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd SCAN-PASSIVE len = 4096
+D/wpa_supplicant( 1205): SCAN-PASSIVE not yet supported
+V/WifiStateTracker(  925): Changing supplicant state: SCANNING ==&gt; ASSOCIATING
+D/wpa_supplicant( 1205): CMD: STATUS
+D/wpa_supplicant( 1205): CMD: DRIVER RSSI-APPROX
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd RSSI-APPROX len = 4096
+D/wpa_supplicant( 1205): &gt;&gt;&gt;. DRIVER EMULATE RSSI
+E/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd failed (-1): RSSI
+D/wpa_supplicant( 1205): CMD: DRIVER LINKSPEED
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd LINKSPEED len = 4096
+D/wpa_supplicant( 1205): Link Speed command
+E/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd failed (-1): LINKSPEED
+D/wpa_supplicant( 1205): EAPOL: disable timer tick
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+D/wpa_supplicant( 1205): Wireless event: cmd=0x8c08 len=50
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+D/wpa_supplicant( 1205): Wireless event: cmd=0x8b15 len=20
+D/wpa_supplicant( 1205): Wireless event: new AP: 1c:17:d3:fc:db:79
+D/wpa_supplicant( 1205): Association info event
+D/wpa_supplicant( 1205): WPA: clearing AP WPA IE
+D/wpa_supplicant( 1205): WPA: clearing AP RSN IE
+D/wpa_supplicant( 1205): State: ASSOCIATING -&gt; ASSOCIATED
+I/wpa_supplicant( 1205): CTRL-EVENT-STATE-CHANGE id=0 state=4 BSSID=1c:17:d3:fc:db:79
+D/wpa_supplicant( 1205): wpa_driver_wext_set_operstate: operstate 0-&gt;0 (DORMANT)
+D/wpa_supplicant( 1205): WEXT: Operstate: linkmode=-1, operstate=5
+V/WifiMonitor(  925): Event [CTRL-EVENT-STATE-CHANGE id=0 state=4 BSSID=1c:17:d3:fc:db:79]
+V/WifiStateTracker(  925): Changing supplicant state: ASSOCIATING ==&gt; ASSOCIATED
+D/wpa_supplicant( 1205): Associated to a new BSS: BSSID=1c:17:d3:fc:db:79
+I/wpa_supplicant( 1205): Associated with 1c:17:d3:fc:db:79
+D/wpa_supplicant( 1205): WPA: Association event - clear replay counter
+D/wpa_supplicant( 1205): WPA: Clear old PTK
+D/wpa_supplicant( 1205): EAPOL: External notification - portEnabled=0
+D/wpa_supplicant( 1205): EAPOL: External notification - portValid=0
+D/wpa_supplicant( 1205): EAPOL: External notification - portEnabled=1
+D/wpa_supplicant( 1205): EAPOL: SUPP_PAE entering state S_FORCE_AUTH
+D/wpa_supplicant( 1205): EAPOL: SUPP_BE entering state IDLE
+D/wpa_supplicant( 1205): Cancelling authentication timeout
+D/wpa_supplicant( 1205): State: ASSOCIATED -&gt; COMPLETED
+I/wpa_supplicant( 1205): CTRL-EVENT-STATE-CHANGE id=0 state=7 BSSID=00:00:00:00:00:00
+I/wpa_supplicant( 1205): CTRL-EVENT-CONNECTED - Connection to 1c:17:d3:fc:db:79 completed (auth) [id=0 id_str=]
+D/wpa_supplicant( 1205): wpa_driver_wext_set_operstate: operstate 0-&gt;1 (UP)
+D/wpa_supplicant( 1205): WEXT: Operstate: linkmode=-1, operstate=6
+D/wpa_supplicant( 1205): Cancelling scan request
+D/wpa_supplicant( 1205): RTM_NEWLINK: operstate=1 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+D/wpa_supplicant( 1205): RTM_NEWLINK, IFLA_IFNAME: Interface 'wlan0' added
+V/WifiMonitor(  925): Event [Associated with 1c:17:d3:fc:db:79]
+V/WifiMonitor(  925): Event [CTRL-EVENT-STATE-CHANGE id=0 state=7 BSSID=00:00:00:00:00:00]
+V/WifiMonitor(  925): Event [CTRL-EVENT-CONNECTED - Connection to 1c:17:d3:fc:db:79 completed (auth) [id=0 id_str=]]
+V/WifiStateTracker(  925): Changing supplicant state: ASSOCIATED ==&gt; COMPLETED
+V/WifiStateTracker(  925): New network state is CONNECTED
+D/wpa_supplicant( 1205): CMD: STATUS
+D/wpa_supplicant( 1205): CMD: STATUS
+D/wpa_supplicant( 1205): CMD: DRIVER RSSI-APPROX
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd RSSI-APPROX len = 4096
+D/wpa_supplicant( 1205): &gt;&gt;&gt;. DRIVER EMULATE RSSI
+D/wpa_supplicant( 1205): CMD: DRIVER LINKSPEED
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd LINKSPEED len = 4096
+D/wpa_supplicant( 1205): Link Speed command
+D/wpa_supplicant( 1205): CMD: DRIVER BTCOEXMODE 1
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd BTCOEXMODE 1 len = 4096
+D/wpa_supplicant( 1205): BTCOEXMODE not yet supported
+D/wpa_supplicant( 1205): CMD: DRIVER GETPOWER
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd GETPOWER len = 4096
+D/wpa_supplicant( 1205): GETPOWER not yet supported
+D/wpa_supplicant( 1205): CMD: DRIVER POWERMODE 1
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd POWERMODE 1 len = 4096
+D/wpa_supplicant( 1205): POWERMODE not yet supported
+D/WifiStateTracker(  925): DHCP request started</code></pre>
+</div></div>
+<div class="paragraph"><p>However, DHCP appears not to function and Android unloads the driver and reloads it only to restart the scan &#8594; associate &#8594; DHCP query cycle. The error message is</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>E/WifiStateTracker(  925): DHCP request failed: Timed out waiting for dhcpcd to start
+D/wpa_supplicant( 1205): CMD: DRIVER POWERMODE 0
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd POWERMODE 0 len = 4096
+D/wpa_supplicant( 1205): POWERMODE not yet supported
+D/wpa_supplicant( 1205): CMD: DRIVER BTCOEXMODE 2
+D/wpa_supplicant( 1205): wpa_driver_priv_driver_cmd BTCOEXMODE 2 len = 4096
+D/wpa_supplicant( 1205): BTCOEXMODE not yet supported
+D/wpa_supplicant( 1205): CMD: DISCONNECT
+D/wpa_supplicant( 1205): wpa_driver_wext_disassociate
+D/wpa_supplicant( 1205): No keys have been configured - skip key clearing
+D/wpa_supplicant( 1205): State: COMPLETED -&gt; DISCONNECTED
+I/wpa_supplicant( 1205): CTRL-EVENT-STATE-CHANGE id=0 state=8 BSSID=00:00:00:00:00:00
+D/wpa_supplicant( 1205): wpa_driver_wext_set_operstate: operstate 1-&gt;0 (DORMANT)
+D/wpa_supplicant( 1205): WEXT: Operstate: linkmode=-1, operstate=5
+D/wpa_supplicant( 1205): EAPOL: External notification - portEnabled=0
+D/wpa_supplicant( 1205): EAPOL: SUPP_PAE entering state DISCONNECTED</code></pre>
+</div></div>
+<div class="paragraph"><p>Given that it is 7AM, that I have class and homework due, and that I have been working on this for the past 10 hours I will have to figure this out next time&#8230;</p></div>
+<div class="paragraph"><p>My full patch for wpa_supplicant 0.6.x, as found in the <code>external/wpa_supplicant_6</code> directory in the Android source tree, is as follows:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="gh">diff --git a/wpa_supplicant/Android.mk b/wpa_supplicant/Android.mk</span>
+<span class="gh">index d3ab3dd..eb23985 100644</span>
+<span class="gd">--- a/wpa_supplicant/Android.mk</span>
+<span class="gi">+++ b/wpa_supplicant/Android.mk</span>
+<span class="gu">@@ -32,6 +32,11 @@ ifeq ($(TARGET_ARCH),arm)</span>
+ L_CFLAGS += -mabi=aapcs-linux
+ endif
+
+<span class="gi">+# Disable combo scan</span>
+<span class="gi">+ifeq ($(BOARD_WEXT_NO_COMBO_SCAN),true)</span>
+<span class="gi">+L_CFLAGS += -DWEXT_NO_COMBO_SCAN</span>
+<span class="gi">+endif</span>
+<span class="gi">+</span>
+ # To ignore possible wrong network configurations
+ L_CFLAGS += -DWPA_IGNORE_CONFIG_ERRORS
+
+<span class="gh">diff --git a/wpa_supplicant/src/drivers/driver_wext.c b/wpa_supplicant/src/drivers/driver_wext.c</span>
+<span class="gh">index bc5efff..36f28b5 100644</span>
+<span class="gd">--- a/wpa_supplicant/src/drivers/driver_wext.c</span>
+<span class="gi">+++ b/wpa_supplicant/src/drivers/driver_wext.c</span>
+<span class="gu">@@ -253,7 +253,8 @@ int wpa_driver_wext_set_ssid(void *priv, const u8 *ssid, size_t ssid_len)</span>
+                if (ssid_len)
+                        ssid_len++;
+        }
+<span class="gd">-       iwr.u.essid.length = ssid_len;</span>
+<span class="gi">+       drv-&gt;ssid_len = iwr.u.essid.length = ssid_len;</span>
+<span class="gi">+        os_strlcpy(drv-&gt;ssid, buf, sizeof(drv-&gt;ssid));</span>
+
+        if (ioctl(drv-&gt;ioctl_sock, SIOCSIWESSID, &amp;iwr) &lt; 0) {
+                wpa_printf(MSG_ERROR, &quot;ioctl[SIOCSIWESSID]&quot;);
+<span class="gu">@@ -969,6 +970,8 @@ void * wpa_driver_wext_init(void *ctx, const char *ifname)</span>
+        drv-&gt;errors = 0;
+        drv-&gt;driver_is_started = TRUE;
+        drv-&gt;skip_disconnect = 0;
+<span class="gi">+        drv-&gt;ssid_len = 0;</span>
+<span class="gi">+        os_memset(drv-&gt;ssid, 0, sizeof(drv-&gt;ssid));</span>
+ #endif
+        wpa_driver_wext_finish_drv_init(drv);
+
+<span class="gu">@@ -2559,12 +2562,207 @@ static int wpa_driver_priv_driver_cmd( void *priv, char *cmd, char *buf, size_t</span>
+        ret = ioctl(drv-&gt;ioctl_sock, SIOCSIWPRIV, &amp;iwr);
+
+        if (ret &lt; 0) {
+<span class="gi">+#ifdef ANDROID</span>
+<span class="gi">+            if (os_strcasecmp(cmd, &quot;RSSI&quot;) == 0) {</span>
+<span class="gi">+                struct iwreq wrq;</span>
+<span class="gi">+                struct iw_statistics stats;</span>
+<span class="gi">+                signed int rssi;</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG, &quot;&gt;&gt;&gt;. DRIVER EMULATE RSSI &quot;);</span>
+<span class="gi">+                wrq.u.data.pointer = (caddr_t) &amp;stats;</span>
+<span class="gi">+                wrq.u.data.length = sizeof(stats);</span>
+<span class="gi">+                /* Clear updated flag */</span>
+<span class="gi">+                wrq.u.data.flags = 1;</span>
+<span class="gi">+                strncpy(wrq.ifr_name, drv-&gt;ifname, IFNAMSIZ);</span>
+<span class="gi">+</span>
+<span class="gi">+                if (ioctl(drv-&gt;ioctl_sock, SIOCGIWSTATS, &amp;wrq) &lt; 0) {</span>
+<span class="gi">+                    perror(&quot;ioctl[SIOCGIWSTATS]&quot;);</span>
+<span class="gi">+                    ret = -1;</span>
+<span class="gi">+                } else {</span>
+<span class="gi">+                    if (stats.qual.updated &amp; IW_QUAL_DBM) {</span>
+<span class="gi">+                        /* Values in dBm, stored in u8 with range 63 : -192 */</span>
+<span class="gi">+                        rssi = ( stats.qual.level &gt; 63 ) ?</span>
+<span class="gi">+                            stats.qual.level - 0x100 :</span>
+<span class="gi">+                            stats.qual.level;</span>
+<span class="gi">+                    } else</span>
+<span class="gi">+                        rssi = stats.qual.level;</span>
+<span class="gi">+</span>
+<span class="gi">+                    if (drv-&gt;ssid_len != 0 &amp;&amp;</span>
+<span class="gi">+                        drv-&gt;ssid_len &lt; buf_len) {</span>
+<span class="gi">+                        os_memcpy((void *) buf, (void *)</span>
+<span class="gi">+                              (drv-&gt;ssid), drv-&gt;ssid_len);</span>
+<span class="gi">+                        ret = drv-&gt;ssid_len;</span>
+<span class="gi">+                        ret += snprintf(&amp;buf[ret], buf_len-ret,</span>
+<span class="gi">+                                &quot; rssi %dn&quot;, rssi);</span>
+<span class="gi">+                        if (ret &lt; (int)buf_len)</span>
+<span class="gi">+                            return ret;</span>
+<span class="gi">+                        ret = -1;</span>
+<span class="gi">+                    }</span>
+<span class="gi">+                }</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;START&quot;, 5) == 0) {</span>
+<span class="gi">+                os_sleep(0, WPA_DRIVER_WEXT_WAIT_US);</span>
+<span class="gi">+                wpa_msg(drv-&gt;ctx, MSG_INFO, WPA_EVENT_DRIVER_STATE &quot;STARTED&quot;);</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;STOP&quot;, 4) == 0) {</span>
+<span class="gi">+                wpa_msg(drv-&gt;ctx, MSG_INFO, WPA_EVENT_DRIVER_STATE &quot;STOPPED&quot;);</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;LINKSPEED&quot;, 9) == 0) {</span>
+<span class="gi">+                struct iwreq wrq;</span>
+<span class="gi">+                unsigned int linkspeed;</span>
+<span class="gi">+                os_strncpy(wrq.ifr_name, drv-&gt;ifname, IFNAMSIZ);</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;Link Speed command&quot;);</span>
+<span class="gi">+                if (ioctl(drv-&gt;ioctl_sock, SIOCGIWRATE, &amp;wrq) &lt; 0) {</span>
+<span class="gi">+                    perror(&quot;ioctl[SIOCGIWRATE]&quot;);</span>
+<span class="gi">+                    ret = -1;</span>
+<span class="gi">+                } else {</span>
+<span class="gi">+                    linkspeed = wrq.u.bitrate.value / 1000000;</span>
+<span class="gi">+                    ret = snprintf(buf, buf_len, &quot;LinkSpeed %dn&quot;,</span>
+<span class="gi">+                            linkspeed);</span>
+<span class="gi">+                }</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;SNR&quot;, 3) == 0) {</span>
+<span class="gi">+                struct iwreq wrq;</span>
+<span class="gi">+                struct iw_statistics stats;</span>
+<span class="gi">+                int snr, rssi, noise;</span>
+<span class="gi">+</span>
+<span class="gi">+                wrq.u.data.pointer = (caddr_t) &amp;stats;</span>
+<span class="gi">+                wrq.u.data.length = sizeof(stats);</span>
+<span class="gi">+                wrq.u.data.flags = 1; /* Clear updated flag */</span>
+<span class="gi">+                strncpy(wrq.ifr_name, drv-&gt;ifname, IFNAMSIZ);</span>
+<span class="gi">+</span>
+<span class="gi">+                if (ioctl(drv-&gt;ioctl_sock, SIOCGIWSTATS, &amp;wrq) &lt; 0) {</span>
+<span class="gi">+                    perror(&quot;ioctl[SIOCGIWSTATS]&quot;);</span>
+<span class="gi">+                    ret = -1;</span>
+<span class="gi">+                } else {</span>
+<span class="gi">+                    if (stats.qual.updated &amp; IW_QUAL_DBM) {</span>
+<span class="gi">+                        /* Values in dBm, stored in u8 with</span>
+<span class="gi">+                         * range 63 : -192 */</span>
+<span class="gi">+                        rssi = ( stats.qual.level &gt; 63 ) ?</span>
+<span class="gi">+                            stats.qual.level - 0x100 :</span>
+<span class="gi">+                            stats.qual.level;</span>
+<span class="gi">+                        noise = ( stats.qual.noise &gt; 63 ) ?</span>
+<span class="gi">+                            stats.qual.noise - 0x100 :</span>
+<span class="gi">+                            stats.qual.noise;</span>
+<span class="gi">+                    } else {</span>
+<span class="gi">+                        rssi = stats.qual.level;</span>
+<span class="gi">+                        noise = stats.qual.noise;</span>
+<span class="gi">+                    }</span>
+<span class="gi">+</span>
+<span class="gi">+                    snr = rssi - noise;</span>
+<span class="gi">+</span>
+<span class="gi">+                    ret = snprintf(buf, buf_len, &quot;snr = %un&quot;,</span>
+<span class="gi">+                            (unsigned int)snr);</span>
+<span class="gi">+                    if (ret &lt; (int)buf_len)</span>
+<span class="gi">+                        return ret;</span>
+<span class="gi">+                }</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;SET-RTS-THRESHOLD&quot;, 17) == 0) {</span>
+<span class="gi">+                struct iwreq wrq;</span>
+<span class="gi">+                unsigned int rtsThreshold;</span>
+<span class="gi">+                char *cp = cmd + 17;</span>
+<span class="gi">+                char *endp;</span>
+<span class="gi">+</span>
+<span class="gi">+                strncpy(wrq.ifr_name, drv-&gt;ifname, IFNAMSIZ);</span>
+<span class="gi">+</span>
+<span class="gi">+                if (*cp != &#39;\0&#39;) {</span>
+<span class="gi">+                    rtsThreshold = (unsigned int)strtol(cp, &amp;endp, 0);</span>
+<span class="gi">+                    if (endp != cp) {</span>
+<span class="gi">+                        wrq.u.rts.value = rtsThreshold;</span>
+<span class="gi">+                        wrq.u.rts.fixed = 1;</span>
+<span class="gi">+                        wrq.u.rts.disabled = 0;</span>
+<span class="gi">+</span>
+<span class="gi">+                        if (ioctl(drv-&gt;ioctl_sock, SIOCSIWRTS,</span>
+<span class="gi">+                              &amp;wrq) &lt; 0) {</span>
+<span class="gi">+                            perror(&quot;ioctl[SIOCGIWRTS]&quot;);</span>
+<span class="gi">+                            ret = -1;</span>
+<span class="gi">+                        } else {</span>
+<span class="gi">+                            rtsThreshold = wrq.u.rts.value;</span>
+<span class="gi">+                            wpa_printf(MSG_DEBUG,&quot;Set RTS Threshold command = %d&quot;, rtsThreshold);</span>
+<span class="gi">+                            ret = 0;</span>
+<span class="gi">+                        }</span>
+<span class="gi">+                    }</span>
+<span class="gi">+                }</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;GET-RTS-THRESHOLD&quot;, 17) == 0) {</span>
+<span class="gi">+                struct iwreq wrq;</span>
+<span class="gi">+                unsigned int rtsThreshold;</span>
+<span class="gi">+</span>
+<span class="gi">+                strncpy(wrq.ifr_name, drv-&gt;ifname, IFNAMSIZ);</span>
+<span class="gi">+</span>
+<span class="gi">+                if (ioctl(drv-&gt;ioctl_sock, SIOCGIWRTS, &amp;wrq) &lt; 0) {</span>
+<span class="gi">+                    perror(&quot;ioctl[SIOCGIWRTS]&quot;);</span>
+<span class="gi">+                    ret = -1;</span>
+<span class="gi">+                } else {</span>
+<span class="gi">+                    rtsThreshold = wrq.u.rts.value;</span>
+<span class="gi">+                    wpa_printf(MSG_DEBUG,&quot;Get RTS Threshold command = %d&quot;,</span>
+<span class="gi">+                           rtsThreshold);</span>
+<span class="gi">+                    ret = snprintf(buf, buf_len, &quot;rts-threshold = %un&quot;,</span>
+<span class="gi">+                            rtsThreshold);</span>
+<span class="gi">+                    if (ret &lt; (int)buf_len)</span>
+<span class="gi">+                        return ret;</span>
+<span class="gi">+                }</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;SCAN-ACTIVE&quot;, 11) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;SCAN-ACTIVE not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;SCAN-PASSIVE&quot;, 12) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;SCAN-PASSIVE not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;SCAN-CHANNELS&quot;, 13) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;SCAN-CHANNELS not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;BTCOEXSCAN-START&quot;, 16) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;BTCOEXSCAN-START not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;BTCOEXSCAN-STOP&quot;, 15) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;BTCOEXSCAN-STOP not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;RXFILTER-START&quot;, 14) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;RXFILTER-START not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;RXFILTER-STOP&quot;, 13) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;RXFILTER-STOP not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;RXFILTER-STATISTICS&quot;, 19) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;RXFILTER-STATISTICS not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;RXFILTER-ADD&quot;, 12) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;RXFILTER-ADD not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;RXFILTER-REMOVE&quot;, 15) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;RXFILTER-REMOVE not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;BTCOEXMODE&quot;, 10) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;BTCOEXMODE not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;BTCOEXSTAT&quot;, 10) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;BTCOEXSTAT not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;POWERMODE&quot;, 9) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;POWERMODE not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;GETPOWER&quot;, 8 ) == 0) {</span>
+<span class="gi">+                wpa_printf(MSG_DEBUG,&quot;GETPOWER not yet supportedn&quot;);</span>
+<span class="gi">+                ret = 0 ;</span>
+<span class="gi">+            } else if (os_strncasecmp(cmd, &quot;MACADDR&quot;, 7) == 0) {</span>
+<span class="gi">+                /* MACADDR */</span>
+<span class="gi">+                struct ifreq ifr;</span>
+<span class="gi">+                os_memset(&amp;ifr, 0, sizeof(ifr));</span>
+<span class="gi">+                os_strncpy(ifr.ifr_name, drv-&gt;ifname, IFNAMSIZ);</span>
+<span class="gi">+</span>
+<span class="gi">+                if (ioctl(drv-&gt;ioctl_sock, SIOCGIFHWADDR, &amp;ifr) &lt; 0) {</span>
+<span class="gi">+                    perror(&quot;ioctl[SIOCGIFHWADDR]&quot;);</span>
+<span class="gi">+                    ret = -1;</span>
+<span class="gi">+                } else {</span>
+<span class="gi">+                    u8 *macaddr = (u8 *) ifr.ifr_hwaddr.sa_data;</span>
+<span class="gi">+                    ret = snprintf(buf, buf_len, &quot;Macaddr = &quot; MACSTR &quot;n&quot;,</span>
+<span class="gi">+                            MAC2STR(macaddr));</span>
+<span class="gi">+                }</span>
+<span class="gi">+            }</span>
+<span class="gi">+            if (ret &lt; 0) {</span>
+<span class="gi">+#endif</span>
+                wpa_printf(MSG_ERROR, &quot;%s failed (%d): %s&quot;, __func__, ret, cmd);
+                drv-&gt;errors++;
+                if (drv-&gt;errors &gt; WEXT_NUMBER_SEQUENTIAL_ERRORS) {
+                        drv-&gt;errors = 0;
+                        wpa_msg(drv-&gt;ctx, MSG_INFO, WPA_EVENT_DRIVER_STATE &quot;HANGED&quot;);
+                }
+<span class="gi">+#ifdef ANDROID</span>
+<span class="gi">+            }</span>
+<span class="gi">+#endif</span>
+        } else {
+                drv-&gt;errors = 0;
+                ret = 0;
+<span class="gh">diff --git a/wpa_supplicant/src/drivers/driver_wext.h b/wpa_supplicant/src/drivers/driver_wext.h</span>
+<span class="gh">index 29ef44b..a7cde94 100644</span>
+<span class="gd">--- a/wpa_supplicant/src/drivers/driver_wext.h</span>
+<span class="gi">+++ b/wpa_supplicant/src/drivers/driver_wext.h</span>
+<span class="gu">@@ -47,6 +47,9 @@ struct wpa_driver_wext_data {</span>
+        int errors;
+        int driver_is_started;
+        int skip_disconnect;
+<span class="gi">+        /* SIOCSIWPRIV support in WEXT for non-Android WiFi drivers. */</span>
+<span class="gi">+        char ssid[33];</span>
+<span class="gi">+        unsigned int ssid_len;</span>
+ #endif
+ };
+
+<span class="gh">diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c</span>
+<span class="gh">index beec16e..ed40642 100644</span>
+<span class="gd">--- a/wpa_supplicant/wpa_supplicant.c</span>
+<span class="gi">+++ b/wpa_supplicant/wpa_supplicant.c</span>
+<span class="gu">@@ -1490,6 +1490,9 @@ int wpa_drv_scan(struct wpa_supplicant *wpa_s, struct wpa_ssid **ssid_ptr)</span>
+        size_t ssid_len = 0;
+        int ret = -1;
+
+<span class="gi">+#ifdef WEXT_NO_COMBO_SCAN</span>
+<span class="gi">+       if (wpa_s-&gt;driver-&gt;scan) {</span>
+<span class="gi">+#else</span>
+        if (wpa_s-&gt;driver-&gt;combo_scan) {
+                ret = wpa_s-&gt;driver-&gt;combo_scan(wpa_s-&gt;drv_priv, ssid_ptr,
+                                                wpa_s-&gt;conf-&gt;ssid);
+<span class="gu">@@ -1499,6 +1502,7 @@ int wpa_drv_scan(struct wpa_supplicant *wpa_s, struct wpa_ssid **ssid_ptr)</span>
+                }
+        }
+        else if (wpa_s-&gt;driver-&gt;scan) {
+<span class="gi">+#endif</span>
+                if (*ssid_ptr) {
+                        ssid_nm = (*ssid_ptr)-&gt;ssid;
+                        ssid_len = (*ssid_ptr)-&gt;ssid_len;
+</pre></div></div></div>
+<div class="paragraph"><p>Credit goes to Michael Trimarchi as the changes are totally adapted from <a href="https://gitorious.org/flow-g1-5/platform_external_wpa_supplicant/commit/0079ce31faa15d882272891661493ce734e5ab3e">his patch</a>.</p></div>
+<div class="paragraph"><p>I have added a repository for userland patches which can be accessed <a href="https://gitorious.org/nitdroid/ul_patches">here</a>.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Oct 25, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update-vi.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update-vi.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article><div id="author-box">
+  <table id="author-box-content">
+    <tr>
+      <td class="hidden-xs">
+        <a rel="author" href="https://plus.google.com/115396580584561637180">
+          <div id="author-box-image"
+            style="background-image: url(//graph.facebook.com/593659245/picture?type=large)"></div>
+        </a>
+      </td>
+      <td id="author-box-info">
+        <p id="author-box-info-title">
+          About the author
+        </p>
+        <p id="author-box-info-bio">
+          
+I am a software engineer by profession and a passionate technology geek in
+my free time.
+
+        </p>
+        <p id="author-box-info-links">
+          Check out
+          <a href="/pages/about.html">my bio</a>, or find me on
+          <a href="https://plus.google.com/115396580584561637180">Google+</a>.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- Comment BEGIN -->
+<p></p><p></p>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'cjix';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<!-- Comment END -->
+  </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

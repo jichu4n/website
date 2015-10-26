@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>NITDroid userland update - Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+    <link href="http://seasonofcode.com/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Categories Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <link rel="canonical" href="http://seasonofcode.com/posts/nitdroid-userland-update.html">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+  <section id="content" class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-userland-update.html" rel="bookmark">
+      NITDroid userland update
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-19T04:37:25-08:00">
+          Feb 19, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/nitdroid-userland-update.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Although I haven&#8217;t been able to make much progress, I thought I&#8217;d post an update
+on NITDroid for documentation purposes. I&#8217;ve been working on the Android
+userland and it hasn&#8217;t been easy so far.</p></div>
+<div class="paragraph"><p>I started off by following <a href="http://elinux.org/Android_on_OMAP">this page</a> on
+eLinux.org again; the idea was to extract userland files from the system images
+provided by the SDK for emulation on QEMU. I tried this method with Gingerbread
+images; however, it did not take me long to notice that these images are missing
+important components - for example, the DBUS daemon, <code>/system/bin/dbus-daemon</code>
+and its associated library and config file are not present, despite being named
+as startup services in <code>init.rc</code>. A little research showed me that the so-called
+"SDK builds" have indeed different configurations than normal builds.</p></div>
+<div class="paragraph"><p>The natural conclusion is that I should manually build the images from source,
+as explained <a href="http://source.android.com/source/download.html">here</a> on the
+Android open source project page. It was not as straightforward as the page
+claimed, however:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+I check out the code using <code>repo init -u git://whatever.git -b gingerbread</code>,
+and try to build. I am told that anything from Froyo up required a 64-bit host
+system. I check out Froyo by <code>repo init -b froyo</code>, and am told that branch did
+not exist. Fine; how abaout <code>repo init -b froyo-plus-aosp</code>? No, STILL requires a
+64-bit system.
+</p>
+</li>
+<li>
+<p>
+I spend an hour installing a full 64-bit Arch system on a CF card, forgetting to add <code>usb</code> to <code>mkinitcpio.conf</code>, and re-installing. I now boot into the new 64-bit system, and try building again. Now I am told my host system can&#8217;t build 32-bit binaries. Seriously, <em>WTF</em>?? Why on earth would the Android source make you build 32-bit binaries on a 64-bit system??
+</p>
+</li>
+<li>
+<p>
+Alright, I&#8217;ll install <code>gcc-multilib</code> and friends from the multilib repository
+(see
+<a href="https://wiki.archlinux.org/index.php/Arch64_FAQ#Multilib_Repository_-_Multilib_Project">this page</a>
+on the Arch wiki). Build.
+</p>
+</li>
+<li>
+<p>
+The build process halts because I&#8217;m missing some tools. <code>yaourt -S gperf zip
+unzip</code>. My bad.
+</p>
+</li>
+<li>
+<p>
+I get <em>compile errors</em>. A completely useless component called MonkeyRunner
+requires <code>javax.annotation.Nullable</code> which allows you to use <code>@Nullable</code> and
+<code>@NotNull</code> in your Java code. How useful. <code>find sdk/monkeyrunner/src -type f
+-exec sed -i <em>s/@Nullable//g</em> <em>{}</em> <em>;</em></code> etc.
+</p>
+</li>
+<li>
+<p>
+More dependency errors, and no one else has ever run into this while building
+Froyo. This sucks. I&#8217;ve already spent 12 hours on this. Giving up.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>I suddenly decided to test out the now abandoned N8x0 version of the NITDroid
+project, which is based on Android 1.6 (Donut). I downloaded the rootfs,
+extracted it to the SD card, and booted it up with my kernel. I could actually
+boot to a UI telling me I&#8217;m running out of battery (I was) before it would
+freeze and then die. Still, this shows me my display driver is working, although
+of course it might not with Android 2.0+ (see
+<a href="http://elinux.org/Android_on_OMAP#Blank_screen">here</a>). But that is
+encouraging. I try my previous rootfs extracted from SDK images; I still get
+only a blank screen after Zygote starts, probably due to the page flipping issue
+and probably meaning the fix on that page does not actually work.</p></div>
+<div class="paragraph"><p>Then, as stuck as I was, I found
+<a href="http://groups.google.com/group/android-x86/browse_thread/thread/00aeaafa85eaaa31/f7ef2af3b7862048">this page</a>
+which showed me that it is possible to build Froyo on a 32-bit system if
+checked it out as <code>repo init -b android-&lt;version&gt;</code>. Then I found
+<a href="http://groups.google.com/group/android-porting/browse_thread/thread/e939f7e86a555892">this
+page</a> which discusses the possibility of modifying the source code of the
+userland so that it does not require page flipping / double buffering; and
+lastly but most interestingly, <a href="http://www.yuan.se/?p=7">this page</a> discusses
+actually implementing double buffering in a kernel framebuffer driver.</p></div>
+<div class="paragraph"><p>So I naturally checked out Froyo using <code>repo init -b android-2.2.1_r2</code> and when
+instructed by the build script installed <code>jdk5</code> from the AUR (I had to patch the
+PKGBUILD according to the comments and create a symlink from <code>/opt/java5</code> to
+<code>/opt/java</code>). Froyo is happily compiling (for now), and I should go to
+bed&#8230;I&#8217;ve done basically nothing else all day and it is 5am.</p></div>
+<div class="paragraph"><p>UPDATE (02/19/2011): Froyo compiled without a problem using JDK5; looks like the compile errors I got before were due to differences between JDK5 and JDK6. I could never have figured that out if the build script hadn&#8217;t told me. But the built userland still freezes when launching Zygote; it seems framebuffer is the problem. I found <a href="https://sites.google.com/site/nitdroid/n900-port">this page</a> that gives a patch that supposedly allowed the N900 to boot into GUI despite its lack of page flipping support. I will investigate further later.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 19, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/nitdroid-userland-update.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article><div id="author-box">
+  <table id="author-box-content">
+    <tr>
+      <td class="hidden-xs">
+        <a rel="author" href="https://plus.google.com/115396580584561637180">
+          <div id="author-box-image"
+            style="background-image: url(//graph.facebook.com/593659245/picture?type=large)"></div>
+        </a>
+      </td>
+      <td id="author-box-info">
+        <p id="author-box-info-title">
+          About the author
+        </p>
+        <p id="author-box-info-bio">
+          
+I am a software engineer by profession and a passionate technology geek in
+my free time.
+
+        </p>
+        <p id="author-box-info-links">
+          Check out
+          <a href="/pages/about.html">my bio</a>, or find me on
+          <a href="https://plus.google.com/115396580584561637180">Google+</a>.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- Comment BEGIN -->
+<p></p><p></p>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'cjix';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<!-- Comment END -->
+  </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>How X Window Managers Work, And How To Write One (Part I) - Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+    <link href="http://seasonofcode.com/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Categories Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <link rel="canonical" href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+  <section id="content" class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html" rel="bookmark">
+      How X Window Managers Work, And How To Write One (Part I)
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-04-10T01:08:00-07:00">
+          Apr 10, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,            <a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Window managers are one of the core components of the modern Linux/BSD desktop.
+It is not an exaggeration to say that they define to a large degree our
+day-to-day user experience, as they are responsible for deciding how individual
+windows look, move around, react to input, and organize themselves. Hence,
+almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager">the
+first X window manager</a>, we still argue over the merits of different window
+managers, and new window managers continue to reinvent how we interact with our
+digital world.</p></div>
+<div class="paragraph"><p>In this series of posts, I hope to demystify how window managers work, and how
+you might go about writing one yourself.</p></div>
+<div class="paragraph"><p>I will be quoting quite heavily from the seminal
+<a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib
+Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O&#8217;Reilly.
+Despite its age, it remains amazingly relevant and is the best available
+introductory text to the internals of X, which has not changed over the past two
+decades as much as you&#8217;d think. Since you could buy the book plus shipping for
+less than the price of a cup of coffee, I strongly recommend it to anyone
+interested in learning more about X. In addition, its chapter 16 also covers the
+basics of window management.</p></div>
+<div class="sect2">
+<h3 id="_the_role_of_an_x_window_manager">The Role of an X Window Manager</h3>
+<div class="paragraph"><p>Let&#8217;s start with an examination of the role of the window manager in a modern
+Linux/BSD desktop environment.</p></div>
+<div class="sect3">
+<h4 id="_the_rights_of_x_window_managers">The Rights of X Window Managers</h4>
+<div class="paragraph"><p>Unlike other windowing systems such as Microsoft Windows or Mac OS X, X does not
+dictate a window manager or how a window manager should behave. This decision is
+to thank for the wild diversity of X window managers we see today.</p></div>
+<div class="quoteblock">
+<div class="content">X is somewhat unusual in that it does not mandate a particular type of window
+manager. Its developers have tried to make X itself as free of window management
+or user interface policy as possible.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §1.2.3
+</div></div>
+<div class="paragraph"><p>In fact, it does not even require a window manager to be present at all:</p></div>
+<div class="quoteblock">
+<div class="content">Unlike citizens, the window manager has rights but not responsibilities.
+Programs must be prepared to cooperate with any type of window manager or with
+none at all [&#8230;].</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §1.2.3
+</div></div>
+<div class="paragraph"><p>This is in stark contrast to the integrative approach of other GUI systems. On
+Mac OS X and <a href="https://unity.ubuntu.com/">Unity</a>, for example, an application could
+not possibly function without the window manager, as the latter is responsible
+for rendering a part of the application&#8217;s interface (e.g., menus).</p></div>
+</div>
+<div class="sect3">
+<h4 id="_the_responsibilities_of_x_window_managers">The Responsibilities of X Window Managers</h4>
+<div class="paragraph"><p>As you probably already know, X operates in a server-client model. An X <em>server</em>
+controls one or more physical display devices as well as input devices (mouse,
+keyboard, etc.). An application that wants to interact with these devices
+assumes the role of an X <em>client</em>. An X server and its clients may run on the
+same computer, in which case they communicate via
+<a href="http://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different
+computers, in which case they communicate through TCP/IP.</p></div>
+<div class="paragraph"><p><strong>A window manager is a regular X client.</strong> It doesn&#8217;t have any superuser
+privileges or keys to kernel backdoors; it is a normal user process that is
+allowed by the X server to call a set of special APIs. X ensures that no more
+than one window manager is running at any given point by denying a client access
+to these APIs if another client currently has access. The first client to
+attempt to access these APIs always succeeds.</p></div>
+<div class="paragraph"><p>A window manager communicates with the windows it manages through two X
+mechanisms: properties and events. We will discuss these in detail in later
+sections, but the takeaway is that the communication happens through the X
+server, not directly between the window manager and other applications.</p></div>
+<div class="paragraph"><p>This is illustrated by the following diagram:</p></div>
+<div class="paragraph" id="role-of-a-window-manager"><p><div align="center"><img
+src="https://docs.google.com/drawings/d/1Kv8kYF3IeWnsMSuF04goBPi1WudQV3llyK4R5lu_ips/pub?w=554&h=402"
+alt="Role of a Window Manager"
+style="max-width: 554px; width: 100%;"></div></p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_an_x_window_manager_manages_windows">How an X Window Manager Manages Windows</h3>
+<div class="paragraph"><p>Let&#8217;s now dive into the details of how a window manager does its job.</p></div>
+<div class="sect3">
+<h4 id="_the_window_hierarchy">The Window Hierarchy</h4>
+<div class="paragraph"><p>When we think about modern GUIs, we usually use the term <em>widgets</em> or <em>controls</em>
+to refer to UI elements such as buttons, scrollbars, or text boxes, and the term
+<em>windows</em> to refer to a container for such widgets that has its own name and
+can be independently moved around, closed, resized, etc..</p></div>
+<div class="paragraph"><p>X, however, was designed to be as low-level as possible. The fundamental UI
+model that X provides, upon which UI frameworks such as
+<a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an
+<em>hierarchy of rectangles</em>. In X terminology, all top level windows, UI elements,
+etc., are <em>windows</em>. A <em>window</em>, then, is any rectangular area that is an unit
+of user interaction and/or graphic display.</p></div>
+<div class="paragraph"><p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the
+<em>root window</em>, a virtual, invisible window that has the same size as the screen,
+and is always present. Top level windows are direct children of the root
+window. UI elements within a top level window are descendants of that window.</p></div>
+<div class="paragraph"><p><div align="center"><img src="/assets/files/wm_sample_dialog.png" alt="An
+example X window" style="max-width: 402px; width: 100%;"></div></p></div>
+<div class="paragraph"><p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a>
+desktop environment. The entire dialog is an X <em>window</em>. Each UI element in the
+dialog box - the magnifying glass icon, the text box, the green down arrow, the
+Close and Launch buttons, and the icons int those buttons - is also an X
+<em>window</em>.</p></div>
+<div class="paragraph"><p>The whole dialog window is a child of the root window. The magnifying glass
+icon, the text box, and the Close and Launch buttons are children of the dialog
+window. The green down arrow is a child of the text box window, and the icons in
+the Close and Launch buttons are children of those buttons respectively.</p></div>
+<div class="paragraph"><p>An important thing to note about X windows is that a child window is clipped to
+the boundaries of its parent:</p></div>
+<div class="quoteblock">
+<div class="content">A child may be positioned partially or completely outside its parent window, but
+output to the child is displayed and input received only in the area where the
+child overlaps with the parent.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §2.2.2
+</div></div>
+<div class="paragraph"><p>For example, if we increase the width of the text box in the dialog above by
+2x without changing the size of the dialog box, the portion of the text box that
+extends outside of the dialog box will become invisible, and clicking on it will
+not send an event to the text box.</p></div>
+<div class="paragraph"><p>A window manager manages top level windows - that is, direct children of the
+root window.</p></div>
+</div>
+<div class="sect3">
+<h4 id="substructure-redirection">Substructure Redirection</h4>
+<div class="paragraph"><p>In the absence of a window manager, when an application wants to reconfigure a
+window - move, resize, show/hide, etc. - its request is directly processed by
+the X server, and that&#8217;s the end of that. A window manager, however, needs to
+intercept these requests. For example, a window manager may need to know that a
+new top level window has been created and displayed, in order to draw window
+decorations around it. It may also need to know that an existing top level
+window has been resized, in order to update the window decorations to reflect
+the change.</p></div>
+<div class="paragraph"><p>A window manager can intercept such requests using a mechanism called
+<em>substructure redirection</em>.</p></div>
+<div class="paragraph"><p>This is how substructure redirection works. Suppose we have a window <em>W</em>, which
+has a child window <em>C</em>. If a program <em>M</em> registers for the substructure
+redirection of some types of requests on <em>W</em>, a matching request to modify <em>C</em>
+will <em>not</em> be executed by the X server.  Instead, the X server redirects this
+request to the program <em>M</em>, which can do whatever it wants with the request,
+including granting the request with modifications or denying the request. More
+formally,</p></div>
+<div class="quoteblock">
+<div class="content">The <em>structure</em>, as the term is used here, is the location, size, stacking
+order, border width, and mapping status of a window. The <em>substructure</em> is all
+these statistics about the children of a particular window. This is the complete
+set of information about screen layout that the window manager might need in
+order to implement its policy. <em>Redirection</em> means that an event is sent to the
+client selecting redirection (usually the window manager), and the original
+structure−changing request is not executed.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §16.2
+</div></div>
+<div class="paragraph"><p>Note that only direct children of a window <em>W</em> is affected by substructure
+redirection on <em>W</em>, not any windows further down the hierarchy.</p></div>
+<div class="paragraph"><p>This gets interesting when we consider substructure redirection on the root
+window:</p></div>
+<div class="quoteblock">
+<div class="content">When the window manager selects <code>SubstructureRedirectMask</code> on the root window,
+an attempt by any other client to change the configuration of any child of the
+root window will fail. Instead an event describing the layout change request
+will be sent to the window manager. The window manager then reads the event and
+determines whether to honor the request, modify it, or deny it completely. If it
+decides to honor the request, it calls the routine that the client called that
+triggered the event with the same arguments. If it decides to modify the
+request, it calls the same routine but with modified arguments.</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §16.2
+</div></div>
+<div class="paragraph"><p>In other words, a window manager must register for substructure redirection on
+the root window, which causes all creation, destruction, reconfiguration etc. of
+top level windows - which are direct children of the root window - to be routed
+to the window manager. This is the magic hook into the X server that window
+managers rely on to do their job.</p></div>
+<div class="paragraph"><p>This relationship is shown in the following diagram:
+<div align="center"><img
+src="https://docs.google.com/drawings/d/1ykdjiN-__H5-aWjic73c23K6g2MguBKLgwh9C2n-I5k/pub?w=602&amp;h=273"
+alt="Role of a Window Manager"
+style="max-width: 602px; width: 100%;"></div></p></div>
+<div class="paragraph"><p>Finally, the X server only allows one running program to register for
+substructure redirection on any given window at any given time. An attempt to
+register for substructure redirection on a window will fail if another X client
+has already done the same on the same window, and has not unregistered,
+disconnected from the X server, or crashed. Since all window managers must
+register for substructure redirection on the root window, this latter acts as a
+locking mechanism that prevents two or more window managers from running
+simultaneously on the same screen.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_reparenting">Reparenting</h4>
+<div class="paragraph"><p>In the example dialog box above, we see a title bar with, for example, little
+buttons for closing, maximizing, and minimizing the window. These UI elements
+are not created by the application, but by the window manager, via a process
+known as <em>reparenting</em> or <em>framing</em>:</p></div>
+<div class="quoteblock">
+<div class="content">
+<div class="paragraph"><p>A window manager can decorate [top level] windows on the screen with titlebars
+and place little boxes on the titlebar with which the window can be moved or
+resized. This is only one possibility [&#8230;].</p></div>
+<div class="paragraph"><p>To do this, the window manager creates a child of the root somewhat larger than
+the top level window of the application. Then it calls
+<a href="http://manpages.ubuntu.com/manpages/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>,
+specifying the top level window of the application as <code><em>win</em></code> and the new parent
+[window it just created] as <code><em>parent</em></code>. <code><em>win</em></code> and all its descendants will
+then be descendants of <code><em>parent</em></code>.</p></div>
+</div>
+<div class="attribution">
+&#8212; Xlib Programming Manual §16.3
+</div></div>
+<div class="paragraph"><p>In other words, if we were to run an X application without a window manager
+present, the top level window of the application would be a direct child of the
+root window. With a window manager running, however, the top level window of the
+application may be <em>reparented</em> by the window manager; it becomes a child of a
+frame window which is created by the window manager, and which is itself a child
+of the root window. The window manager can add other UI elements inside this
+frame window alongside the application&#8217;s top level window as it sees fit.</p></div>
+<div class="paragraph"><p>Therefore, I had lied to you just now: the dialog box above is actually a child
+of a frame created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along
+with the other UI elements for window management.</p></div>
+<div class="paragraph"><p>Reparenting is what allows different window managers to draw different window
+decorations, and thereby achieve a consistent look-and-feel across windows.
+However, there are also window managers that do <em>not</em> reparent at all: these are
+called <em>non-reparenting</em> window managers. There are two reasons why a window
+manager would not want to reparent:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+If a window manager does not draw window decorations around top level
+   windows , it obviously has no need to reparent them. Examples:
+   <a href="http://xmonad.org">xmonad</a>, <a href="http://dwm.suckless.org">dwm</a>.
+</p>
+</li>
+<li>
+<p>
+Compositing window managers do not always need to reparent windows; we will
+   discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true
+   for all compositing window managers, however; for example, GNOME&#8217;s default
+   window manager, <a href="http://github.com/GNOME/mutter/">Mutter</a>, is a reparenting
+   comopositing window manager.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Let&#8217;s now consider substructure redirection in the context of reparenting. When
+a top level window <em>W</em> is first shown (<em>map</em>'ped in X jargon), the window manager
+is notified because it has registered for substructure redirection on the root
+window, and a top level window is a direct child of the root window. It then
+creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes a child of <em>F</em>, which
+itself is a child of the root window. But since now <em>W</em> is no longer a direct
+child of the root window, the window manager will no longer be able to intercept
+changes to <em>W</em>!</p></div>
+<div class="paragraph"><p>Therefore, a reparenting window manager must also register for substructure
+redirection on the frames it creates.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_compositing">Compositing</h4>
+<div class="paragraph"><p>Compositing window managers are a relatively new development. Compositing
+support in X  was added in late 2004, a full decade after the last edition of
+<a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib
+Programming Manual</a>. The first compositing window managers,
+<a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early
+2005.</p></div>
+<div class="paragraph"><p>So, what exactly does a compositing window manager do?</p></div>
+<div class="paragraph"><p>In our discussion above on substructure redirection and reparenting, we saw how
+a window manager can respond to various requests for a top level window - to
+display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But
+we didn&#8217;t talk about how to deal with what&#8217;s <em>inside</em> the top level windows.</p></div>
+<div class="paragraph"><p>Indeed, from the perspective of the window manager, top level windows are black
+boxes; they each manage their own descendant windows (UI elements), perhaps
+through a framework such as <a href="http://www.gtk.org">GTK+</a> or
+<a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere
+there. The application that creates a top level window is responsible for
+rendering and handling events for any descendant windows (UI elements), and does
+so directly through X. This is shown in <a href="#role-of-a-window-manager">the first graph above</a>.</p></div>
+<div class="paragraph"><p>As the computing power of graphics hardware grew, so did people&#8217;s expectations
+from their window managers. With hardware acceleration, it became possible to
+build much more computationally intensive user interfaces, such as the
+(in)famous Desktop Cube in <a href="http://www.compiz.org">Compiz</a>:
+<div align="center"><img src="/assets/files/wm_compiz.png"
+style="max-width: 640px; width: 100%;"></div>
+or the Shift Switcher:
+<div align="center"><img src="/assets/files/wm_compiz_2.png"
+style="max-width: 640px; width: 100%;"></div>
+Let&#8217;s take a moment to think about how we can implement an interface such as the
+Shift Switcher above. When the user triggers our wonderful interface, we need
+to:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Render each top level window and all its descendant windows (UI elements) to
+   an off-screen, in-memory buffer, instead of directly to the hardware.
+</p>
+</li>
+<li>
+<p>
+Transform (rotate, contort, etc.) each buffer according to our design.
+</p>
+</li>
+<li>
+<p>
+Composite the transformed buffers into a final buffer along with background
+   and anything else we need to display.
+</p>
+</li>
+<li>
+<p>
+Create an <em>overlay</em> window that covers the entire screen and hides all other
+   windows.
+</p>
+</li>
+<li>
+<p>
+Render the final buffer into the overlay window.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>There are a number of challenges:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+We must be able to retrieve the contents of top level windows. However, top
+  level windows render directly through X.
+</p>
+</li>
+<li>
+<p>
+We need to update our interface in real time as the contents of the
+  top level windows change. However, top level windows render directly through
+  X and do not notify window managers when their contents change.
+</p>
+</li>
+<li>
+<p>
+A top level window <em>A</em> may normally overlap with another top level window
+  <em>B</em>, and thus a portion of <em>B</em> isn&#8217;t currently visible. Our interface,
+  however, must capture the <em>full</em> rendering of <em>A</em> and <em>B</em>, regardless of
+  overlapping regions.
+</p>
+</li>
+<li>
+<p>
+The compositing process is computationally intensive and requires hardware
+  acceleration to function adequately.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>It is clear that none of this is possible without heavy cooperation from the X
+server. Enter
+<a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">the
+Composite extension</a>:</p></div>
+<div class="quoteblock">
+<div class="content">Many user interface operations would benefit from having pixel contents of
+window hierarchies available without respect to sibling and antecedent clipping.
+In addition, placing control over the composition of these pixel contents into a
+final screen image in an external application will enable a flexible system for
+dynamic application content presentation.</div>
+<div class="attribution">
+&#8212; X Composite Extension
+</div></div>
+<div class="paragraph"><p>The Composite extension provides is a mechanism to request the X server not to
+render a specific window and its descendants directly to hardware, but to a
+special buffer maintained by the X server, and do so without the normal clipping
+and overlap computations. This buffer can then be read and used by the client
+that made the request.</p></div>
+<div class="paragraph"><p>In fact, that&#8217;s exactly what a compositing window manager does: it will ask X to
+render each top level window to an off-screen, in-memory buffer and composite
+the results into an overlay window. And it needs to do this not just for fancy
+interfaces, but also to achieve effects like translucency, window animations,
+soft shadows, and the like.</p></div>
+<div class="paragraph"><p>This is illustrated in the following diagram:
+<div align="center"><img
+src="https://docs.google.com/drawings/d/1eK05Uzlr2ix4NpsiEBUu42IwZ3DEjX8MvYTiE3-chqA/pub?w=573&amp;h=509"
+style="max-width: 573px; width: 100%;"></div></p></div>
+<div class="paragraph"><p>Let&#8217;s end this section by considering whether a compositing window manager
+should reparent top level windows.</p></div>
+<div class="paragraph"><p>Since a compositing window manager knows the size and position of all top level
+windows, it&#8217;s trivial for it to just draw window decorations during compositing
+into the overlay window using graphics operations, without ever creating an
+actual frame window and reparenting. Some compositing window managers do operate
+this way.</p></div>
+<div class="paragraph"><p>On the other hand, a window manager may need to support both a compositing and a
+non-compositing mode, for compatibility with older or unsupported graphics
+hardware. In this case, it needs to implement reparenting and frame windows for
+non-compositing mode anyway, so additionally implementing drawing window
+decorations using graphics operations becomes redundant. This is why some other
+compositing window managers still choose to reparent.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ready_for_some_code">Ready For Some Code?</h3>
+<div class="paragraph"><p>If you&#8217;ve read everything up to this point, you&#8217;re probably holding back the
+urge to cry out "<em>Enough talk - show me some code!</em>" I don&#8217;t blame you.</p></div>
+<div class="paragraph"><p>In <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">the
+next installment</a> in this series, I will walk you through a basic
+implementation of a reparenting, non-compositing window manager. Impatient?
+Check out the code <a href="https://github.com/jichuan89/basic_wm">on GitHub</a> or browse
+the cross-referenced code <a href="http://code.openhub.net/project?pid=&amp;ipid=568869">on
+Open Hub</a>.</p></div>
+<div class="paragraph"><p><strong>Next chapter:</strong>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>How X
+Window Managers Work, And How To Write One (Part II)</strong></a></p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Apr 10, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,          <a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article><div id="author-box">
+  <table id="author-box-content">
+    <tr>
+      <td class="hidden-xs">
+        <a rel="author" href="https://plus.google.com/115396580584561637180">
+          <div id="author-box-image"
+            style="background-image: url(//graph.facebook.com/593659245/picture?type=large)"></div>
+        </a>
+      </td>
+      <td id="author-box-info">
+        <p id="author-box-info-title">
+          About the author
+        </p>
+        <p id="author-box-info-bio">
+          
+I am a software engineer by profession and a passionate technology geek in
+my free time.
+
+        </p>
+        <p id="author-box-info-links">
+          Check out
+          <a href="/pages/about.html">my bio</a>, or find me on
+          <a href="https://plus.google.com/115396580584561637180">Google+</a>.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- Comment BEGIN -->
+<p></p><p></p>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'cjix';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<!-- Comment END -->
+  </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

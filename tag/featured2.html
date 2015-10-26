@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Season of Code - Featured</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <meta name="robots" content="noindex, follow">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html" rel="bookmark">
+      Disabling Screen-Off Animation In Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2013-02-02T02:41:49-08:00">
+          Feb 02, 2013
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I am impressed by the amazing progress Android&#8217;s UI has made since its
+inception. With each iteration, likewise in software as in hardware, its
+usability and aesthetics have steadily improved to the point where I can now
+confidently buy one for my mom to replace the iPhone I recommended to her only
+last year.</p></div>
+<div class="paragraph"><p>On the other hand, one particular "feature" I intensely dislike is the
+screen-off animation that emulates the brief white flash you see when an old CRT
+TV monitor is powering off. Introduced in Gingerbread (2.3), it seems not to
+bother most people as much as it bothers me, and even seems to be quite popular
+(e.g., <a href="http://forum.xda-developers.com/showthread.php?t=1890526">this thread</a>).</p></div>
+<div class="paragraph"><p>I was glad to learn though that a number of people find it as annoying as I do,
+for example in
+<a href="http://forum.cyanogenmod.org/topic/64185-any-way-to-disable-the-screen-off-animation-in-101/">this thread</a>
+and <a href="http://code.google.com/p/cyanogenmod/issues/detail?id=6519">this bug</a>.</p></div>
+<div class="paragraph"><p>As a CyanogenMod fan, I was quite happy with the straightforward checkbox in the
+Settings app in CyanogenMod 9 that toggled whether to play this animation. In
+CM10, this option was removed, but there was an easy hack involving changing
+window animation scale in the developer settings, as explained in the
+<a href="http://code.google.com/p/cyanogenmod/issues/detail?id=6519">second link above</a>.</p></div>
+<div class="paragraph"><p>So when I updated to CM10.1 M1, I was very unpleasantly surprised to find that
+this hack does not work any more either. I tried to immediately downgrade to
+CM10, but then discovered that doing so requires a full data wipe (of
+course&#8230;). A quick search pulled up
+<a href="http://forum.xda-developers.com/showthread.php?t=1989397">this thread</a> which
+proposes a simple prop edit, but the following posts in the thread suggest mixed
+results.</p></div>
+<div class="paragraph"><p>So, stuck with CM10.1, and really disgusted at this turn of events, I finally
+decided to put on my hax0r gloves and get this annoying "feature" out of my face
+once and for all.</p></div>
+<div class="paragraph"><p><strong>Poking Around</strong></p></div>
+<div class="paragraph"><p>I went to <a href="http://androidxref.com/">androidxref.com</a> and started searching
+the Android source code for "screen off animation". (OK, I actually started out
+with <em>grep</em>, but it didn&#8217;t take me long to realize
+<a href="http://androidxref.com/">androidxref.com</a> was about sixty million times
+faster - it&#8217;s really pretty cool.)</p></div>
+<div class="paragraph"><p>I quickly found why changing the window animation scale in <strong>Jelly Bean 4.1 (and
+CM10)</strong> disables the screen-off animation. The two snippets of of code
+implementing this behavior are at
+<a href="http://androidxref.com/4.0.4/xref/frameworks/base/services/java/com/android/server/PowerManagerService.java#470">line 470</a> and
+<a href="http://androidxref.com/4.0.4/xref/frameworks/base/services/java/com/android/server/PowerManagerService.java#2228">line 2228</a>
+of <code>PowerManagerService.java</code>.</p></div>
+<div class="paragraph"><p>In <strong>Jelly Bean 4.2 (and CM10.1)</strong>, however, these parts of the code have been
+completely refactored. The snippet of code that launches the screen-off
+animation is now found at
+<a href="http://androidxref.com/4.2_r1/xref/frameworks/base/services/java/com/android/server/power/DisplayPowerController.java#704">line 704</a>
+of <code>DisplayPowerController.java</code>. Note that this new <code>DisplayPowerController</code>
+class has been factored out of the old <code>PowerManagerService</code> class, and both
+have moved into a separate <code>power</code> sub-directory.</p></div>
+<div class="paragraph"><p><strong>The Hacking</strong></p></div>
+<div class="paragraph"><p><em>Disclaimer: I am <strong>NOT</strong> responsible for anything that happens to your phone or
+you or your house or your relationship with your wife if you follow the
+instructions down here. If you don&#8217;t know what you&#8217;re doing and are scared of
+bricking your phone, just give up and go watch Superbowl. Please.</em></p></div>
+<div class="paragraph"><p>What did <em>not</em> change, I found, is that this code gets packaged into
+<code>/system/framework/services.jar</code> on the Android system. So, let&#8217;s take a look at
+this file as found in the CM10.1 image on my phone:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Copy services.jar from phone to current directory.</span>
+adb pull /system/framework/services.jar
+<span class="c"># Disassemble.</span>
+apktool d services.jar
+</pre></div></div></div>
+<div class="paragraph"><p>(<code><a href="http://code.google.com/p/android-apktool/">apktool</a></code> is a tool that
+extracts and disassembles Android APK/JAR files, and is available for Linux,
+Windows and OS X.) This produces a directory, <code>services.jar.out</code>, which contains
+the disassembled code of <code>services.jar</code> we just pulled from a connected phone. I
+dived into the <code>DisplayPowerController</code> code and edited the <em>else</em> clause at
+<a href="http://androidxref.com/4.2_r1/xref/frameworks/base/services/java/com/android/server/power/DisplayPowerController.java#704">line 704</a>
+to essentially just say <code>setScreenOn(false);</code> directly instead of running
+the animation first. If you look at the dissassembled code, you&#8217;d realize Dalvik
+bytecode is really quite readable and easy to hack, especially since the line
+number hints allow you to directly map a line in the Java source code to the
+corresponding Dalvik instructions. I just had the Java source file on
+<a href="http://androidxref.com">androidxref.com</a> open in a browser tab for reference
+and killed instructions line by line. You can
+<a href="http://www.mediafire.com/?5e8s5kzblav4a5g">download my patch here</a> and apply
+it like this:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre>patch -d services.jar.out -Np1 &lt; path/to/disable_screen_off_animation.patch
+</pre></div></div></div>
+<div class="paragraph"><p>(For CM10.1 nightlies (after the MR1.1 merge) and CM10.1 M2, use
+<a href="http://www.mediafire.com/download.php?drw5t67v24tb4x9">this patch</a> instead.
+The same piece of code was shuffled around to
+<a href="https://github.com/CyanogenMod/android_frameworks_base/blob/f6f6b1d37c1d5a8ba687e4d09761eb762f7269af/services/java/com/android/server/power/DisplayPowerController.java#L777">line 777</a>. For CM10.1 M3, use
+<a href="http://www.mediafire.com/download.php?3xghfg9yfqyj9o7">this patch</a> instead.)</p></div>
+<div class="paragraph"><p>Now re-assemble the code and push it back on to the device:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Re-assemble modified sources as services-mod.jar.</span>
+apktool b services.jar.out services-mod.jar
+<span class="c"># Copy services-mod.jar to /sdcard/ on phone.</span>
+adb push services-mod.jar /sdcard/
+<span class="c"># Remount /system partition as read-write in order to modify it.</span>
+adb shell su -c <span class="s1">&#39;mount -o rw,remount /system&#39;</span>
+<span class="c"># Overwrite original services.jar on phone with services-mod.jar as root.</span>
+adb shell su -c <span class="s1">&#39;cp /sdcard/services-mod.jar /system/framework/services.jar&#39;</span>
+<span class="c"># Reboot phone for this to take effect.</span>
+adb reboot
+</pre></div></div></div>
+<div class="paragraph"><p>When the phone reboots, it will say Android is upgrading and will rebuild Dalvik
+cache for each application, so it might take a while. But hey, it&#8217;s worth it.</p></div>
+<div class="paragraph"><p><strong>Parting Words</strong></p></div>
+<div class="paragraph"><p>The final product, if you just want to replace the <code>services.jar</code> on your phone, is here:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>CyanogenMod 10.1 M1</strong> - tested on Galaxy Nexus (maguro) and Nexus S (crespo), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?16dhrvk7esr77br">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>CyanogenMod 10.1 M2</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?kdd4af6h81bq8">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>CyanogenMod 10.1 M3</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?78cvqi6qe0s3yoy">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>CyanogenMod 10.1 RC1</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can&#8217;t promise - let me know):
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.mediafire.com/?w1527lnv5eoh8kl">services-mod.jar</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>Stock 4.2.2 (takju/JDQ39)</strong> - for <a href="https://developers.google.com/android/nexus/images#takjujdq39">"takju" factory image from Google</a>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Note</strong>: use this to replace <code>services.<strong>odex</strong></code>, not <code>services.<strong>jar</strong></code>!
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.mediafire.com/?g5guv4hkcvt9owm">services-mod.odex</a>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>Stock 4.2.2 (yakju/JDQ39)</strong> - for <a href="https://developers.google.com/android/nexus/images#yakjujdq39">"yakju" factory image from Google</a>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Note</strong>: use this to replace <code>services.<strong>odex</strong></code>, not <code>services.<strong>jar</strong></code>!
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.mediafire.com/?8ttffv118tnxgp5">services-mod.odex</a>
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<div class="paragraph"><p>Apply the <code>services-mod.jar</code> to your phone like this (obviously assuming you
+have adb working and root):</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Copy services-mod.jar to /sdcard/ on phone.</span>
+adb push services-mod.jar /sdcard/
+<span class="c"># Remount /system partition as read-write in order to modify it.</span>
+adb shell su -c <span class="s1">&#39;mount -o rw,remount /system&#39;</span>
+<span class="c"># Overwrite original services.jar on phone with services-mod.jar as root.</span>
+adb shell su -c <span class="s1">&#39;cp /sdcard/services-mod.jar /system/framework/services.jar&#39;</span>
+<span class="c"># Reboot phone for this to take effect.</span>
+adb reboot
+</pre></div></div></div>
+<div class="paragraph"><p>Or, I suppose, you could just use ES File Explorer with root mode enabled, mount
+<code>/system</code> as read-write and copy the file to <code>/system/framework/services.jar</code> on
+the phone.</p></div>
+<div class="paragraph"><p>Note that a reboot is needed after you replace the <code>services.jar</code> whatever you
+do, and upon the first reboot the "Android is upgrading" dialog will pop up.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 02, 2013
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html" rel="bookmark">
+      Android Rooting: A Developer's Guide
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2012-11-21T00:58:12-08:00">
+          Nov 21, 2012
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p><img src="/assets/files/rooting_android_blue.jpg"
+align="right"
+style="max-width: 350px; width: 35%; margin: 1.5em 0 1.5em 1.5em;">
+First things first&#8201;&#8212;&#8201;this is not about how to apply a rooting method, e.g., a
+one-click-root, to an Android device. Rather, it is about how one could go about
+<em>developing</em> a rooting method for a device that no one has rooted before, and is
+told through my experiences with rooting a particular device&#8201;&#8212;&#8201;the Barnes &amp;
+Noble Nook Tablet 8GB. For context, you can read my original thread
+"<a href="http://forum.xda-developers.com/showthread.php?t=1529553">Root for Nook
+Tablet 8GB (w/ Android Market)</a> on XDA-Developers where I published my rooting
+method, which has reached a download count of&#8201;&#8212;&#8201;wait for it&#8201;&#8212;&#8201;OVER NINE
+THOUSAND!!!</p></div>
+<div class="paragraph"><p>For an overview of how rooting works behind the scenes, you may want to read my
+previous article
+<a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">How
+Rooting Works - A Technical Explanation of the Android Rooting Process</a> as
+background.</p></div>
+<div class="paragraph"><p>Sometime in late February (2012), on a visit to to a Barnes &amp; Noble store in
+Boston, I bought the then freshly released Nook Tablet 8GB entirely on impulse
+for $199. Being the hax0r that I am, the first thing I did when I got home was
+to try to root the device. It came as a nasty surprise, therefore, when I
+discovered that no one had yet succeeded in rooting the device. All I could find
+was a <a href="http://www.youtube.com/watch?v=x8e0OLWQYc4">YouTube video</a> showing
+that the existing rooting method for its cousin, the Nook Tablet 16GB, did not
+work. After waiting for a few days, the absolutely pathetic app store and
+handicaps instituted by B&amp;N finally motivated me to develop a rooting method for
+the device myself.</p></div>
+<div class="sect2">
+<h3 id="_the_plan">The Plan</h3>
+<div class="paragraph"><p>So, how do you go about rooting an Android device? As I explain in
+<a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">my
+previous article</a>, rooting is basically a two-step process:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Find exploit that allows execution of arbitrary code as root
+</p>
+</li>
+<li>
+<p>
+Use exploit to install <code>su</code> (with SUID bit set) and <code>Superuser.apk</code> as root
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>After <code>su</code> and <code>Superuser.apk</code> are installed correctly, apps that require root
+(such as <a href="http://matrixrewriter.com/android/">Titanium Backup</a> or
+<a href="https://play.google.com/store/apps/details?id=org.adaway&amp;hl=en">AdAway</a>)
+will invoke <code>su</code> to run code as the privileged user.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_the_process">The Process</h3>
+<div class="paragraph"><p>There are many generic or device-specific exploits that a hax0r may leverage to
+achieve privileged execution of arbitrary code. I would again refer you to
+<a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent
+presentation on various Android root exploits</a> that have been or may still be
+used for this purpose.</p></div>
+<div class="paragraph"><p>However, none of these methods that I knew of could work on the Nook Tablet,
+which is probably one of the most locked-down Android ROMs out there:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Bootloader is locked.
+</p>
+</li>
+<li>
+<p>
+ADB is disabled, and cannot be enabled from the UI.
+</p>
+</li>
+<li>
+<p>
+Installing non-market apps (raw APKs) is disabled, and cannot be enabled from the UI.
+</p>
+</li>
+<li>
+<p>
+No access to Google Play / Android Market (or any Google Apps).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>This rules out 1) root APKs and 2) the majority of exploits out there that
+require executing commands over ADB. It means that one cannot run any code on
+the device that does not come from B&amp;N period.</p></div>
+<div class="paragraph"><p>But of course there was another way in. Somebody on XDA-Developers had
+discovered that the bootloader of the Nook Tablet supported booting off an
+Android system located in partition images stored on an external microSD card.
+This mechanism is probably used to repair corrupted system partitions by B&amp;N
+customer support.</p></div>
+<div class="paragraph"><p>The solution, then, is clear: we create dummy system partition images that,
+instead of booting an Android system, installs <code>su</code> and <code>Superuser.apk</code> into the
+"normal" Android system in internal flash memory. More concretely, I modified
+the system initialization file inside the initrd inside the boot partition image
+to invoke a custom script that copied the relevant files into the <code>system</code>
+partition in the internal flash memory.</p></div>
+<div class="paragraph"><p>I based my work on
+<a href="http://forum.xda-developers.com/showthread.php?t=1517513">bauwks&#8217;s 2nduboot
+images</a> and used <a href="https://gitorious.org/ac100/abootimg">abootimg</a> to unpack
+files in the boot partition image <code>boot.img</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Extracts files in the boot partition image into the current directory.</span>
+abootimg -x ./boot.img
+<span class="c"># Extract files in the initrd cpio archive into the folder ./ramdisk/</span>
+aboot-unpack-initrd ./initrd.img
+</pre></div></div></div>
+<div class="paragraph"><p>I changed the system initialization file <code>init.omap4430.rc</code> in the initrd to
+mount the system partition of the internal flash memory at <code>/foo</code> rather than
+<code>/system</code>, because later system initialization steps attempt to remount
+<code>/system</code> as read-only and so on, and for some reason I could not disable that
+behavior:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>on fs
+    mkdir /foo
+    mount ext4 /dev/block/platform/mmci-omap-hs.1/by-name/system /foo wait</code></pre>
+</div></div>
+<div class="paragraph"><p>I added the following to the system initialization file <code>init.rc</code> in the initrd to start my rooting script:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>service root_script /sbin/busybox ash /assets/run.sh
+    oneshot</code></pre>
+</div></div>
+<div class="paragraph"><p>My rooting script, which I place in the directory <code>assets</code> in the initrd,
+installs not only <code>su</code>, but also Google Play and other Google apps which are
+missing from the Nook Tablet ROM:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Install su and Superuser.apk</span>
+/sbin/busybox cp /assets/su /foo/bin/
+/sbin/busybox cp /assets/su /foo/xbin/
+/sbin/busybox chmod <span class="m">06755</span> /foo/xbin/su
+/sbin/busybox chmod <span class="m">06755</span> /foo/bin/su
+/sbin/busybox cp /assets/Superuser.apk /foo/app/
+
+<span class="c"># Install Busybox.</span>
+/sbin/busybox cp /sbin/busybox /foo/xbin/
+/sbin/busybox chmod <span class="m">06755</span> /foo/xbin/busybox
+
+<span class="c"># Install Google Play and other Google apps.</span>
+/sbin/busybox cp /assets/*.apk /foo/app/
+/sbin/busybox cp /assets/com.google.android.maps..xml /foo/etc/permissions/
+/sbin/busybox cp /assets/com.google.android.maps.jar /foo/framework/
+/sbin/busybox cp /assets/libvoicesearch.so /foo/lib/
+
+<span class="c"># Done.</span>
+/sbin/busybox mount -o ro,remount /foo
+</pre></div></div></div>
+<div class="paragraph"><p>In accordance with the above script, I had placed all assets in the <code>assets</code>
+directory inside the initrd, and the Busybox binary in <code>sbin</code> inside the initrd.
+With all changes done, I pack everything back into a new boot.img:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="c"># Build initrd cpio archive</span>
+abootimg-pack-initrd initrd.img.new
+<span class="c"># Build new boot.img using previously extracted components</span>
+abootimg --create boot.img.new -f ./bootimg.cfg -k ./zImage -r ./initrd.img.new
+</pre></div></div></div>
+<div class="paragraph"><p>Then I replace the <code>boot.img</code> on the SD card image with my <code>boot.img.new</code>, and
+the rooting method is done.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_final_words">Final words</h3>
+<div class="paragraph"><p>The actual process, of course, was much, much more painful. The Nook Tablet&#8217;s
+bootloader is very picky; some microSD cards just won&#8217;t work, there is a file
+size limit on <code>boot.img</code>, etc.. It was also after much frustration that I
+discovered the mount-to-<code>/foo</code> trick. And I could not even keep track of how
+many factory restores I had to perform on the device to undo bad modifications.
+But it was still a lot of fun, and the euphoria at the end and the feeling of
+accomplishment when reply posts started rolling in and random people were
+donating $5 as a token of their appreciation could not be overstated.</p></div>
+<div class="paragraph"><p>Good luck rooting!</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Nov 21, 2012
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html" rel="bookmark">
+      Carrier programming on CDMA Android phones
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2012-11-15T23:57:36-08:00">
+          Nov 15, 2012
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Have you ever wondered how CDMA phones are programmed to a specific carrier for
+voice calls, SMS and data?</p></div>
+<div class="paragraph"><p>In the U.S., all major CDMA carriers operate on the same frequencies, which
+means that there is no inherent difference in hardware between phones sold by
+any of them, and that theoretically there is no reason why a Verizon Wireless
+phone cannot work on Sprint or MetroPCS or Virgin Mobile or Boost Mobile, for
+example. Unlike GSM phones with swappable SIM&#8217;s, however, a CDMA phone sold in
+the U.S. is typically locked to a particular carrier; so how is that done?</p></div>
+<div class="paragraph"><p>I was recently able to figure out the answer to this question when I
+successfully flashed a CDMA phone from Sprint to Verizon (an exploit I may
+document separately some day). As I have not been able to find a compilation of
+this information elsewhere, I am writing up this document in the hope that it
+will help others with flashing phones or porting ROMs to different carriers.</p></div>
+<div class="paragraph"><p>Note that this information is based on my research with the Jelly Bean (4.1 &amp;
+4.2), ICS (4.0) and Gingerbread (2.3.4) versions of Android and two major U.S.
+CDMA carriers, Verizon Wireless and Sprint. Hence, it may not be applicable to
+other phones or carriers; in particular, the section about CDMA chips do not
+apply to CDMA phones that require a SIM card, such as some Verizon Wireless LTE
+phones. In such cases, your comments and insights are welcome.</p></div>
+<div class="paragraph"><p>Finally, a disclaimer: I have no formal understanding of any of the intricacies
+of CDMA technology and therefore cannot guarantee the correctness or accuracy of
+this information. Use it at your own risk. I cannot be held responsible for any
+damage or legal consequences resulting from or related to the application of
+this information.</p></div>
+<div class="paragraph"><p>At a high level, there are two places where carrier information is stored on a
+CDMA Android phone: inside the CDMA chip (radio), and in Android OS system
+files.</p></div>
+<div class="sect2">
+<h3 id="_programming_the_cdma_chip">Programming the CDMA chip</h3>
+<div class="paragraph"><p>Every CDMA phone (obviously) has a CDMA chip (radio). This chip is responsible
+for carrying out voice calls and transferring data over 2G/3G, and in order to
+do that, it needs to know stuff like what phone number it represents, what
+towers to connect to, what account name to bill the 3G connection to, etc.. All
+of this information is stored directly inside the chip (unless you have a
+Verizon Wireless LTE phone with a SIM card), and not on any file system
+controlled by the OS; this is why even after a factory reset (which formats the
+internal flash file system) these settings persist. It is (I believe) not
+possible to change the information stored on the CDMA chip from the OS itself;
+instead, carriers provide a special number (e.g., *228 for Verizon Wireless)
+that, when called, will transfer the information to the chip. This is typically
+called "programming" the phone by U.S. carriers.</p></div>
+<div class="paragraph"><p>So what information exactly is stored inside the CDMA chip? Here&#8217;s an incomplete
+list:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>MEID</strong>: Unique serial number of the phone. This is like the MAC address of an
+  ethernet / WiFi card in that it is the sole identifier of the CDMA chip. It is
+  what carriers use to connect phone calls, deliver SMS&#8217;s, blacklist stolen
+  phones, etc.. A fatal flaw, however, is that it is actually possible to modify
+  (flash) the MEID of many, but not all, CDMA chips. If you flash the MEID of
+  phone A onto phone B, the carrier network has no way of distinguishing between
+  phone A and phone B, and phone B is able to make and receive calls, send and
+  receive messages etc. as phone A. Unsurprisingly, this is illegal in many
+  countries, including the U.S., and as such I will not discuss it here.
+</p>
+</li>
+<li>
+<p>
+<strong>Phone / account numbers</strong>: known as MDN and MIN, these store the phone and
+  account numbers associated with the phone.
+</p>
+</li>
+<li>
+<p>
+<strong>2G/3G data account information</strong>: user names and passwords used to connect to
+  data services. Some carriers have stronger (harder to impersonate)
+  authentication systems than others; for instance, Verizon Wireless requires
+  two encrypted passwords and a secret key in the EFS file system on the CDMA
+  chip; Boost Mobile only requires two passwords; while MetroPCS simply accepts
+  the SPC/MSL code (see below) as the password. Note that 2G and 3G are
+  unrelated systems with independent authentication; a phone can have valid 3G
+  credentials and thus connect to 3G while being denied a 2G connection.
+</p>
+</li>
+<li>
+<p>
+<strong>PRL (Preferred Roaming List)</strong>: a list of towers the phone can connect to. This
+  is of course carrier- and location-specific. In some cases, updating the PRL
+  (by calling a special number) can improve reception and save battery when the
+  phone moves to a new geographical area; see
+  <a href="http://www.verizonwireless.com/care/popups/prl.html">Verizon Wireless&#8217;s
+  explanation</a>, for example.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Software such as CDMA Workshop, DFS, QXDM/QPST can be used to read / write
+information stored on a CDMA chip from a computer. Often, however, a 6-digit
+passcode known as the SPC code or the MSL code is required. This SPC/MSL code,
+again stored inside the CDMA chip, is either randomly assigned by the carrier
+(this is the case for Verizon Wireless and Sprint) or deterministically computed
+based on the MEID (MetroPCS). In the former case, there are a variety of tricks
+for retrieving the SPC/MSL code from the phone itself,; Google is your friend
+there. In the latter case, there are sites for computing the code from the MEID.
+Once it is known, the SPC/MSL code can be changed to any 6-digit number; some
+phones may even allow you to overwrite the SPC/MSL code without knowing it
+first.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_carrier_configuration_in_the_android_os">Carrier configuration in the Android OS</h3>
+<div class="paragraph"><p>To figure out what system files in the Android OS contain carrier information, I
+inspected source code and images of ROMS for the Samsung Galaxy Nexus (Sprint
+and Verizon Wireless), the Samsung Nexus S 4G (Sprint), the HTC Incredible
+(Verizon Wireless), and the Motorola Droid 3 (Verizon Wireless). I found three
+places that store carrier-specific information.</p></div>
+<div class="paragraph"><p>The first is <code>/system/build.prop</code>. Sprint phones contain the following lines:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ro.cdma.home.operator.numeric=310120
+ro.cdma.home.operator.alpha=Sprint</code></pre>
+</div></div>
+<div class="paragraph"><p>while Verizon Wireless phones contain the following lines instead:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ro.cdma.home.operator.numeric=310004
+ro.cdma.home.operator.alpha=Verizon
+ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83</code></pre>
+</div></div>
+<div class="paragraph"><p>These settings apply to phone calls. If one adopts the Sprint configuration on a
+Verizon Wireless phone, for example, the phone would ring very briefly on a
+call, but would be unable to actually make or receive calls. The
+<code>ro.cdma.homesystem</code> specifies a list of indices into the PRL that represent
+"home" or non-roaming networks.</p></div>
+<div class="paragraph"><p>The second configuration file is <code>eri.xml</code>, which is compiled into the file
+<code>/res/xml/eri.xml</code> inside the system package
+<code>/system/framework/framework-res.apk</code> on an Android system. This file tells the
+OS what it needs to display about a particular network (as an index into the
+PRL); for an example, take a look at
+<a href="https://android.googlesource.com/device/samsung/toroplus/<code>/refs/tags/android-4.2_r1/overlay/frameworks/base/core/res/res/xml/eri.xml">the
+stock +eri.xml</code> for the Sprint Galaxy Nexus</a> or
+<a href="https://github.com/CyanogenMod/android_device_samsung_toro/blob/ics/overlay/frameworks/base/core/res/res/xml/eri.xml">the
+CyanogenMod <code>eri.xml</code> for the Verizon Wireless Galaxy Nexus</a>. In particular,
+this file instructs the OS whether to consider a network (tower) to be roaming
+(so whether a roaming icon is displayed), and gives the name of the network
+(tower) to be shown in the UI. It must be stressed that this file <em>has no
+functional effect</em>; all it changes is how the OS displays information about
+networks. Since APK packages are just ZIP archives, it is easy to replace the
+<code>eri.xml</code> within to change roaming and name settings for networks; note,
+however, that the file inside the APK is not a plain text XML, but some compiled
+binary form; you may need to Google for the appropriate binary form pulled from
+another phone.</p></div>
+<div class="paragraph"><p>The last configuration file is <code>/system/etc/apns-conf.xml</code>. This file contains
+APN settings for 4G and MMS. See the stock APN settings file for the
+<a href="https://android.googlesource.com/device/samsung/crespo4g/+/refs/heads/jb-release/4g-apns-conf.xml">Sprint
+Nexus S 4G</a> or the
+<a href="https://github.com/CyanogenMod/android_vendor_cm/blob/ics/prebuilt/common/etc/apns-conf-cdma.xml">default
+CyanogenMod APN settings</a>.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Nov 15, 2012
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html" rel="bookmark">
+      Using ALSA audio drivers in Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-10-23T21:13:53-07:00">
+          Oct 23, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>,            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>While working on a port of the Gingerbread (2.3.7) userland of Android for the N810, I had to figure out how to add support for an audio chip with a working ALSA driver in an Android build. The information was out there but it took me a while to figure everything out, so here&#8217;s a brief summary of the process.</p></div>
+<div class="paragraph"><p>First, of course, ALSA drivers for the chip must be enabled in the kernel; to check whether they are working, see if <code>/dev/snd</code> is properly populated. If not, check if the driver has been compiled into the kernel and not as a module.</p></div>
+<div class="paragraph"><p>There are three libraries that act as intermediate layers between an ALSA sound device and the Android userland. Due to <a href="http://groups.google.com/group/android-building/msg/c73c14f9b0dcd15a?pli=1">the recent relocation of the Android source tree</a>, I used alternative URLs for the three libraries. The code (shamelessly stolen and modified from <a href="http://www.armadeus.com/wiki/index.php?title=Android#Audio">this Armadeus Wiki page</a>) is as follows, assuming <code>$ANDROID_SOURCE</code> points to the root of the checked-out Android source tree:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$ANDROID_SOURCE</span>/external
+git clone git://git.omapzoom.org/platform/external/alsa-lib.git
+git clone git://git.omapzoom.org/platform/external/alsa-utils.git
+
+<span class="nb">cd</span> <span class="nv">$ANDROID_SOURCE</span>/hardware
+git clone git://git.omapzoom.org/platform/hardware/alsa_sound.git
+</pre></div></div></div>
+<div class="paragraph"><p>However, a bogus commit to the last library in <code>platform/hardware/alsa_sound</code> breaks the build (as explained <a href="http://comments.gmane.org/gmane.comp.handhelds.android.porting/15792">in this thread</a>), hence:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$ANDROID_SOURCE</span>/hardware/alsa_sound
+git checkout ece3f1b6f1e6a67d02e42490eca6c7de62220b57
+</pre></div></div></div>
+<div class="paragraph"><p>Then, modify the <code>BoardConfig.mk</code> of your build to include:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nv">HAVE_HTC_AUDIO_DRIVER</span> <span class="o">:=</span> <span class="nb">false</span>
+<span class="nv">BOARD_USES_GENERIC_AUDIO</span> <span class="o">:=</span> <span class="nb">false</span>
+<span class="nv">BOARD_USES_ALSA_AUDIO</span> <span class="o">:=</span> <span class="nb">true</span>
+<span class="nv">BUILD_WITH_ALSA_UTILS</span> <span class="o">:=</span> <span class="nb">true</span>
+</pre></div></div></div>
+<div class="paragraph"><p>And that should do the trick.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Oct 23, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>,          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html" rel="bookmark">
+      How Rooting Works -- A Technical Explanation of the Android Rooting Process
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-10-19T21:55:36-07:00">
+          Oct 19, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p><img src="/assets/files/rooting_android.png"
+align="right"
+style="max-width: 200px; width: 25%; margin: 1.5em 0 1.5em 1.5em;">
+I have always been curious how rooting actually worked behind the scenes. After
+recently acquiring a new Eee Pad Slider, a Honeycomb tablet that so far no one
+has been able to root, the frustration of being locked out of this amazing piece
+of hardware with so much potential led me to finally sit down and figure out
+what exactly rooting means, what it entails from a technical perspective, and
+how hackers out in the wild are approaching the rooting of a new device.
+Although all this information is out there, I have not been able to find a good
+article that had both the level of technical detail that I wanted and an
+appropriate introduction to the big picture, and so I decided to write my own.</p></div>
+<div class="paragraph"><p>This is NOT a noob-friendly guide to rooting a particular Android device.
+Rather, it is a general explanation of how stock Android ROMs try to prevent
+unprivileged access, how hackers attack this problem and how rooting software
+leverage various exploits to defeat these security mechanisms.</p></div>
+<div class="sect2">
+<h3 id="_i_the_goal">I. The Goal</h3>
+<div class="paragraph"><p>Let us first take a step back and consider <em>exactly</em> what we mean by rooting.
+Forget flashing custom ROMs, enabling WiFi tethering or installing
+Superuser.apk; fundamentally, rooting is about obtaining root access to the
+underlying Linux system beneath Android and thus gaining absolute control over
+the software that is running on the device. Things that require root access on a
+typical Linux system&#8201;&#8212;&#8201;mounting and unmounting file systems, starting your
+favorite SSH or HTTP or DHCP or DNS or proxy servers, killing system processes,
+chroot-ing, etc.,&#8201;&#8212;&#8201;require root access on Android as well. Being able to run
+arbitrary commands as the root user allows you to do absolutely <em>anything</em> on a
+Linux / Android system, and this is real goal of rooting.</p></div>
+<div class="paragraph"><p>Stock OEM Android builds typically do not allow users to execute arbitrary code
+as root. This essentially means that you as a user are granted only limited
+control over your own device; you can make your device do task <em>X</em> only if the
+manufacturer explicitly decided to allow it and shipped a program to do it.  You
+will not be able to use third-party apps to accomplish a task that your
+manufacturer does not wish you to do. WiFi tethering is a good example of this.
+Cell phone carriers obviously do not want you to tether your phone without
+paying them additional charges. Therefore, many phones come pre-packaged with
+their own proprietary WiFi tethering apps that demand extraneous fees. But
+without root access, you will not be able to install a free alternative like
+<a href="http://code.google.com/p/android-wifi-tether/"> Wireless Tether For Root
+Users</a>. Why this is accepted practice in the industry is a mystery to me.  The
+only difference between cell phones, tablets and computers is their form factor;
+but while a PC vendor would fail spectacularly if they tried to prevent users
+from running arbitrary programs on their machines, cell phone vendors are
+clearly not judged along the same lines. But such arguments would belong to
+another article.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_ii_the_enemy_protection_mechanisms_on_a_stock_oem_android_rom">II. The Enemy: Protection Mechanisms On A Stock OEM Android ROM</h3>
+<div class="sect3">
+<h4 id="_1_bootloader_and_recovery">1. Bootloader and Recovery</h4>
+<div class="paragraph"><p>The bootloader, the first piece of code executed when your device is powered on,
+is responsible for loading the Android OS and the recovery system and flashing a
+new ROM. People refer to some bootloaders as "unlocked" if a user can flash and
+boot arbitrary ROMs without hacking; unfortunately, many Android devices have
+locked bootloaders that you would have to hack around in order to make them do
+anything other than boot the stock ROM. A Samsung smartphone I had used some
+months ago had an unlocked bootloader; I could press a certain combination of
+hardware keys on the phone, connect it to my computer, and flash any custom ROM
+onto it using Samsung&#8217;s utilities without having to circumvent any protection
+mechanisms. The same is not true for my Motorola Droid 2 Global; the bootloader,
+as far as I know, cannot be hacked. The Eee Pad Slider, on the other hand, is an
+interesting beast; as with other nVidia Tegra 2 based devices, its bootloader is
+controllable through the <code>nvflash</code> utility, but only if you know the <em>secure
+boot key</em> (SBK) of the device.  (The SBK is a private AES key used to encrypt
+the commands sent to the bootloader; the bootloader will only accept the command
+if it has been encrypted by the particular key of the device.) Currently, as the
+SBK of the Eee Pad Slider is not publicly known, the bootloader remains
+inaccessible.</p></div>
+<div class="paragraph"><p>System recovery is the second piece of low-level code on board any Android
+device. It is separate from the Android userland and is typically located on its
+own partition; it is usually booted by the bootloader when you press a certain
+combination of hardware keys. It is important to understand that it is a totally
+independent program; Linux and the Android userland is not loaded when you boot
+into recovery, and any high-level concept such as root does not exist here. It
+is simple program that really is a very primitive OS, and it has absolute
+control over the system and will do anything you want as long as the code to do
+it is built in. Stock recovery varies with the manufacturer, but often includes
+functionalities like reformatting the <code>/data</code> partition (factory reset) and
+flashing an update ROM (<code>update.zip</code>, located at the root of the external
+microSD card) signed by the manufacturer.  Note I said <em>signed by the
+manufacturer</em>; typically it is not possible to flash custom update files unless
+you obtain the private key of the manufacturer and sign your custom update with
+it, which is both impossible for most and illegal under certain jurisdictions.
+However, since recovery is stored in a partition just like <code>/system</code>, <code>/data</code>
+and <code>/cache</code> (more about that later), you can replace it with a custom recovery
+if you have root access in Linux / Android.  Most people do just that upon
+rooting their device; <a href="http://www.clockworkmod.com/">ClockworkMod Recovery</a>
+is a popular third-party recovery image, and allows you to flash arbitrary ROMs,
+backup and restore partitions, and lots of other magic.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_2_adb">2. ADB</h4>
+<div class="paragraph"><p>ADB (see
+<a href="http://developer.android.com/guide/developing/tools/adb.html">the official documentation for ADB</a>)
+allows a PC or a Mac to connect to an Android device and perform certain
+operations. One such operation is to launch a simple shell on the device, using
+the command <code>adb shell</code>. The real question is what user do the commands executed
+by that shell process run as. It turns out that it depends on the value of an
+Android system property, named <code>ro.secure</code>. (You can view the value of this
+property by typing <code>getprop ro.secure</code> either through an ADB shell or on a
+terminal emulator on the device.) If <code>ro.secure=0</code>, an ADB shell will run
+commands as the root user on the device. But if <code>ro.secure=1</code>, an ADB shell will
+run commands as an unprivileged user on the device. Guess what <code>ro.secure</code> is
+set to on almost every stock OEM Android build. But can we change the value of
+<code>ro.secure</code> on a system? The answer is no, as implied by the <code>ro</code> in the name of
+the property. The value of this property is set at boot time from the
+<code>default.prop</code> file in the root directory. The contents of the root directory
+are essentially <em>copied</em> from a partition in the internal storage on boot, but
+you cannot write to the partition if you are not already root. In other words,
+this property denies root access via ADB, and the only way you could change it
+is by gaining root access in the first place. Thus, it is secure.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_3_android_ui">3. Android UI</h4>
+<div class="paragraph"><p>On an Android system, all Android applications that you can see or interact with
+directly are running as _un_privileged users in sandboxes. Logically, a program
+running as an unprivileged user cannot start another program that is run as the
+privileged user; otherwise any program can simply start another copy of itself
+in privileged mode and gain privileged access to everything. On the other hand,
+a program running as root can start another program as root or as an
+unprivileged user. On Linux, privilege escalation is usually accomplished via
+the <code>su</code> and <code>sudo</code> programs; they are often the only programs in the system
+that are able to execute the system call <code>setuid(0)</code> that changes the current
+program from running as an unprivileged user to running as root.  Apps that
+label themselves as requiring root are in reality just executing other programs
+(often just native binaries packaged with the app) through <code>su</code>. Unsurprisingly,
+stock OEM ROMs never come with these <code>su</code>. You cannot just download it or copy
+it over either; it needs to have its SUID bit set, which indicates to the system
+that the programs this allowed to escalate its runtime privileges to root. But
+of course, if you are not root, you cannot set the SUID bit on a program. To
+summarize, what this means is that any program that you can interact with on
+Android (and hence running in unprivileged mode) is unable to either 1) gain
+privileged access and execute in privileged mode, or 2) start another program
+that executes in privileged mode.  If this holds, the Android system by itself
+is pretty much immune to privilege escalation attempts. We will see the loophole
+exploited by on-device rooting applications in the next section.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_iii_fighting_the_system">III. Fighting the System</h3>
+<div class="paragraph"><p>So how the hell do you root an Android? Well, from the security mechanisms
+described above, we can figure out how to attack each component in turn.</p></div>
+<div class="paragraph"><p>If your device happens to have an unlocked bootloader, you&#8217;re pretty much done.
+An example is the Samsung phone that I had had. Since the bootloader allowed the
+flashing of arbitrary ROMs, somebody essentially pulled the stock ROM from the
+phone (using <code>dd</code>), added <code>su</code>, and repackaged it into a modified ROM. All I as
+a user needed to do was to power off the phone, press a certain combination of
+hardware keys to start the phone in flashing mode, and use Samsung&#8217;s utilities
+to flash the modified ROM onto the phone.</p></div>
+<div class="paragraph"><p>Believe it or not, certain manufacturers don&#8217;t actually set <code>ro.secure</code> to 1. If
+that is the case, rooting is even easier; just plug the phone into your computer
+and run ADB, and you now have a shell that can execute any program as root. You
+can then mount <code>/system</code> as read-write, install <code>su</code> and all your dreams have
+come true.</p></div>
+<div class="paragraph"><p>But many other Android devices have locked bootloaders and <code>ro.secure</code> set. As
+explained above, they should not be root-able because you can only interact with
+unprivileged programs on the system and they cannot help you execute any
+privileged code. So what&#8217;s the solution?</p></div>
+<div class="paragraph"><p>We know that a number of important programs, including low-level system
+services, must run as root even on Android in order to access hardware
+resources. Typing <code>ps</code> on an Android shell (either via ADB or a terminal
+emulator on the device) will give you an idea. These programs are started by the
+<code>init</code> process, the first process started by the kernel (I often feel that the
+kernel and the <code>init</code> process are kind of analogous to Adam and Eve&#8201;&#8212;&#8201;the
+kernel spawns <code>init</code> in a particular fashion, and <code>init</code> then goes on and spawns
+all other processes) which has to run as root because it needs to start other
+privileged system processes.</p></div>
+<div class="paragraph"><p>Now here&#8217;s the key insight: if you can hack / trick one of these system
+processes running in privileged mode to execute your arbitrary code, you have
+just gained privileged access to the system. This how all one-click-root methods
+work, including z4root, gingerbreak, and so on. If you are truly curious, I
+highly recommend
+<a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent
+presentation on the various exploits used by current rooting tools</a>, but the
+details are not as relevant here as the simple idea behind them. That idea is
+that there are vulnerabilities in the system processes running as root in the
+background that, if exploited, will allow us to execute arbitrary code as root.
+Well, that "arbitrary code" is most certainly a piece of code that mounts
+<code>/system</code> in read-write mode and installs a copy of <code>su</code> permanently on the
+system, so that from then on we don&#8217;t need to jump through the hoops to run the
+programs we really wanted to run in the first place.</p></div>
+<div class="paragraph"><p>Since Android is open source as is Linux, what people have done is to scrutinize
+and reason about the source code of the various system services until they find
+a security hole they can leverage. This becomes increasingly hard as Google and
+the maintainers of the various pieces of code fix those particular
+vulnerabilities when they are discovered and published, which means that the
+exploits will eventually become obsolete with newer devices. But the good news
+is that manufacturers are not stupid enough to push OTA updates to fix a
+vulnerability just to prevent rooting as it is very expensive for them; in
+addition, devices in the market are always lagging behind the newest software
+releases. Thus, it takes quite some time before these rooting tools are rendered
+useless by new patches, and by then hopefully other exploits would have been
+discovered.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_iv_see_it_in_action">IV. See It In Action!</h3>
+<div class="paragraph"><p>To see all of this in action, you are invited to check out my follow-up article:
+<a href="/posts/android-rooting-a-developer-s-guide.html">Android Rooting: A
+Developer&#8217;s Guide</a>, which explains how I applied this stuff to figure out how to
+root an actual device.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Oct 19, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+<div>
+  <ul class="pager">
+    <li class="previous"><a href="http://seasonofcode.com/tag/featured.html">&larr; Previous</a></li>
+    <li class="next"><a href="http://seasonofcode.com/tag/featured3.html">Next &rarr;</a></li>
+  </ul>
+</div>
+    </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Internal input event handling in the Linux kernel and the Android userspace - Season of Code</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link href="http://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="http://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="http://seasonofcode.com/theme/style.min.css?ddff292a" rel="stylesheet" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://seasonofcode.com/theme/html5shiv.min.js"></script>
+    <script src="http://seasonofcode.com/theme/respond.min.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://seasonofcode.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Full Atom Feed" />
+    <link href="http://seasonofcode.com/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="Season of Code Categories Atom Feed" />
+
+    <meta name="google-site-verification" content="g_MrQjKfWWKOccQYg--leY8NlSev0om0sy2vrBLYoZU">
+    <meta name="google-site-verification" content="_r0m7LYlH2JjDgeTysX9Fv0OzQG1xUEAU6x2uSr9nH8">
+
+    <meta name="msvalidate.01" content="F10D3C66876F50983761BFE53E2B943A4">
+
+  <link rel="canonical" href="http://seasonofcode.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace.html">
+  </head>
+  <body id="index" class="archive">
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav id="header" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="http://seasonofcode.com">
+            season <span class="of">of</span> code
+          </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://seasonofcode.com/tag/featured.html">Featured</a>
+            </li>
+            <li id="header-tags-dropdown" class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                role="button">Tags <i class="fa fa-caret-down"></i></a>
+              <ul class="dropdown-menu">
+                  <li><a href="http://seasonofcode.com/tag/android.html">Android</a></li>
+                  <li><a href="http://seasonofcode.com/tag/c.html">C++</a></li>
+                  <li><a href="http://seasonofcode.com/tag/featured.html">Featured</a></li>
+                  <li><a href="http://seasonofcode.com/tag/linux.html">Linux</a></li>
+                  <li><a href="http://seasonofcode.com/tag/misc.html">Misc</a></li>
+                  <li><a href="http://seasonofcode.com/tag/projects.html">Projects</a></li>
+                  <li><a href="http://seasonofcode.com/tag/python.html">Python</a></li>
+                  <li><a href="http://seasonofcode.com/tag/window-manager.html">Window Manager</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="http://seasonofcode.com/archives.html">Archives</a>
+            </li>
+            <li><a href="http://seasonofcode.com/pages/about.html">About</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+  <section id="content" class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace.html" rel="bookmark">
+      Internal input event handling in the Linux kernel and the Android userspace
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-14T20:53:39-07:00">
+          May 14, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>While figuring out hardware buttons for my NITDroid project, I had the opportunity of exploring the way Linux and Android handle input events internally before passing them through to the user application. This post traces the propagation of an input event from the Linux kernel through the Android userspace as far as I understand it. Although the principles are likely the same for essentially any input device, I will be drawing on my investigations of the drivers for the LM8323 hardware keyboard (<code>drivers/input/keyboard/lm8323.c</code>) and the TSC2005 touchscreen (<code>drivers/input/touchscreen/tsc2005.c</code>) which are both found inside the Nokia N810.</p></div>
+<div class="sect2">
+<h3 id="_i_inside_the_linux_kernel">I. Inside the Linux kernel</h3>
+<div class="paragraph"><p>Firstly, Linux exposes externally a uniform input event interface for each device as <code>/dev/input/eventX</code> where <code>X</code> is an integer. This means these "devices" can be polled in the same way and the events they produce are in the same uniform format. To accomplish this, Linux has a standard set of routines that every device driver uses to register / unregister the hardware it manages and publish input events it receives.</p></div>
+<div class="paragraph"><p>When the driver module of an input device is first loaded into the kernel, its initialization routine usually sets up some sort of probing to detect the presence of the types of hardware it is supposed to manage. This probing is of course device-specific; however, if it is successful, the module will eventually invoke the function <code>input_register_device(&#8230;)</code> in <code>include/linux/input.h</code> which sets up a file representing the physical device as <code>/dev/input/eventX</code> where <code>X</code> is some integer. The module will also register a function to handle IRQs originating from the hardware it manages via <code>request_irq(&#8230;)</code> (<code>include/linux/interrupt.h</code>) so that the module will be notified when the user interacts with the physical device it manages.</p></div>
+<div class="paragraph"><p>When the user physically interacts with the hardware (for instance by pushing / releasing a key or exerting / lifting pressure on the touchscreen), an IRQ is fired and Linux invokes the IRQ handler registered by the corresponding device driver. However, IRQ handlers by custom must return quickly as they essentially block the entire system when executing and thus cannot perform any lengthy processing; typically, therefore, an IRQ handler would merely 1) save the data carried by the IRQ, 2) ask the kernel to schedule a method that would process the event later on when we have exited IRQ mode, and 3) tell the kernel we have handled the IRQ and exit. This could be very straightforward, as the IRQ handler in the driver for the LM8323 keyboard inside the N810:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm"> * We cannot use I2C in interrupt context, so we just schedule work.</span>
+<span class="cm"> */</span>
+<span class="k">static</span> <span class="kt">irqreturn_t</span> <span class="nf">lm8323_irq</span><span class="p">(</span><span class="kt">int</span> <span class="n">irq</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">struct</span> <span class="n">lm8323_chip</span> <span class="o">*</span><span class="n">lm</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+
+        <span class="n">schedule_work</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lm</span><span class="o">-&gt;</span><span class="n">work</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="n">IRQ_HANDLED</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>It could also be more complex as the one in the driver of the TSC2005 touchscreen controller (<code>tsc2005_ts_irq_handler(&#8230;)</code>) as it integrates into the SPI framework (which I have never looked into&#8230;).</p></div>
+<div class="paragraph"><p>Some time later, the kernel executes the scheduled method to process the recently saved event. Invariably, this method would report the event in a standard format by calling one or more of the <code>input_*</code> functions in <code>include/linux/input.h</code>; these include <code>input_event(&#8230;)</code> (general purpose), <code>input_report_key(&#8230;)</code> (for key down and key up events), <code>input_report_abs(&#8230;)</code> (for position events e.g. from a touchscreen) among others. Note that the <code>input_report_*(&#8230;)</code> functions are really just convenience functions that call <code>input_event(&#8230;)</code> internally, as defined in <code>include/linux/input.h</code>. It is likely that a lot of processing happens before the event is published via these methods; the LM8323 driver for instance does an internal key code mapping step and the TSC2005 driver goes through this crazy arithmetic involving Ohms (to calculate a pressure index from resistance data?). Furthermore, one physical IRQ could correspond to multiple published input events, and vice versa. Finally, when all event publishing is finished, the event processing method calls <code>input_sync(&#8230;)</code> to flush the event out. The event is now ready to be accessed by the userspace at <code>/dev/input/eventX</code>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_ii_inside_the_android_userspace">II. Inside the Android userspace</h3>
+<div class="paragraph"><p>When the Android GUI starts up, an instance of the class <code>WindowManagerService</code> (<code>frameworks/base/services/java/com/android/server/WindowManagerservice.java</code>) is created. This class, when constructed, initializes the member field</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kd">final</span> <span class="n">KeyQ</span> <span class="n">mQueue</span><span class="o">;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>where <code>KeyQ</code>, defined as a private class inside the same file, extends Android&#8217;s basic input handling class, the abstract class <code>KeyInputQueue</code> (<code>frameworks/base/services/java/com/android/server/KeyInputQueue.java</code> and <code>frameworks/base/services/jni/com_android_server_KeyInputQueue.cpp</code>). As <code>mQueue</code> is instantiated, it of course calls the constructor of <code>KeyInputQueue</code>; the latter, inconspicuously, starts an anonymous thread it owns that is at the heart of the event handling system in Android:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">Thread</span> <span class="n">mThread</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="s">&quot;InputDeviceReader&quot;</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="o">...</span>
+        <span class="n">RawInputEvent</span> <span class="n">ev</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RawInputEvent</span><span class="o">();</span>
+        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">readEvent</span><span class="o">(</span><span class="n">ev</span><span class="o">);</span>  <span class="c1">// block, doesn&#39;t release the monitor</span>
+
+                <span class="kt">boolean</span> <span class="n">send</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+                <span class="o">...</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_DEVICE_ADDED</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="o">...</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_DEVICE_REMOVED</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="o">...</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="n">di</span> <span class="o">=</span> <span class="n">getInputDevice</span><span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">deviceId</span><span class="o">);</span>
+                    <span class="o">...</span>
+                    <span class="c1">// first crack at it</span>
+                    <span class="n">send</span> <span class="o">=</span> <span class="n">preprocessEvent</span><span class="o">(</span><span class="n">di</span><span class="o">,</span> <span class="n">ev</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="o">...</span>
+                <span class="k">if</span> <span class="o">(!</span><span class="n">send</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mFirst</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="o">...</span>
+                    <span class="c1">// Is it a key event?</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_KEY</span> <span class="o">&amp;&amp;</span>
+                            <span class="o">(</span><span class="n">classes</span><span class="o">&amp;</span><span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_KEYBOARD</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
+                            <span class="o">(</span><span class="n">scancode</span> <span class="o">&lt;</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">BTN_FIRST</span> <span class="o">||</span>
+                                    <span class="n">scancode</span> <span class="o">&gt;</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">BTN_LAST</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="kt">boolean</span> <span class="n">down</span><span class="o">;</span>
+                        <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">down</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                            <span class="n">di</span><span class="o">.</span><span class="na">mKeyDownTime</span> <span class="o">=</span> <span class="n">curTime</span><span class="o">;</span>
+                        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                            <span class="n">down</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+                        <span class="o">}</span>
+                        <span class="kt">int</span> <span class="n">keycode</span> <span class="o">=</span> <span class="n">rotateKeyCodeLocked</span><span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">keycode</span><span class="o">);</span>
+                        <span class="n">addLocked</span><span class="o">(</span><span class="n">di</span><span class="o">,</span> <span class="n">curTimeNano</span><span class="o">,</span> <span class="n">ev</span><span class="o">.</span><span class="na">flags</span><span class="o">,</span>
+                                <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_KEYBOARD</span><span class="o">,</span>
+                                <span class="n">newKeyEvent</span><span class="o">(</span><span class="n">di</span><span class="o">,</span> <span class="n">di</span><span class="o">.</span><span class="na">mKeyDownTime</span><span class="o">,</span> <span class="n">curTime</span><span class="o">,</span> <span class="n">down</span><span class="o">,</span>
+                                        <span class="n">keycode</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">scancode</span><span class="o">,</span>
+                                        <span class="o">((</span><span class="n">ev</span><span class="o">.</span><span class="na">flags</span> <span class="o">&amp;</span> <span class="n">WindowManagerPolicy</span><span class="o">.</span><span class="na">FLAG_WOKE_HERE</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span>
+                                         <span class="o">?</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">FLAG_WOKE_HERE</span> <span class="o">:</span> <span class="mi">0</span><span class="o">));</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_KEY</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="o">...</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_ABS</span> <span class="o">&amp;&amp;</span>
+                            <span class="o">(</span><span class="n">classes</span><span class="o">&amp;</span><span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TOUCHSCREEN_MT</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="c1">// Process position events from multitouch protocol.</span>
+                        <span class="o">...</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_ABS</span> <span class="o">&amp;&amp;</span>
+                            <span class="o">(</span><span class="n">classes</span><span class="o">&amp;</span><span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TOUCHSCREEN</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="c1">// Process position events from single touch protocol.</span>
+                        <span class="o">...</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">EV_REL</span> <span class="o">&amp;&amp;</span>
+                            <span class="o">(</span><span class="n">classes</span><span class="o">&amp;</span><span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TRACKBALL</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="c1">// Process movement events from trackball (mouse) protocol.</span>
+                        <span class="o">...</span>
+                    <span class="o">}</span>
+                    <span class="o">...</span>
+                <span class="o">}</span>
+
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">RuntimeException</span> <span class="n">exc</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Slog</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;InputReaderThread uncaught exception&quot;</span><span class="o">,</span> <span class="n">exc</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">};</span>
+</pre></div></div></div>
+<div class="paragraph"><p>I have removed most of this ~350 lined function that is irrelevant to our discussion and reformatted the code for easier reading. The key idea is that this independent thread will</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Read an event
+</p>
+</li>
+<li>
+<p>
+Call the <code>preprocess(&#8230;)</code> method of its derived class, offering the latter a chance to prevent the event from being propagated further
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>3.Add it to the event queue owned by the class</p></div>
+<div class="paragraph"><p>This <code>InputDeviceReader</code> thread started by <code>WindowManagerService</code> (indirectly via <code>KeyInputQueue&#8217;s constructor</code>) is thus THE event loop of the Android UI.</p></div>
+<div class="paragraph"><p>But we are still missing the link from the kernel to this <code>InputDeviceReader</code>. What exactly is this magical <code>readEvent(&#8230;)</code>? It turns out that this is actually a native method implemented in the C++ half of <code>KeyInputQueue</code>:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="k">static</span> <span class="n">Mutex</span> <span class="n">gLock</span><span class="p">;</span>
+<span class="k">static</span> <span class="n">sp</span><span class="o">&lt;</span><span class="n">EventHub</span><span class="o">&gt;</span> <span class="n">gHub</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="n">jboolean</span>
+<span class="nf">android_server_KeyInputQueue_readEvent</span><span class="p">(</span><span class="n">JNIEnv</span><span class="o">*</span> <span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">clazz</span><span class="p">,</span>
+                                          <span class="n">jobject</span> <span class="n">event</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">gLock</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+    <span class="n">sp</span><span class="o">&lt;</span><span class="n">EventHub</span><span class="o">&gt;</span> <span class="n">hub</span> <span class="o">=</span> <span class="n">gHub</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">hub</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">hub</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EventHub</span><span class="p">;</span>
+        <span class="n">gHub</span> <span class="o">=</span> <span class="n">hub</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">gLock</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+
+    <span class="p">...</span>
+    <span class="kt">bool</span> <span class="n">res</span> <span class="o">=</span> <span class="n">hub</span><span class="o">-&gt;</span><span class="n">getEvent</span><span class="p">(</span><span class="o">&amp;</span><span class="n">deviceId</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scancode</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">keycode</span><span class="p">,</span>
+            <span class="o">&amp;</span><span class="n">flags</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">when</span><span class="p">);</span>
+    <span class="p">...</span>
+
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Ah, so <code>readEvent</code> is really just a proxy for <code>EventHub::getEvent(&#8230;)</code>. If we proceed to look up <code>EventHub</code> in <code>frameworks/base/libs/ui/EventHub.cpp</code>, we find</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kt">int</span> <span class="n">EventHub</span><span class="o">::</span><span class="n">scan_dir</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dirname</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">dir</span> <span class="o">=</span> <span class="n">opendir</span><span class="p">(</span><span class="n">dirname</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="k">while</span><span class="p">((</span><span class="n">de</span> <span class="o">=</span> <span class="n">readdir</span><span class="p">(</span><span class="n">dir</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="p">...</span>
+        <span class="n">open_device</span><span class="p">(</span><span class="n">devname</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">closedir</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">...</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">device_path</span> <span class="o">=</span> <span class="s">&quot;/dev/input&quot;</span><span class="p">;</span>
+<span class="p">...</span>
+
+<span class="kt">bool</span> <span class="n">EventHub</span><span class="o">::</span><span class="n">openPlatformInput</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">scan_dir</span><span class="p">(</span><span class="n">device_path</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">EventHub</span><span class="o">::</span><span class="n">getEvent</span><span class="p">(</span><span class="kt">int32_t</span><span class="o">*</span> <span class="n">outDeviceId</span><span class="p">,</span> <span class="kt">int32_t</span><span class="o">*</span> <span class="n">outType</span><span class="p">,</span>
+        <span class="kt">int32_t</span><span class="o">*</span> <span class="n">outScancode</span><span class="p">,</span> <span class="kt">int32_t</span><span class="o">*</span> <span class="n">outKeycode</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">outFlags</span><span class="p">,</span>
+        <span class="kt">int32_t</span><span class="o">*</span> <span class="n">outValue</span><span class="p">,</span> <span class="kt">nsecs_t</span><span class="o">*</span> <span class="n">outWhen</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">mOpened</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mError</span> <span class="o">=</span> <span class="n">openPlatformInput</span><span class="p">()</span> <span class="o">?</span> <span class="nl">NO_ERROR</span> <span class="p">:</span> <span class="n">UNKNOWN_ERROR</span><span class="p">;</span>
+        <span class="n">mOpened</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// First, report any devices that had last been added/removed.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mClosingDevices</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">...</span>
+            <span class="o">*</span><span class="n">outType</span> <span class="o">=</span> <span class="n">DEVICE_REMOVED</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">device</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mOpeningDevices</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">...</span>
+            <span class="o">*</span><span class="n">outType</span> <span class="o">=</span> <span class="n">DEVICE_ADDED</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="p">...</span>
+        <span class="n">pollres</span> <span class="o">=</span> <span class="n">poll</span><span class="p">(</span><span class="n">mFDs</span><span class="p">,</span> <span class="n">mFDCount</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">...</span>
+
+        <span class="c1">// mFDs[0] is used for inotify, so process regular events starting at mFDs[1]</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mFDCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">mFDs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">revents</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">mFDs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">revents</span> <span class="o">&amp;</span> <span class="n">POLLIN</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">res</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">mFDs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iev</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">iev</span><span class="p">));</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">res</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">iev</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="p">...</span>
+                        <span class="o">*</span><span class="n">outType</span> <span class="o">=</span> <span class="n">iev</span><span class="p">.</span><span class="n">type</span><span class="p">;</span>
+                        <span class="o">*</span><span class="n">outScancode</span> <span class="o">=</span> <span class="n">iev</span><span class="p">.</span><span class="n">code</span><span class="p">;</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">iev</span><span class="p">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">EV_KEY</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="n">err</span> <span class="o">=</span> <span class="n">mDevices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">layoutMap</span><span class="o">-&gt;</span><span class="n">map</span><span class="p">(</span><span class="n">iev</span><span class="p">.</span><span class="n">code</span><span class="p">,</span> <span class="n">outKeycode</span><span class="p">,</span> <span class="n">outFlags</span><span class="p">);</span>
+                            <span class="p">...</span>
+                        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                            <span class="o">*</span><span class="n">outKeycode</span> <span class="o">=</span> <span class="n">iev</span><span class="p">.</span><span class="n">code</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="p">...</span>
+                        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="c1">// Error handling</span>
+                        <span class="p">...</span>
+                        <span class="k">continue</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Again, most of the details have been stripped out from the above code, but we now see how <code>readEvent()</code> in <code>KeyInputQueue</code> is getting these events from Linux: on first call, <code>EventHub::getEvent</code> scans the directory <code>/dev/input</code> for input devices, opens them and saves their file descriptors in an array called <code>mFDs</code>. Then whenever it is called again, it tries to read from each of these input devices by simply calling the <a href="http://linux.die.net/man/2/read"><code>read(2)</code></a> Linux system call.</p></div>
+<div class="paragraph"><p>OK, now we know how an event propagates through <code>EventHub::getEvent(&#8230;)</code> to <code>KeyInputQueue::readEvent(&#8230;)</code> then to <code>InputDeviceReader.run(&#8230;)</code> where it could get queued inside <code>WindowManagerService.mQueue</code> (which, as a reminder, extends the otherwise abstract <code>KeyInputQueue</code>). But what happens then? How does that event get to the client application?</p></div>
+<div class="paragraph"><p>Well, it turns out that <code>WindowManagerService</code> has yet another private member class that handles just that:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="kd">private</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">InputDispatcherThread</span> <span class="kd">extends</span> <span class="n">Thread</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">process</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Slog</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Exception in input dispatcher&quot;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">process</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">android</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">Process</span><span class="o">.</span><span class="na">setThreadPriority</span><span class="o">(</span>
+                <span class="n">android</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">Process</span><span class="o">.</span><span class="na">THREAD_PRIORITY_URGENT_DISPLAY</span><span class="o">);</span>
+        <span class="o">...</span>
+        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">...</span>
+            <span class="c1">// Retrieve next event, waiting only as long as the next</span>
+            <span class="c1">// repeat timeout.  If the configuration has changed, then</span>
+            <span class="c1">// don&#39;t wait at all -- we&#39;ll report the change as soon as</span>
+            <span class="c1">// we have processed all events.</span>
+            <span class="n">QueuedEvent</span> <span class="n">ev</span> <span class="o">=</span> <span class="n">mQueue</span><span class="o">.</span><span class="na">getEvent</span><span class="o">(</span>
+                <span class="o">(</span><span class="kt">int</span><span class="o">)((!</span><span class="n">configChanged</span> <span class="o">&amp;&amp;</span> <span class="n">curTime</span> <span class="o">&lt;</span> <span class="n">nextKeyTime</span><span class="o">)</span>
+                        <span class="o">?</span> <span class="o">(</span><span class="n">nextKeyTime</span><span class="o">-</span><span class="n">curTime</span><span class="o">)</span> <span class="o">:</span> <span class="mi">0</span><span class="o">));</span>
+            <span class="o">...</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">ev</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">curTime</span> <span class="o">=</span> <span class="n">SystemClock</span><span class="o">.</span><span class="na">uptimeMillis</span><span class="o">();</span>
+                    <span class="kt">int</span> <span class="n">eventType</span><span class="o">;</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">classType</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TOUCHSCREEN</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">eventType</span> <span class="o">=</span> <span class="n">eventType</span><span class="o">((</span><span class="n">MotionEvent</span><span class="o">)</span><span class="n">ev</span><span class="o">.</span><span class="na">event</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">classType</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_KEYBOARD</span> <span class="o">||</span>
+                                <span class="n">ev</span><span class="o">.</span><span class="na">classType</span> <span class="o">==</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TRACKBALL</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">eventType</span> <span class="o">=</span> <span class="n">LocalPowerManager</span><span class="o">.</span><span class="na">BUTTON_EVENT</span><span class="o">;</span>
+                    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                        <span class="n">eventType</span> <span class="o">=</span> <span class="n">LocalPowerManager</span><span class="o">.</span><span class="na">OTHER_EVENT</span><span class="o">;</span>
+                    <span class="o">}</span>
+                    <span class="o">...</span>
+                    <span class="k">switch</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">classType</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">case</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_KEYBOARD</span><span class="o">:</span>
+                            <span class="n">KeyEvent</span> <span class="n">ke</span> <span class="o">=</span> <span class="o">(</span><span class="n">KeyEvent</span><span class="o">)</span><span class="n">ev</span><span class="o">.</span><span class="na">event</span><span class="o">;</span>
+                            <span class="k">if</span> <span class="o">(</span><span class="n">ke</span><span class="o">.</span><span class="na">isDown</span><span class="o">())</span> <span class="o">{</span>
+                                <span class="n">lastKey</span> <span class="o">=</span> <span class="n">ke</span><span class="o">;</span>
+                                <span class="n">downTime</span> <span class="o">=</span> <span class="n">curTime</span><span class="o">;</span>
+                                <span class="n">keyRepeatCount</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+                                <span class="n">lastKeyTime</span> <span class="o">=</span> <span class="n">curTime</span><span class="o">;</span>
+                                <span class="n">nextKeyTime</span> <span class="o">=</span> <span class="n">lastKeyTime</span>
+                                        <span class="o">+</span> <span class="n">ViewConfiguration</span><span class="o">.</span><span class="na">getLongPressTimeout</span><span class="o">();</span>
+                            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                                <span class="n">lastKey</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+                                <span class="n">downTime</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+                                <span class="c1">// Arbitrary long timeout.</span>
+                                <span class="n">lastKeyTime</span> <span class="o">=</span> <span class="n">curTime</span><span class="o">;</span>
+                                <span class="n">nextKeyTime</span> <span class="o">=</span> <span class="n">curTime</span> <span class="o">+</span> <span class="n">LONG_WAIT</span><span class="o">;</span>
+                            <span class="o">}</span>
+                            <span class="n">dispatchKey</span><span class="o">((</span><span class="n">KeyEvent</span><span class="o">)</span><span class="n">ev</span><span class="o">.</span><span class="na">event</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+                            <span class="n">mQueue</span><span class="o">.</span><span class="na">recycleEvent</span><span class="o">(</span><span class="n">ev</span><span class="o">);</span>
+                            <span class="k">break</span><span class="o">;</span>
+                        <span class="k">case</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TOUCHSCREEN</span><span class="o">:</span>
+                            <span class="n">dispatchPointer</span><span class="o">(</span><span class="n">ev</span><span class="o">,</span> <span class="o">(</span><span class="n">MotionEvent</span><span class="o">)</span><span class="n">ev</span><span class="o">.</span><span class="na">event</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+                            <span class="k">break</span><span class="o">;</span>
+                        <span class="k">case</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_TRACKBALL</span><span class="o">:</span>
+                            <span class="n">dispatchTrackball</span><span class="o">(</span><span class="n">ev</span><span class="o">,</span> <span class="o">(</span><span class="n">MotionEvent</span><span class="o">)</span><span class="n">ev</span><span class="o">.</span><span class="na">event</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+                            <span class="k">break</span><span class="o">;</span>
+                        <span class="k">case</span> <span class="n">RawInputEvent</span><span class="o">.</span><span class="na">CLASS_CONFIGURATION_CHANGED</span><span class="o">:</span>
+                            <span class="n">configChanged</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                            <span class="k">break</span><span class="o">;</span>
+                        <span class="k">default</span><span class="o">:</span>
+                            <span class="n">mQueue</span><span class="o">.</span><span class="na">recycleEvent</span><span class="o">(</span><span class="n">ev</span><span class="o">);</span>
+                        <span class="k">break</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">configChanged</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="o">...</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">lastKey</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="o">...</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="o">...</span>
+                <span class="o">}</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Slog</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span>
+                    <span class="s">&quot;Input thread received uncaught exception: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>As we can see, this thread started by <code>WindowManagerService</code> is very simple; all it does is</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Grabs events queued into <code>WindowManagerService.mQueue</code>
+</p>
+</li>
+<li>
+<p>
+Calls <code>WindowManagerService.dispatchKey(&#8230;)</code> when appropriate.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>If we next inspect <code>WindowManagerService.dispatchKey(&#8230;)</code>, we would see that it checks the currently focused window, and calls <code>android.view.IWindow.dispatchKey(&#8230;)</code> on that window. The event is now in the user space.</p></div>
+<div class="paragraph"><p>I put together some nice diagrams that illustrate these interactions. The conceptual model:</p></div>
+<div class="paragraph"><p><div align="center">
+<strong>Event propagation flow on Android - simplified version</strong>
+<img
+src="https://docs.google.com/drawings/d/1qgD3O5ZZk1cC5tq6kLd_jKEtXx4P1Ty4wsSAHRKfhiU/pub?w=962&h=422"
+style="width: 100%; max-width: 962px;"
+alt="Event propagation flow on Android - simplified version">
+</div></p></div>
+<div class="paragraph"><p>The full model:
+<div align="center">
+<strong>Event propagation flow on Android</strong>
+<img
+src="https://docs.google.com/drawings/d/1VNaRYLdN5fOEz32XMzIR-ygphE-VD16CZltgV3aXavs/pub?w=750&h=902"
+style="width: 100%; max-width: 750px;"
+alt="Event propagation flow on Android">
+</div></p></div>
+<div class="paragraph"><p>The yellow boxes are Java implementations, and the blue boxes native or other.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 14, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article><div id="author-box">
+  <table id="author-box-content">
+    <tr>
+      <td class="hidden-xs">
+        <a rel="author" href="https://plus.google.com/115396580584561637180">
+          <div id="author-box-image"
+            style="background-image: url(//graph.facebook.com/593659245/picture?type=large)"></div>
+        </a>
+      </td>
+      <td id="author-box-info">
+        <p id="author-box-info-title">
+          About the author
+        </p>
+        <p id="author-box-info-bio">
+          
+I am a software engineer by profession and a passionate technology geek in
+my free time.
+
+        </p>
+        <p id="author-box-info-links">
+          Check out
+          <a href="/pages/about.html">my bio</a>, or find me on
+          <a href="https://plus.google.com/115396580584561637180">Google+</a>.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- Comment BEGIN -->
+<p></p><p></p>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'cjix';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<!-- Comment END -->
+  </section>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">&copy; <a href="http://seasonofcode.com">Season of Code</a></p>
+      </div>
+    </footer>
+    <script src="http://seasonofcode.com/theme/jquery.min.js"></script>
+    <script src="http://seasonofcode.com/theme/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21264754-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
