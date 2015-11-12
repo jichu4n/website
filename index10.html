@@ -78,6 +78,76 @@
 <article itemscope itemtype="http://schema.org/Article">
   <header>
     <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html" rel="bookmark">
+      Integrating tmr's N800 patch
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-10T04:44:45-08:00">
+          Feb 10, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I integrated tmr&#8217;s N800 patch (in <a href="http://talk.maemo.org/showthread.php?t=49660">this thread</a> I mentioned in the previous post) into the <code>archive/android-omap-2.6.32</code> branch of the Android OMAP tree (commit 69a7364c16c5aeb246dbb4c4e7696e39841492f5). The output of just running <code>patch</code> with tmr&#8217;s patch is found <a href="/assets/files/nitdroid/tmr_patch_log.txt">here</a> and the output of <code>git diff</code> is <a href="/assets/files/nitdroid/tmr_patch_mod.diff">here</a>.</p></div>
+<div class="paragraph"><p>I don&#8217;t have a working <code>.config</code> yet, and I haven&#8217;t actually tried building the kernel. Will do that another time.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 10, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/integrating-tmrs-n800-patch.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
       <a itemprop="name" href="http://seasonofcode.com/posts/confusion.html" rel="bookmark">
       Confusion
       </a>
@@ -452,214 +522,6 @@ instead of as modules, but to no avail. Further investigation pending.</p></div>
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="http://seasonofcode.com/posts/new-website.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html" rel="bookmark">
-      Building a cross-compiler toolchain for the N810 and initial kernel compilation
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-02-07T04:38:38-08:00">
-          Feb 07, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>It turns out that setting up a cross-compiler toolchain is not as easy as it seemed - it took me over 6 hours to figure out. Anyway this all started because none of the the cross-compiler toolchains available in the Arch repos (<code>cross-arm-elf-<strong></code> in community, <code>cross-arm-none-eabi-</strong></code> and <code>arm-2010-arm-none-eabi</code> in the AUR) could compile the Maemo kernel, which I was testing the toolchains on. So I had to build my own.</p></div>
-<div class="paragraph"><p>In general, building a cross-compiler toolchain involves the following steps:</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-Build binutils with the configure argument <code>--target=TARGET</code>. This is because GCC depends on binutils to generate and link binary code.
-</p>
-</li>
-<li>
-<p>
-Build GCC, pass 1. Only a small GCC with minimal functionality is built here (again with <code>--target=TARGET</code>), as we do not yet have glibc compiled for the target platform and the more advanced features of GCC require glibc. After this step, it is now possible to build actual binaries and libraries for the target platform.
-</p>
-</li>
-<li>
-<p>
-Build glibc with the configure argument <code>--host=TARGET</code> using the freshly built 1st-pass GCC.
-</p>
-</li>
-<li>
-<p>
-Build GCC, pass 2. This GCC will be linked against the newly built glibc.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>In this case, however, I only need the toolchain to build the Linux kernel, which does not depend on glibc but rather has its own version of the C library (klibc). Therefore, I only need to do steps #1 and #2 above.</p></div>
-<div class="paragraph"><p>Binutils was fairly straight-forward. I basically stole the PKGBUILD from the <code>cross-arm-elf-binutils</code> package in the community repository of Arch and changed the compile target from <code>arm-elf</code> to <code>arm-linux-gnueabi</code> which Maemo apparently calls itself. The PKGBUILD is as follows:</p></div>
-<div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="c"># Maintainer: Chuan Ji</span>
-
-<span class="nv">_target</span><span class="o">=</span>arm-linux-gnueabi
-<span class="nv">pkgname</span><span class="o">=</span>cross-<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-binutils
-<span class="nv">pkgver</span><span class="o">=</span>2.21
-<span class="nv">pkgrel</span><span class="o">=</span>1
-<span class="nv">pkgdesc</span><span class="o">=</span><span class="s2">&quot;A set of programs to assemble and manipulate binary and object files&quot;</span>
-<span class="nv">arch</span><span class="o">=(</span>i686 x86_64<span class="o">)</span>
-<span class="nv">license</span><span class="o">=(</span>GPL<span class="o">)</span>
-<span class="nv">options</span><span class="o">=(</span>!libtool<span class="o">)</span>
-<span class="nv">url</span><span class="o">=</span><span class="s2">&quot;http://sources.redhat.com/binutils&quot;</span>
-<span class="nv">depends</span><span class="o">=(</span><span class="s1">&#39;glibc&#39;</span> <span class="s1">&#39;bzip2&#39;</span><span class="o">)</span>
-<span class="nb">source</span><span class="o">=(</span>ftp://ftp.gnu.org/gnu/binutils/binutils-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>.tar.bz2<span class="o">)</span>
-<span class="nv">md5sums</span><span class="o">=(</span><span class="s1">&#39;c84c5acc9d266f1a7044b51c85a823f5&#39;</span><span class="o">)</span>
-
-build<span class="o">()</span> <span class="o">{</span>
-  <span class="nb">cd</span> <span class="nv">$srcdir</span>/binutils-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>
-
-  <span class="o">[</span> <span class="nv">$NOEXTRACT</span> -eq <span class="m">1</span> <span class="o">]</span> <span class="o">||</span> ./configure --prefix<span class="o">=</span>/usr
-        --program-prefix<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-
-        --enable-shared
-        --disable-multilib
-        --with-lib-path<span class="o">=</span>/usr/lib/binutils/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
-        --with-local-prefix<span class="o">=</span>/usr/lib/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
-        --disable-nls
-        --target<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
-        --host<span class="o">=</span><span class="nv">$CHOST</span>
-        --build<span class="o">=</span><span class="nv">$CHOST</span>
-
-  make configure-host
-  make <span class="nv">tooldir</span><span class="o">=</span><span class="nv">$pkgdir</span>/usr
-  make <span class="nv">prefix</span><span class="o">=</span><span class="nv">$pkgdir</span>/usr <span class="nv">tooldir</span><span class="o">=</span><span class="nv">$pkgdir</span>/usr install
-
-  rm -f <span class="nv">$pkgdir</span>/usr/man/man1/<span class="o">{</span>dlltool,nlmconv,windres<span class="o">}</span>*
-
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/ar
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/as
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/ld
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/nm
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/objdump
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/ranlib
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/strip
-  rm -f <span class="nv">$pkgdir</span>/usr/bin/objcopy
-  rm -f <span class="nv">$pkgdir</span>/usr/lib/libiberty.a
-  rm -rf <span class="nv">$pkgdir</span>/usr/share
-<span class="o">}</span>
-</pre></div></div></div>
-<div class="paragraph"><p>The GCC PKGBUILD took <em>forever</em> to figure out. At first it would complain about not being able to find headers; I had to add <code>--with-newlib</code> to stop that. Then it started complaining about not being able to find <code>pthread.h</code> which is part of glibc; the switch <code>--disable-threads</code> took care of that. The hardest error, however, was when compiling libgcc would abort with the error</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>......ld: crt1.o: No such file: No such file or directory</code></pre>
-</div></div>
-<div class="paragraph"><p>But <code>crt1.o</code> is a part of glibc, and I logically should be able to build GCC such that it does not depend on glibc. After trying and failing for hours, I finally realized the culprit was the switch <code>--enable-shared</code>; changing that to <code>--disable-shared</code> finally fixed the build. The resulting PKGBUILD is as follows:</p></div>
-<div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="c"># Maintainer: Chuan Ji</span>
-
-<span class="nv">_target</span><span class="o">=</span><span class="s2">&quot;arm-linux-gnueabi&quot;</span>
-<span class="nv">pkgname</span><span class="o">=</span>cross-<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-gcc-base
-<span class="nv">pkgver</span><span class="o">=</span>4.5.2
-<span class="nv">pkgrel</span><span class="o">=</span>1
-<span class="nv">pkgdesc</span><span class="o">=</span><span class="s2">&quot;The GNU Compiler Collection&quot;</span>
-<span class="nv">arch</span><span class="o">=(</span>i686 x86_64<span class="o">)</span>
-<span class="nv">license</span><span class="o">=(</span><span class="s1">&#39;GPL&#39;</span> <span class="s1">&#39;LGPL&#39;</span><span class="o">)</span>
-<span class="nv">url</span><span class="o">=</span><span class="s2">&quot;http://gcc.gnu.org&quot;</span>
-<span class="nv">depends</span><span class="o">=(</span><span class="s2">&quot;cross-</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span><span class="s2">-binutils&quot;</span> <span class="s1">&#39;libmpc&#39;</span> <span class="s1">&#39;libelf&#39;</span> <span class="s1">&#39;cloog-ppl&#39;</span><span class="o">)</span>
-<span class="nv">options</span><span class="o">=(</span>!libtool !emptydirs zipman docs !strip<span class="o">)</span>
-<span class="nb">source</span><span class="o">=(</span>ftp://gcc.gnu.org/pub/gcc/releases/gcc-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>/gcc-core-<span class="si">${</span><span class="nv">pkgver</span><span class="si">}</span>.tar.bz2<span class="o">)</span>
-<span class="nv">md5sums</span><span class="o">=(</span><span class="s1">&#39;aa9e36bec080452372bfba793428ee82&#39;</span><span class="o">)</span>
-
-build<span class="o">()</span> <span class="o">{</span>
-  <span class="nb">cd</span> <span class="nv">$srcdir</span>/gcc-<span class="nv">$pkgver</span>
-
-  <span class="nb">export </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -pipe&quot;</span>
-  <span class="nb">export </span><span class="nv">CXXFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -pipe&quot;</span>
-
-  <span class="o">[[</span> -d gcc-build <span class="o">]]</span> <span class="o">||</span> mkdir gcc-build
-  <span class="nb">cd </span>gcc-build
-
-  ../configure --prefix<span class="o">=</span>/usr
-        --program-prefix<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-
-        --target<span class="o">=</span><span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
-        --host<span class="o">=</span><span class="nv">$CHOST</span>
-        --build<span class="o">=</span><span class="nv">$CHOST</span>
-        --disable-shared --disable-nls
-        --disable-threads
-        --enable-languages<span class="o">=</span>c --enable-multilib
-        --with-local-prefix<span class="o">=</span>/usr/lib/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>
-        --with-as<span class="o">=</span>/usr/bin/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-as --with-ld<span class="o">=</span>/usr/bin/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-ld
-        --enable-softfloat
-        --with-float<span class="o">=</span>soft
-        --with-newlib
-        --enable-interwork
-        --enable-addons
-
-  make all-gcc all-target-libgcc
-  make <span class="nv">DESTDIR</span><span class="o">=</span><span class="nv">$pkgdir</span> install-gcc install-target-libgcc
-
-  rm -f <span class="nv">$pkgdir</span>/usr/share/man/man7/fsf-funding.7*
-  rm -f <span class="nv">$pkgdir</span>/usr/share/man/man7/gfdl.7*
-  rm -f <span class="nv">$pkgdir</span>/usr/share/man/man7/gpl.7*
-  rm -rf <span class="nv">$pkgdir</span>/usr/share/info
-
-  cp -r <span class="nv">$pkgdir</span>/usr/libexec/* <span class="nv">$pkgdir</span>/usr/lib/
-  rm -rf <span class="nv">$pkgdir</span>/usr/libexec
-
-  <span class="c"># strip it manually</span>
-  <span class="nv">$pkgdir</span>/usr/bin/* 2&gt;/dev/null <span class="o">||</span> <span class="nb">true</span>
-<span class="nb">  </span>find <span class="nv">$pkgdir</span>/usr/lib -type f -exec /usr/bin/<span class="si">${</span><span class="nv">_target</span><span class="si">}</span>-strip <span class="o">{}</span> <span class="p">;</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">true</span>
-<span class="o">}</span>
-</pre></div></div></div>
-<div class="paragraph"><p>I submitted both packages to the AUR; the binutils package is found <a href="https://aur.archlinux.org/packages.php?ID=46227">here</a>, and the GCC package is found <a href="https://aur.archlinux.org/packages.php?ID=46226">here</a>.</p></div>
-<div class="paragraph"><p>With the built packages, I was able to compile the Maemo kernel after a small change to <code>scripts/mod/sumversion.c</code>. This fix was because the compilation would fail with the message <code>PATH_MAX</code> undefined; inserting a simple <code>#include &lt;limits.h&gt;</code> solved the problem. Strangely enough, the kernel configuration generated by <code>make n800_defconfig</code> in the kernel tree does not even compile. I had to manually modify the <code>.config</code> file.</p></div>
-<div class="paragraph"><p>Unfortunately, after flashing the generated kernel, the device now gets stuck on the hands screen on bootup. Will investigate further some other time. It&#8217;s too late and I&#8217;ve got class tomorrow&#8230;</p></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Feb 07, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="http://seasonofcode.com/posts/building-a-cross-compiler-toolchain-for-the-n810-and-initial-kernel-compilation.html">Permalink</a>
       </li>
     </ul>
   </footer>

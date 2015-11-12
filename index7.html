@@ -78,6 +78,91 @@
 <article itemscope itemtype="http://schema.org/Article">
   <header>
     <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/shortening-paths-in-the-bash-prompt-with-prompt_dirtrim.html" rel="bookmark">
+      Shortening paths in the Bash prompt with PROMPT_DIRTRIM
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-10T03:53:53-07:00">
+          May 10, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/linux.html">Linux</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/shortening-paths-in-the-bash-prompt-with-prompt_dirtrim.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Bash 4 introduced a new environment variable called <code>PROMPT_DIRTRIM</code> that allows
+the shortening of paths displayed in its prompts (via <code>w</code> in <code>PS1</code>. I added</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nv">PROMPT_DIRTRIM</span><span class="o">=</span>3
+</pre></div></div></div>
+<div class="paragraph"><p>to my <code>~/.bashrc</code> and whereas Bash used to display this prompt:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[user@host /media/D/Projects/nitdroid/ul/out/target/product/generic/system/framework]$</code></pre>
+</div></div>
+<div class="paragraph"><p>It now displays</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[user@host .../generic/system/framework]$</code></pre>
+</div></div>
+<div class="paragraph"><p>which is a huge improvement especially when working with deep directory
+structures.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 10, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/linux.html">Linux</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/shortening-paths-in-the-bash-prompt-with-prompt_dirtrim.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/shortening-paths-in-the-bash-prompt-with-prompt_dirtrim.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
       <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-userland-update-iii.html" rel="bookmark">
       NITDroid userland update III
       </a>
@@ -634,106 +719,6 @@ WiFi.
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="http://seasonofcode.com/posts/ugh.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html" rel="bookmark">
-      EGL Context Preservation on Android
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-03-15T15:08:50-07:00">
-          Mar 15, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="http://seasonofcode.com/tag/android.html">Android</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>This is really a little note for myself but I came across the issue of the
-preservation of the OpenGL context (or rather, the EGL context as we&#8217;re dealing
-with OpenGL ES) of an application. On desktop systems, G3D assumes its GL
-context is always preserved, either by the GPU or by the system. On Android,
-however, it turns out that there are two possible scenarios that will cause a
-running application to lose its EGL context. The first is when the user leaves
-the application, e.g., by pressing the Home button or in the case of an incoming
-call. There is in fact a function called setPreserveEGLContextOnPause(boolean)
-in GLSurfaceView, which does exactly what the name suggests; however, in the
-words of the API documentation, "whether the EGL context is actually preserved
-or not depends upon whether the Android device that the program is running on
-can support an arbitrary number of EGL contexts or not. Devices that can only
-support a limited number of EGL contexts must release the EGL context in order
-to allow multiple applications to share the GPU." There is also a
-getPreserveEGLContextOnPause() function, but the documentation does not specify
-whether this will return the actual preservation policy of the machine or only
-whatever value we have set earlier via setPreserveEGLContextOnPause(boolean). I
-looked up the source file in the Android source tree but these two functions are
-newly added in Android 3.0 (whose code, being in beta, is apparently not
-released to the public) and do not show up in the published code base.</p></div>
-<div class="paragraph"><p>The second way we could lose the EGL context is when the user locks the screen
-and the device goes to sleep. Again quoting the API documentation, "[t]he EGL
-context will typically be lost when the Android device awakes after going to
-sleep&#8230;Note that when the EGL context is lost, all OpenGL resources associated
-with that context will be automatically deleted." There does not appear to exist
-a way to prevent this.</p></div>
-<div class="paragraph"><p>Whenever we will have lost a context and need to render again, the
-onSurfaceCreated function in our renderer class is called with a newly created
-context; this is where a Java app would send all its resources to the GPU. In
-the case of the G3D library, I think the best we can do is to require our client
-application to always provide some sort of callback on Android that we will
-invoke to resend resources to the GPU, for instance in their GApp subclass.</p></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Mar 15, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="http://seasonofcode.com/tag/android.html">Android</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html">Permalink</a>
       </li>
     </ul>
   </footer>

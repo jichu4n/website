@@ -78,6 +78,98 @@
 <article itemscope itemtype="http://schema.org/Article">
   <header>
     <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html" rel="bookmark">
+      Using ALSA audio drivers in Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-10-23T21:13:53-07:00">
+          Oct 23, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>,            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>While working on a port of the Gingerbread (2.3.7) userland of Android for the N810, I had to figure out how to add support for an audio chip with a working ALSA driver in an Android build. The information was out there but it took me a while to figure everything out, so here&#8217;s a brief summary of the process.</p></div>
+<div class="paragraph"><p>First, of course, ALSA drivers for the chip must be enabled in the kernel; to check whether they are working, see if <code>/dev/snd</code> is properly populated. If not, check if the driver has been compiled into the kernel and not as a module.</p></div>
+<div class="paragraph"><p>There are three libraries that act as intermediate layers between an ALSA sound device and the Android userland. Due to <a href="http://groups.google.com/group/android-building/msg/c73c14f9b0dcd15a?pli=1">the recent relocation of the Android source tree</a>, I used alternative URLs for the three libraries. The code (shamelessly stolen and modified from <a href="http://www.armadeus.com/wiki/index.php?title=Android#Audio">this Armadeus Wiki page</a>) is as follows, assuming <code>$ANDROID_SOURCE</code> points to the root of the checked-out Android source tree:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$ANDROID_SOURCE</span>/external
+git clone git://git.omapzoom.org/platform/external/alsa-lib.git
+git clone git://git.omapzoom.org/platform/external/alsa-utils.git
+
+<span class="nb">cd</span> <span class="nv">$ANDROID_SOURCE</span>/hardware
+git clone git://git.omapzoom.org/platform/hardware/alsa_sound.git
+</pre></div></div></div>
+<div class="paragraph"><p>However, a bogus commit to the last library in <code>platform/hardware/alsa_sound</code> breaks the build (as explained <a href="http://comments.gmane.org/gmane.comp.handhelds.android.porting/15792">in this thread</a>), hence:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$ANDROID_SOURCE</span>/hardware/alsa_sound
+git checkout ece3f1b6f1e6a67d02e42490eca6c7de62220b57
+</pre></div></div></div>
+<div class="paragraph"><p>Then, modify the <code>BoardConfig.mk</code> of your build to include:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nv">HAVE_HTC_AUDIO_DRIVER</span> <span class="o">:=</span> <span class="nb">false</span>
+<span class="nv">BOARD_USES_GENERIC_AUDIO</span> <span class="o">:=</span> <span class="nb">false</span>
+<span class="nv">BOARD_USES_ALSA_AUDIO</span> <span class="o">:=</span> <span class="nb">true</span>
+<span class="nv">BUILD_WITH_ALSA_UTILS</span> <span class="o">:=</span> <span class="nb">true</span>
+</pre></div></div></div>
+<div class="paragraph"><p>And that should do the trick.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Oct 23, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>,          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
       <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-kernel-2638-3rd-pass.html" rel="bookmark">
       NITDroid kernel 2.6.38 - 3rd pass
       </a>
@@ -555,101 +647,6 @@ root an actual device.</p></div>
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="http://seasonofcode.com/posts/connectbot-on-the-asus-eee-pad-slider-sl101.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="http://seasonofcode.com/posts/nitdroid-kernel-2638-1st-pass.html" rel="bookmark">
-      NITDroid kernel 2.6.38 - 1st pass
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-09-20T02:44:27-07:00">
-          Sep 20, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="http://seasonofcode.com/posts/nitdroid-kernel-2638-1st-pass.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>It&#8217;s been a while since I last updated this blog - the summer has been unsurprisingly busy, and as school has started again my hiatus is now officially over. But first, a HUGE thanks to all who inquired about and commented on the NITDroid project in the meantime, as even though I haven&#8217;t been able to get back to you individually your support has meant a lot to me.</p></div>
-<div class="paragraph"><p>The first challenge I decided to tackle was improving the kernel I used. The kernel I had gotten working was based on Android OMAP 2.6.32 and contained many patches and copied files from various sources that I did not understand and could not hope to port to a newer kernel if needed. Looking through the diff files revealed many unnecessary or irrelevant changes that made them essentially useless beyond Android OMAP 2.6.32, and given the availability of Gingerbread, I figured that it would be beneficial in the long run if I could 1) minimize the modifications to the kernel required, and 2) port these changes to a newer version of the kernel.</p></div>
-<div class="paragraph"><p>I started working, therefore, with Android OMAP 2.6.38 (since <a href="http://git.kernel.org">kernel.org</a> is down <a href="http://linearfix.wordpress.com/2011/09/12/linux-com-and-linuxfoundation-org-down-after-security-breach/">due to a security breach</a>, I had to use a mirror at <a href="http://git.omapzoom.org/?p=kernel/omap.git;a=summary">git.omapzoom.org</a>). I spent two days porting each necessary change manually, but to no avail. I was able to fix a problem introduced in 2.6.38 where the LCD was being reset by inserting <code>for (;;) {}</code> to determine the source of the problem; only later did I discover <a href="http://www.mail-archive.com/linux-omap@vger.kernel.org/msg45684.html">this email by Michael Buesch</a> which proposed a much simpler solution. But even then I did not get far; I was still stuck with the Nokia logo screen and could go no further. I had forgotten how painful debugging kernel builds were: there are no error messages or debugging output, and the only thing observable would be a frozen Nokia logo.</p></div>
-<div class="paragraph"><p>Then, at wit&#8217;s end a couple of hours ago, I searched for the author of said email on Google and found <a href="http://bu3sch.de/cms/hacking/n810-openwrt.html">Michael Buesch&#8217;s page about his and others' work on OpenWRT on the N810</a>. I followed the instructions and was able to build a working kernel for the N810 with some minor fixes. The truly marvellous thing about this work, however, is that the exact patches that are used against a vanilla kernel are provided; they can be viewed <a href="https://dev.openwrt.org/browser/trunk/target/linux/omap24xx/patches-2.6.38">in the OpenWRT SVN repo</a> for instance. I went ahead and applied all their patches to a vanilla Android OMAP 2.6.38 kernel, but the resulting kernel still refused to boot. I ended up comparing each affected file painstakingly to its counterpart in the OpenWRT tree and was finally able to find the culprit: <code>arch/arm/mach-omap2/clock2420_data.c</code>; the problem was so dumb that I cannot believe it has been checked in at all. Here&#8217;s the diff:</p></div>
-<div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="gh">diff --git a/arch/arm/mach-omap2/clock2420_data.c b/arch/arm/mach-omap2/clock2420_data.c</span>
-<span class="gh">index 3c1712b..0a992bc 100644</span>
-<span class="gd">--- a/arch/arm/mach-omap2/clock2420_data.c</span>
-<span class="gi">+++ b/arch/arm/mach-omap2/clock2420_data.c</span>
-<span class="gu">@@ -1786,10 +1786,10 @@ static struct omap_clk omap2420_clks[] = {</span>
-        CLK(NULL,       &quot;gfx_2d_fck&quot;,   &amp;gfx_2d_fck,    CK_242X),
-        CLK(NULL,       &quot;gfx_ick&quot;,      &amp;gfx_ick,       CK_242X),
-        /* DSS domain clocks */
-<span class="gd">-       CLK(&quot;omap_dss&quot;, &quot;ick&quot;,          &amp;dss_ick,       CK_242X),</span>
-<span class="gd">-       CLK(&quot;omap_dss&quot;, &quot;fck&quot;,          &amp;dss1_fck,      CK_242X),</span>
-<span class="gd">-       CLK(&quot;omap_dss&quot;, &quot;sys_clk&quot;,      &amp;dss2_fck,      CK_242X),</span>
-<span class="gd">-       CLK(&quot;omap_dss&quot;, &quot;tv_clk&quot;,       &amp;dss_54m_fck,   CK_242X),</span>
-<span class="gi">+       CLK(&quot;omapdss&quot;,  &quot;ick&quot;,          &amp;dss_ick,       CK_242X),</span>
-<span class="gi">+       CLK(&quot;omapdss&quot;,  &quot;dss1_fck&quot;,     &amp;dss1_fck,      CK_242X),</span>
-<span class="gi">+       CLK(&quot;omapdss&quot;,  &quot;dss2_fck&quot;,     &amp;dss2_fck,      CK_242X),</span>
-<span class="gi">+       CLK(&quot;omapdss&quot;,  &quot;tv_fck&quot;,       &amp;dss_54m_fck,   CK_242X),</span>
-        /* L3 domain clocks */
-        CLK(NULL,       &quot;core_l3_ck&quot;,   &amp;core_l3_ck,    CK_242X),
-        CLK(NULL,       &quot;ssi_fck&quot;,      &amp;ssi_ssr_sst_fck, CK_242X),
-</pre></div></div></div>
-<div class="paragraph"><p>With all of these changes, and essentially the same <code>n810_defconfig</code> from before, the produced kernel boots up to Android, but dies when it tries to initialize the GUI. I have not found a solution to that yet, but at least it boots to console and prints out error messages. I will need to investigate the issue further next time.</p></div>
-<div class="paragraph"><p>From now on, I think I will no longer reinvent the wheel and rely on OpenWRT patches for the N810 as much as possible. Thanks, Michael Buesch and everyone at OpenWRT!</p></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Sep 20, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="http://seasonofcode.com/posts/nitdroid-kernel-2638-1st-pass.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="http://seasonofcode.com/posts/nitdroid-kernel-2638-1st-pass.html">Permalink</a>
       </li>
     </ul>
   </footer>

@@ -78,6 +78,149 @@
 <article itemscope itemtype="http://schema.org/Article">
   <header>
     <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html" rel="bookmark">
+      C++: Access Specifiers and Overriding
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-03-01T00:19:00-08:00">
+          Mar 01, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/c.html">C++</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>Consider the following C++ code:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">A</span> <span class="p">{</span>
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">B</span><span class="o">:</span> <span class="k">public</span> <span class="n">A</span> <span class="p">{</span>
+ <span class="k">private</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;B::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">C</span><span class="o">:</span> <span class="k">public</span> <span class="n">B</span> <span class="p">{</span>
+ <span class="k">protected</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C::f()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">B</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="n">B</span><span class="p">();</span>
+  <span class="c1">// This is NOT legal:</span>
+  <span class="c1">//   b-&gt;f();</span>
+  <span class="n">C</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">C</span><span class="p">();</span>
+  <span class="c1">// Nor is this:</span>
+  <span class="c1">//   c-&gt;f();</span>
+
+  <span class="c1">// Why is this legal?</span>
+  <span class="n">A</span> <span class="o">*</span><span class="n">a1</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="n">a1</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>  <span class="c1">// Prints &quot;B::f()&quot;</span>
+  <span class="n">A</span> <span class="o">*</span><span class="n">a2</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+  <span class="n">a2</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>  <span class="c1">// Prints &quot;C::f()&quot;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div></div></div>
+<div class="paragraph"><p>My first reaction, and perhaps yours too, is that this code shouldn&#8217;t be legal.
+The base class <code>A</code> defines a public pure virtual method <code>f()</code> that must be
+overridden in derived classes. But the <code>f()</code> implementations in both derived
+classes are non-public; <code>B</code> and <code>C</code> actually <em>don&#8217;t</em> conform to the interface of
+the base class (unless casted to the base class), as shown in the first block in
+<code>main</code>.</p></div>
+<div class="paragraph"><p>It turns out, however, that in C++ a method in a derived class overrides a
+method in a base class <strong>regardless of the access specifiers of the two methods</strong>.
+In other words, it does not matter whether the method is declared in the base
+class as <code>public</code>, <code>protected</code>, or <code>private</code>, nor does it matter how the method
+is declared in the derived class; as long as they have the same signature, the
+method in the inherit class always overrides the method in the base class:</p></div>
+<div class="quoteblock">
+<div class="content">If a virtual member function <code>vf</code> is declared in a class <code>Base</code> and in a class
+<code>Derived</code>, derived directly or indirectly from <code>Base</code>, a member function <code>vf</code>
+with <strong>the same name</strong>, <strong>parameter-type-list</strong> (8.3.5), <strong>cv-qualification</strong>, and
+<strong>ref- qualifier</strong> (or absence of same) as <code>Base::vf</code> is declared, then
+<code>Derived::vf</code> is also virtual (whether or not it is so declared) and <strong>it
+<em>overrides</em> <code>Base::vf</code></strong>.</div>
+<div class="attribution">
+&#8212; C++ standard §10.3.2
+</div></div>
+<div class="paragraph"><p>(Emphasis mine.)</p></div>
+<div class="paragraph"><p>You will notice that access specifiers&#8201;&#8212;&#8201;<code>public</code>, <code>private</code>, etc.&#8201;&#8212;&#8201;are
+specifically omitted from the list of criteria for determining an override
+relationship. Thus, the above code works exactly as if both <code>B::f()</code> and
+<code>C::f()</code> had been declared <code>public</code>.</p></div>
+<div class="paragraph"><p>Another consequence of this rather bizarre omission is that the language
+actually allows you to <code>public</code>-ly inherit from a base class, and yet <em>not</em>
+conform to its public interface unless casted to the base class, as illustrated
+in the first block in <code>main</code> above. Or, from the derived class&#8217;s perspective,
+the language allows clients to legally access methods explicitly marked
+<code>private</code> or <code>protected</code> through a cast to the base class.</p></div>
+<div class="paragraph"><p>So, accidental omission or well thought-out design decision? Any ideas?</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Mar 01, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/c.html">C++</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/c-access-specifiers-and-overriding.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
       <a itemprop="name" href="http://seasonofcode.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux.html" rel="bookmark">
       How To Set Default Fonts and Font Aliases on Linux
       </a>
@@ -1061,222 +1204,6 @@ donating $5 as a token of their appreciation could not be overstated.</p></div>
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="http://seasonofcode.com/posts/android-rooting-a-developers-guide.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html" rel="bookmark">
-      Carrier programming on CDMA Android phones
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2012-11-15T23:57:36-08:00">
-          Nov 15, 2012
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>Have you ever wondered how CDMA phones are programmed to a specific carrier for
-voice calls, SMS and data?</p></div>
-<div class="paragraph"><p>In the U.S., all major CDMA carriers operate on the same frequencies, which
-means that there is no inherent difference in hardware between phones sold by
-any of them, and that theoretically there is no reason why a Verizon Wireless
-phone cannot work on Sprint or MetroPCS or Virgin Mobile or Boost Mobile, for
-example. Unlike GSM phones with swappable SIM&#8217;s, however, a CDMA phone sold in
-the U.S. is typically locked to a particular carrier; so how is that done?</p></div>
-<div class="paragraph"><p>I was recently able to figure out the answer to this question when I
-successfully flashed a CDMA phone from Sprint to Verizon (an exploit I may
-document separately some day). As I have not been able to find a compilation of
-this information elsewhere, I am writing up this document in the hope that it
-will help others with flashing phones or porting ROMs to different carriers.</p></div>
-<div class="paragraph"><p>Note that this information is based on my research with the Jelly Bean (4.1 &amp;
-4.2), ICS (4.0) and Gingerbread (2.3.4) versions of Android and two major U.S.
-CDMA carriers, Verizon Wireless and Sprint. Hence, it may not be applicable to
-other phones or carriers; in particular, the section about CDMA chips do not
-apply to CDMA phones that require a SIM card, such as some Verizon Wireless LTE
-phones. In such cases, your comments and insights are welcome.</p></div>
-<div class="paragraph"><p>Finally, a disclaimer: I have no formal understanding of any of the intricacies
-of CDMA technology and therefore cannot guarantee the correctness or accuracy of
-this information. Use it at your own risk. I cannot be held responsible for any
-damage or legal consequences resulting from or related to the application of
-this information.</p></div>
-<div class="paragraph"><p>At a high level, there are two places where carrier information is stored on a
-CDMA Android phone: inside the CDMA chip (radio), and in Android OS system
-files.</p></div>
-<div class="sect2">
-<h3 id="_programming_the_cdma_chip">Programming the CDMA chip</h3>
-<div class="paragraph"><p>Every CDMA phone (obviously) has a CDMA chip (radio). This chip is responsible
-for carrying out voice calls and transferring data over 2G/3G, and in order to
-do that, it needs to know stuff like what phone number it represents, what
-towers to connect to, what account name to bill the 3G connection to, etc.. All
-of this information is stored directly inside the chip (unless you have a
-Verizon Wireless LTE phone with a SIM card), and not on any file system
-controlled by the OS; this is why even after a factory reset (which formats the
-internal flash file system) these settings persist. It is (I believe) not
-possible to change the information stored on the CDMA chip from the OS itself;
-instead, carriers provide a special number (e.g., *228 for Verizon Wireless)
-that, when called, will transfer the information to the chip. This is typically
-called "programming" the phone by U.S. carriers.</p></div>
-<div class="paragraph"><p>So what information exactly is stored inside the CDMA chip? Here&#8217;s an incomplete
-list:</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<strong>MEID</strong>: Unique serial number of the phone. This is like the MAC address of an
-  ethernet / WiFi card in that it is the sole identifier of the CDMA chip. It is
-  what carriers use to connect phone calls, deliver SMS&#8217;s, blacklist stolen
-  phones, etc.. A fatal flaw, however, is that it is actually possible to modify
-  (flash) the MEID of many, but not all, CDMA chips. If you flash the MEID of
-  phone A onto phone B, the carrier network has no way of distinguishing between
-  phone A and phone B, and phone B is able to make and receive calls, send and
-  receive messages etc. as phone A. Unsurprisingly, this is illegal in many
-  countries, including the U.S., and as such I will not discuss it here.
-</p>
-</li>
-<li>
-<p>
-<strong>Phone / account numbers</strong>: known as MDN and MIN, these store the phone and
-  account numbers associated with the phone.
-</p>
-</li>
-<li>
-<p>
-<strong>2G/3G data account information</strong>: user names and passwords used to connect to
-  data services. Some carriers have stronger (harder to impersonate)
-  authentication systems than others; for instance, Verizon Wireless requires
-  two encrypted passwords and a secret key in the EFS file system on the CDMA
-  chip; Boost Mobile only requires two passwords; while MetroPCS simply accepts
-  the SPC/MSL code (see below) as the password. Note that 2G and 3G are
-  unrelated systems with independent authentication; a phone can have valid 3G
-  credentials and thus connect to 3G while being denied a 2G connection.
-</p>
-</li>
-<li>
-<p>
-<strong>PRL (Preferred Roaming List)</strong>: a list of towers the phone can connect to. This
-  is of course carrier- and location-specific. In some cases, updating the PRL
-  (by calling a special number) can improve reception and save battery when the
-  phone moves to a new geographical area; see
-  <a href="http://www.verizonwireless.com/care/popups/prl.html">Verizon Wireless&#8217;s
-  explanation</a>, for example.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Software such as CDMA Workshop, DFS, QXDM/QPST can be used to read / write
-information stored on a CDMA chip from a computer. Often, however, a 6-digit
-passcode known as the SPC code or the MSL code is required. This SPC/MSL code,
-again stored inside the CDMA chip, is either randomly assigned by the carrier
-(this is the case for Verizon Wireless and Sprint) or deterministically computed
-based on the MEID (MetroPCS). In the former case, there are a variety of tricks
-for retrieving the SPC/MSL code from the phone itself,; Google is your friend
-there. In the latter case, there are sites for computing the code from the MEID.
-Once it is known, the SPC/MSL code can be changed to any 6-digit number; some
-phones may even allow you to overwrite the SPC/MSL code without knowing it
-first.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_carrier_configuration_in_the_android_os">Carrier configuration in the Android OS</h3>
-<div class="paragraph"><p>To figure out what system files in the Android OS contain carrier information, I
-inspected source code and images of ROMS for the Samsung Galaxy Nexus (Sprint
-and Verizon Wireless), the Samsung Nexus S 4G (Sprint), the HTC Incredible
-(Verizon Wireless), and the Motorola Droid 3 (Verizon Wireless). I found three
-places that store carrier-specific information.</p></div>
-<div class="paragraph"><p>The first is <code>/system/build.prop</code>. Sprint phones contain the following lines:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>ro.cdma.home.operator.numeric=310120
-ro.cdma.home.operator.alpha=Sprint</code></pre>
-</div></div>
-<div class="paragraph"><p>while Verizon Wireless phones contain the following lines instead:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>ro.cdma.home.operator.numeric=310004
-ro.cdma.home.operator.alpha=Verizon
-ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83</code></pre>
-</div></div>
-<div class="paragraph"><p>These settings apply to phone calls. If one adopts the Sprint configuration on a
-Verizon Wireless phone, for example, the phone would ring very briefly on a
-call, but would be unable to actually make or receive calls. The
-<code>ro.cdma.homesystem</code> specifies a list of indices into the PRL that represent
-"home" or non-roaming networks.</p></div>
-<div class="paragraph"><p>The second configuration file is <code>eri.xml</code>, which is compiled into the file
-<code>/res/xml/eri.xml</code> inside the system package
-<code>/system/framework/framework-res.apk</code> on an Android system. This file tells the
-OS what it needs to display about a particular network (as an index into the
-PRL); for an example, take a look at
-<a href="https://android.googlesource.com/device/samsung/toroplus/<code>/refs/tags/android-4.2_r1/overlay/frameworks/base/core/res/res/xml/eri.xml">the
-stock +eri.xml</code> for the Sprint Galaxy Nexus</a> or
-<a href="https://github.com/CyanogenMod/android_device_samsung_toro/blob/ics/overlay/frameworks/base/core/res/res/xml/eri.xml">the
-CyanogenMod <code>eri.xml</code> for the Verizon Wireless Galaxy Nexus</a>. In particular,
-this file instructs the OS whether to consider a network (tower) to be roaming
-(so whether a roaming icon is displayed), and gives the name of the network
-(tower) to be shown in the UI. It must be stressed that this file <em>has no
-functional effect</em>; all it changes is how the OS displays information about
-networks. Since APK packages are just ZIP archives, it is easy to replace the
-<code>eri.xml</code> within to change roaming and name settings for networks; note,
-however, that the file inside the APK is not a plain text XML, but some compiled
-binary form; you may need to Google for the appropriate binary form pulled from
-another phone.</p></div>
-<div class="paragraph"><p>The last configuration file is <code>/system/etc/apns-conf.xml</code>. This file contains
-APN settings for 4G and MMS. See the stock APN settings file for the
-<a href="https://android.googlesource.com/device/samsung/crespo4g/+/refs/heads/jb-release/4g-apns-conf.xml">Sprint
-Nexus S 4G</a> or the
-<a href="https://github.com/CyanogenMod/android_vendor_cm/blob/ics/prebuilt/common/etc/apns-conf-cdma.xml">default
-CyanogenMod APN settings</a>.</p></div>
-</div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Nov 15, 2012
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="http://seasonofcode.com/posts/carrier-programming-on-cdma-android-phones.html">Permalink</a>
       </li>
     </ul>
   </footer>

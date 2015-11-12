@@ -1,5 +1,297 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Season of Code</title><link>http://seasonofcode.com/</link><description></description><atom:link href="http://seasonofcode.com/feeds/chuan-ji.rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 09 Dec 2014 17:25:00 -0800</lastBuildDate><item><title>Setting Up DKIM And SRS In Postfix</title><link>http://seasonofcode.com/posts/setting-up-dkim-and-srs-in-postfix.html</link><description>&lt;div class="paragraph"&gt;&lt;p&gt;In my previous post
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Season of Code</title><link>http://seasonofcode.com/</link><description></description><atom:link href="http://seasonofcode.com/feeds/chuan-ji.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 11 Nov 2015 18:51:00 -0800</lastBuildDate><item><title>Flashing a Sprint Nexus S 4G to Verizon</title><link>http://seasonofcode.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html</link><description>&lt;div class="paragraph"&gt;&lt;p&gt;I originally wrote the following post in July 2012 to document how to fully
+flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing
+it. I have long since switched away from Verizon Wireless and no longer own any
+of the phones mentioned, and decided to publish it for what it&amp;#8217;s worth.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you&amp;#8217;re interested in the high-level view of how CDMA phones are programmed,
+check out my previous article
+&lt;a href="/posts/carrier-programming-on-cdma-android-phones.html"&gt;Carrier Programming
+on CDMA Android Phones&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_introduction"&gt;Introduction&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is a guide for flashing a Sprint Samsung Nexus S 4G to a standard Verizon
+monthly plan, and voice, texting and 3G data will all be fully functional. This
+method will likely also work on many other phones, especially Samsung ones, and
+should theoretically work just file on any ROM as well.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Note that this procedure entails ESN cloning, which may be illegal in your
+region. Please make sure you have an understanding of all applicable laws before
+proceeding. The author of this guide cannot be held responsible for any legal
+infractions that may ensue. Finally, you are solely responsible for any
+consequences of your actions as a result of following this guide. While I
+believe it to be quite safe, I cannot guarantee you that this process will not
+brick your devices or start a zombie apocalypse.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_requirements_and_setup"&gt;Requirements and Setup&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We will need the following before starting:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+A currently active Verizon Wireless Android phone and plan. Please beware that
+  not all phones will work; many phones do not allow us to extract all the
+  information we need for this process. For instance, my Motorola Droid 3 did not
+  work, and I had to purchase and activate an HTC Incredible for this. This phone
+  will be our donor phone.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+A rooted Samsung Nexus 4G.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+A computer running a recent version of Windows, with at least 2 USB ports.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+2 MicroUSB cables.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In addition, we need the following software:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+USB diagnostic drivers for your donor phone. These vary by manufacturer and
+  their configuration may be quite complex; search online for how to set up
+  yours.  For HTC phones, download and install HTC Sync from HTC’s website
+  (archived &lt;a href="http://www.mediafire.com/?65l9idwgbzq5avb"&gt;here&lt;/a&gt;).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+USB diagnostic drivers for the Nexus S 4G. The easiest way is to download and
+  install PdaNet (archived
+  &lt;a href="http://www.mediafire.com/?jjdv8g7ie82kxdx"&gt;here&lt;/a&gt;). We don’t actually need
+  the functionality of PdaNet, but it happens to bundle the drivers we need.
+  Select Samsung when prompted for the manufacturer of our phone.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+QPST and QXDM (archived &lt;a href="http://www.mediafire.com/?ojco4qzf4r688k6"&gt;here&lt;/a&gt;).
+  These are internal Qualcomm tools; we will use them to clone the MEID of the
+  donor phone.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+DFS (archived &lt;a href="http://www.mediafire.com/?wp7hc8ny854pqrz"&gt;here&lt;/a&gt;). This is
+  a third-party tool for working with CDMA phones. The demo version will
+  suffice.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_1_preparation"&gt;Step 1: Preparation&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;First, make sure the donor phone is fully activated and that calls, text and
+data are all fully functional.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now, find the HEX MEID of the donor phone. On the HTC Incredible, this can be
+found under &lt;em&gt;Settings &amp;#8594; About Phone &amp;#8594; Phone Identity&lt;/em&gt;. On most Android phones,
+this is under &lt;em&gt;Settings &amp;#8594; About Phone &amp;#8594; Status&lt;/em&gt;. It is also usually printed on a
+label underneath the phone battery. This should be 14 digits and usually begins
+with &lt;code&gt;A00000&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now put the donor phone in airplane mode.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We will next connect both phones to the computer in diagnostic mode.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+On the Nexus S 4G, dial &lt;code&gt;*#*#8778#*#*&lt;/code&gt;, then select &lt;em&gt;MODEM&lt;/em&gt; under &lt;em&gt;USB&lt;/em&gt;.
+  Connect the Nexus S 4G to the computer. If drivers were installed correctly,
+  you should now see a &lt;em&gt;SAMSUNG Mobile Modem Diagnostic Serial Port (WDM)&lt;/em&gt; under
+  &lt;em&gt;Ports (COM &amp;amp; LPT)&lt;/em&gt; in Windows’s Device Manager. Note down the port number of
+  the Nexus S 4G; we will assume COM4 for convenience.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+On the HTC Incredible, dial &lt;code&gt;##3424#&lt;/code&gt;, hit &lt;em&gt;Call&lt;/em&gt;,
+  connect it to the computer, then follow the instructions in
+  &lt;a href="http://forum.xda-developers.com/showthread.php?t=1619314"&gt;this thread&lt;/a&gt;
+  with Device Manager. If everything goes well you should now see a &lt;em&gt;HTC
+  Diagnostic Interface&lt;/em&gt; under &lt;em&gt;Ports (COM &amp;amp; LPT)&lt;/em&gt; in Device Manager. Note down
+  the port number of the HTC Incredible; we will assume COM11 for convenience.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;After confirming that both phones show up under &lt;em&gt;Ports (COM &amp;amp; LPT)&lt;/em&gt;, run QPST
+Configuration and hit &lt;em&gt;Add New Port&amp;#8230;&lt;/em&gt;. You should see both phones on the left.
+Select one and hit OK. Then repeat for the other phone.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_2_cloning"&gt;Step 2: Cloning&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We will now clone the MEID of the donor phone onto the target phone. Open QXDM
+Professional. Select &lt;em&gt;Options &amp;#8594; Communications&amp;#8230;&lt;/em&gt;. For &lt;em&gt;Target Port&lt;/em&gt;, select the
+port corresponding to the Nexus S 4G, say COM4, and hit &lt;em&gt;OK&lt;/em&gt;. Then in the text box
+labeled &lt;em&gt;Command&lt;/em&gt;, type the following:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;Password 01F2030F5F678FF9&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Hit &lt;em&gt;Enter&lt;/em&gt;. You should see &lt;code&gt;Password Result = Correct&lt;/code&gt; at the bottom of the
+&lt;em&gt;Command Output&lt;/em&gt; window.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now in the &lt;em&gt;Command&lt;/em&gt; text box, type the following, replacing &lt;code&gt;&amp;lt;MEID&amp;gt;&lt;/code&gt; by the hex
+MEID of the &lt;strong&gt;donor&lt;/strong&gt; phone:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;RequestNVItemWrite meid 0x&amp;lt;MEID&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Hit &lt;em&gt;Enter&lt;/em&gt;. You should see it repeat back the MEID to you. Type
+&lt;code&gt;RequestNVItemRead meid&lt;/code&gt; followed by &lt;em&gt;Enter&lt;/em&gt; to make sure the write happened.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Close QXDM Professional and reboot the Nexus S 4G. Rebooting the target phone
+after writing a new MEID is essential! If prompted, do NOT go through the
+activation process on the Nexus S 4G. Just select &lt;em&gt;Skip&lt;/em&gt; when possible.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_3_reset_spc"&gt;Step 3: Reset SPC&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In order to program the Nexus S 4G, we need to obtain or reset the SPC code
+(also known as the MSL) of the phones. If you already know the SPC code for your
+phones and would rather not reset the SPC code, you can skip this step.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Open QXDM Professional again. Go through &lt;em&gt;Options &amp;#8594;
+Communications&lt;/em&gt; and make sure the &lt;em&gt;Target Port&lt;/em&gt; is still COM4. Hit &lt;em&gt;OK&lt;/em&gt;. In the
+command text box, type the following two lines, each followed by an &lt;em&gt;Enter&lt;/em&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;Password 01F2030F5F678FF9
+RequestNVItemWrite sec_code 000000&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If this is successful, the SPC on the Nexus S 4G will have been reset to
+&lt;code&gt;000000&lt;/code&gt;. Repeat for the donor phone (in our example, on COM11).&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Close QXDM Professional after done. All QPST / QXDM programs must be closed
+before proceeding, or DFS will complain.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_4_programming_cdma_chipset"&gt;Step 4: Programming CDMA Chipset&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Launch DFS. Click &lt;em&gt;Ports&lt;/em&gt; on the top left. In the dialog box, double-click on
+each port representing our phones, in our case, COM4 and COM11, and close the
+dialog box. Now make sure the &lt;em&gt;SPC&lt;/em&gt; text box above reads &lt;code&gt;000000&lt;/code&gt; (or if you chose
+not to reset the SPC, whatever your SPC is). Type &lt;code&gt;01F2030F5F678FF9&lt;/code&gt; into the
+&lt;em&gt;Pwd&lt;/em&gt; text box.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_4_a_basic_cdma_settings"&gt;Step 4.a: Basic CDMA settings&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s now copy basic CDMA settings from the donor phone to the
+target phone. In the drop-down menu next to &lt;em&gt;Ports&lt;/em&gt;, select the donor phone
+(COM11). Switch to the &lt;em&gt;Programming&lt;/em&gt; tab and the &lt;em&gt;NAM&lt;/em&gt; tab under it. Click the
+&lt;em&gt;SPC&lt;/em&gt; and &lt;em&gt;Pwd&lt;/em&gt; buttons to send the SPC and NV password to the phone to unlock
+it. Then hit &lt;em&gt;Read&lt;/em&gt; beneath &lt;em&gt;Network identification&lt;/em&gt;. The text fields below
+should be populated by information from the donor phone. Now select COM4 in the
+drop-down menu next to &lt;em&gt;Ports&lt;/em&gt;, click &lt;em&gt;SPC&lt;/em&gt; and &lt;em&gt;Pwd&lt;/em&gt;, then click &lt;em&gt;Write&lt;/em&gt;
+beneath &lt;em&gt;Network identification&lt;/em&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_4_b_prl"&gt;Step 4.b: PRL&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now, let&amp;#8217;s copy over the PRL (or &lt;em&gt;Preferred Roaming List&lt;/em&gt; - essentially a
+database of tower locations). Again, select COM11 under &lt;em&gt;Ports&lt;/em&gt; and click &lt;em&gt;Read&lt;/em&gt;
+under &lt;em&gt;PRL&lt;/em&gt; towards the right. Then select COM4 under &lt;em&gt;Ports&lt;/em&gt; and click &lt;em&gt;Write&lt;/em&gt;
+under &lt;em&gt;PRL&lt;/em&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_4_c_2g_data_settings"&gt;Step 4.c: 2G Data settings&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now go to the next tab, &lt;em&gt;Data&lt;/em&gt;. Select COM11 and hit &lt;em&gt;Read&lt;/em&gt;. Switch to COM4 and
+hit &lt;em&gt;Write&lt;/em&gt;.  If you observe errors in the log window in the bottom, and / or no
+information shows up in the &lt;em&gt;Pwd&lt;/em&gt; boxes under &lt;em&gt;PPP&lt;/em&gt; and &lt;em&gt;HDR AN Long&lt;/em&gt;, your
+donor phone doesn&amp;#8217;t support the extraction of some data passwords, and you
+will have to try a different donor phone.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_4_c_3g_data_settings"&gt;Step 4.c: 3G Data settings&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We do the same with &lt;em&gt;Mobile IP&lt;/em&gt;. Select COM11 and hit &lt;em&gt;Read&lt;/em&gt;. Switch to COM4 and
+hit &lt;em&gt;Write&lt;/em&gt;. Then hit &lt;em&gt;Write current profile settings&lt;/em&gt;. Again, if you encounter
+errors, or no information shows up under &lt;em&gt;AAA Shared secret&lt;/em&gt; and &lt;em&gt;HA Shared
+Secret&lt;/em&gt;, you will have to try a different donor phone.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Finally, we need to copy over a file containing a secret key used to establish a
+3G connection. Go to the &lt;em&gt;EFS&lt;/em&gt; tab towards the top.  Select COM11 and hit &lt;em&gt;Read
+EFS&lt;/em&gt;.  Click the "&lt;em&gt;+&lt;/em&gt;" sign of the root folder on the left and then the "&lt;em&gt;+&lt;/em&gt;"
+sign next to the &lt;code&gt;DMU&lt;/code&gt; folder and you should see a file called &lt;code&gt;10.key&lt;/code&gt;.
+Right-click on this file and hit &lt;em&gt;Save&amp;#8230;&lt;/em&gt;.  Save this file somewhere on your
+hard drive. Now switch to COM4 and hit &lt;em&gt;Read EFS&lt;/em&gt; again.  Select the root folder
+on the left, type &lt;code&gt;/DMU&lt;/code&gt; under &lt;em&gt;Path (57 max)&lt;/em&gt; on the right and hit &lt;em&gt;Add Item&lt;/em&gt;
+to create a folder named &lt;code&gt;DMU&lt;/code&gt; on the Nexus S 4G. Then select &lt;code&gt;DMU&lt;/code&gt; on the left,
+click on the check box named &lt;em&gt;I want to add file from PC&lt;/em&gt;, and select the
+&lt;code&gt;10.key&lt;/code&gt; file we just saved. Then hit &lt;em&gt;Add Item&lt;/em&gt; to upload the &lt;code&gt;10.key&lt;/code&gt; file to
+&lt;code&gt;/DMU/10.key&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The programming is now done. Close DFS, select &lt;em&gt;OK&lt;/em&gt; and &lt;em&gt;OK&lt;/em&gt; again when prompted
+whether to send a &lt;em&gt;mode reset&lt;/em&gt; to the phone. The Nexus S 4G will now reboot.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_5_programming_android"&gt;Step 5: Programming Android&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;We will now modify some Android system files to Verizon settings. This step will
+need to be repeated whenever you flash a new ROM on the Nexus S 4G in the
+future.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_1_click_programming_app"&gt;1-click programming app&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I have built a 1-click Android application that automates this step; you can
+find it &lt;a href="http://www.mediafire.com/?m796blddz3g8ifd"&gt;here&lt;/a&gt;. It requires root
+as it will need to modify system files. Install the application and click the
+button in the middle. When the process finishes, you will be prompted to reboot.
+Simply reboot your phone and you’re all set; you may uninstall the app, or you
+could keep it around for when you update to a new ROM.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If the 1-click app does not work for you, or if you want more control over what
+it does, follow the steps below. You do not need to do any of the following if
+you already used the app above.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_5_a_fix_voice_calling"&gt;Step 5.a: Fix voice calling&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is required to enable calls on Verizon.
+On the Nexus S 4G, connect to WiFi and install ES File Explorer from the Play
+Store. Then go to &lt;em&gt;Menu &amp;#8594; Settings&lt;/em&gt; and check &lt;em&gt;Up to Root&lt;/em&gt;, &lt;em&gt;Root Explorer&lt;/em&gt;, and
+&lt;em&gt;Mount File System&lt;/em&gt;. Allow it to use superuser privileges if asked. Then
+navigate to &lt;code&gt;/system&lt;/code&gt; and open &lt;code&gt;build.prop&lt;/code&gt; with &lt;em&gt;ES Note Editor&lt;/em&gt;. Find the
+following two lines:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;ro.cdma.home.operator.numeric=310120
+ro.cdma.home.operator.alpha=Sprint&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Change them to read:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;ro.cdma.home.operator.numeric=310004
+ro.cdma.home.operator.alpha=Verizon&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Then add a line below (or anywhere in the file) that says:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre&gt;&lt;code&gt;ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Hit &lt;em&gt;Menu &amp;#8594; Save&lt;/em&gt; and then &lt;em&gt;Back&lt;/em&gt; to exit.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_5_b_fix_roaming"&gt;Step 5.b: Fix roaming&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This step tells Android to treat the Verizon network as the home network. It
+sets the roaming status to "Not roaming", removes the triangular roaming
+indicator in the status bar and changes the displayed name of the current
+network to "Verizon Wireless".&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now navigate to &lt;code&gt;/system/framework&lt;/code&gt; and copy &lt;code&gt;framework-res.apk&lt;/code&gt; onto your
+computer - you can use adb or email it to yourself or whatever (you have to copy
+it to the internal SD card before you can email it though). Once on the
+computer, rename it &lt;code&gt;framework-res.zip&lt;/code&gt; (yes, an APK is just a zip archive) and
+use your favorite program to replace the file &lt;code&gt;res/xml/eri.xml&lt;/code&gt; inside it with
+the one at &lt;a href="http://www.mediafire.com/?jdsigtxi4gvp6ks"&gt;this link&lt;/a&gt;. Now rename
+it back to &lt;code&gt;framework-res.apk&lt;/code&gt;, copy it back
+onto the Nexus S 4G (using adb or whatever) and use ES File Explorer to
+overwrite the existing &lt;code&gt;/system/framework/framework-res.apk&lt;/code&gt; with it.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_step_5_c_add_verizon_apns"&gt;Step 5.c: Add Verizon APNs&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This last step sets up Verizon APNs that enable web and MMS. Use ES File
+Explorer or any other tool to replace &lt;code&gt;/system/etc/apns-conf.xml&lt;/code&gt; with the one
+at &lt;a href="http://www.mediafire.com/?g0vd7nfs47ksujz"&gt;this link&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_6_reboot_amp_profit"&gt;Step 6: Reboot &amp;amp; PROFIT&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The Nexus S 4G should now be a fully functional Verizon Wireless phone.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;While your mileage may vary, I hope the above information have been of help.
+Since I no longer use Verizon Wireless and no longer own any of the phones
+mentioned above, please take all this information with a grain of salt.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Good luck, and happy hacking!&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Chuan Ji</dc:creator><pubDate>Wed, 11 Nov 2015 18:51:00 -0800</pubDate><guid>tag:seasonofcode.com,2015-11-11:posts/flashing-a-sprint-nexus-s-4g-to-verizon.html</guid><category>Featured</category><category>Android</category></item><item><title>Setting Up DKIM And SRS In Postfix</title><link>http://seasonofcode.com/posts/setting-up-dkim-and-srs-in-postfix.html</link><description>&lt;div class="paragraph"&gt;&lt;p&gt;In my previous post
 &lt;a href="/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial.html"&gt;&lt;em&gt;Custom
 Domain E-mails With Postfix And Gmail: The Missing Tutorial&lt;/em&gt;&lt;/a&gt;, we set up a
 Postfix mail server on a custom domain that integrates seamlessly with Gmail.&lt;/p&gt;&lt;/div&gt;
@@ -2939,10 +3231,11 @@ phone cannot work on Sprint or MetroPCS or Virgin Mobile or Boost Mobile, for
 example. Unlike GSM phones with swappable SIM&amp;#8217;s, however, a CDMA phone sold in
 the U.S. is typically locked to a particular carrier; so how is that done?&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;I was recently able to figure out the answer to this question when I
-successfully flashed a CDMA phone from Sprint to Verizon (an exploit I may
-document separately some day). As I have not been able to find a compilation of
-this information elsewhere, I am writing up this document in the hope that it
-will help others with flashing phones or porting ROMs to different carriers.&lt;/p&gt;&lt;/div&gt;
+successfully flashed a CDMA phone from Sprint to Verizon (an exploit documented
+in &lt;a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html"&gt;Flashing a Sprint
+Nexus S 4G to Verizon&lt;/a&gt;). As I have not been able to find a compilation of this
+information elsewhere, I am writing up this document in the hope that it will
+help others with flashing phones or porting ROMs to different carriers.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Note that this information is based on my research with the Jelly Bean (4.1 &amp;amp;
 4.2), ICS (4.0) and Gingerbread (2.3.4) versions of Android and two major U.S.
 CDMA carriers, Verizon Wireless and Sprint. Hence, it may not be applicable to
@@ -3077,6 +3370,13 @@ APN settings for 4G and MMS. See the stock APN settings file for the
 Nexus S 4G&lt;/a&gt; or the
 &lt;a href="https://github.com/CyanogenMod/android_vendor_cm/blob/ics/prebuilt/common/etc/apns-conf-cdma.xml"&gt;default
 CyanogenMod APN settings&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_by_step_guide"&gt;Step-by-step guide&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;If you&amp;#8217;re interested in learning more about how exactly this works, you&amp;#8217;re
+welcome to take a look at my follow-up article
+&lt;a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html"&gt;Flashing a Sprint Nexus
+S 4G to Verizon&lt;/a&gt;, which documents the process of flashing an actual phone.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Chuan Ji</dc:creator><pubDate>Thu, 15 Nov 2012 23:57:36 -0800</pubDate><guid>tag:seasonofcode.com,2012-11-15:posts/carrier-programming-on-cdma-android-phones.html</guid><category>Android</category><category>Featured</category></item><item><title>Announcing JFBView</title><link>http://seasonofcode.com/posts/announcing-jfbview.html</link><description>&lt;div class="paragraph"&gt;&lt;p&gt;Around April this year I had heavily patched a PDF viewer for the Linux
 framebuffer called FBPDF, which was written by Ali Gholami Rudi in C. Over the

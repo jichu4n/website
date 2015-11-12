@@ -78,6 +78,106 @@
 <article itemscope itemtype="http://schema.org/Article">
   <header>
     <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html" rel="bookmark">
+      EGL Context Preservation on Android
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-03-15T15:08:50-07:00">
+          Mar 15, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/android.html">Android</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>This is really a little note for myself but I came across the issue of the
+preservation of the OpenGL context (or rather, the EGL context as we&#8217;re dealing
+with OpenGL ES) of an application. On desktop systems, G3D assumes its GL
+context is always preserved, either by the GPU or by the system. On Android,
+however, it turns out that there are two possible scenarios that will cause a
+running application to lose its EGL context. The first is when the user leaves
+the application, e.g., by pressing the Home button or in the case of an incoming
+call. There is in fact a function called setPreserveEGLContextOnPause(boolean)
+in GLSurfaceView, which does exactly what the name suggests; however, in the
+words of the API documentation, "whether the EGL context is actually preserved
+or not depends upon whether the Android device that the program is running on
+can support an arbitrary number of EGL contexts or not. Devices that can only
+support a limited number of EGL contexts must release the EGL context in order
+to allow multiple applications to share the GPU." There is also a
+getPreserveEGLContextOnPause() function, but the documentation does not specify
+whether this will return the actual preservation policy of the machine or only
+whatever value we have set earlier via setPreserveEGLContextOnPause(boolean). I
+looked up the source file in the Android source tree but these two functions are
+newly added in Android 3.0 (whose code, being in beta, is apparently not
+released to the public) and do not show up in the published code base.</p></div>
+<div class="paragraph"><p>The second way we could lose the EGL context is when the user locks the screen
+and the device goes to sleep. Again quoting the API documentation, "[t]he EGL
+context will typically be lost when the Android device awakes after going to
+sleep&#8230;Note that when the EGL context is lost, all OpenGL resources associated
+with that context will be automatically deleted." There does not appear to exist
+a way to prevent this.</p></div>
+<div class="paragraph"><p>Whenever we will have lost a context and need to render again, the
+onSurfaceCreated function in our renderer class is called with a newly created
+context; this is where a Java app would send all its resources to the GPU. In
+the case of the G3D library, I think the best we can do is to require our client
+application to always provide some sort of callback on Android that we will
+invoke to resend resources to the GPU, for instance in their GApp subclass.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Mar 15, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/android.html">Android</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/egl-context-preservation-on-android.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
       <a itemprop="name" href="http://seasonofcode.com/posts/msys-and-ssh-server-under-windows-7.html" rel="bookmark">
       MSYS and SSH server under Windows 7
       </a>
@@ -531,95 +631,6 @@ No WiFi support
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="http://seasonofcode.com/posts/cleaner-bootable-nitdroid-kernel.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="http://seasonofcode.com/posts/first-bootable-kernel.html" rel="bookmark">
-      First bootable kernel
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-02-13T19:45:22-08:00">
-          Feb 13, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="http://seasonofcode.com/tag/projects.html">Projects</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="http://seasonofcode.com/posts/first-bootable-kernel.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><div class="title">Maemo userspace running custom Android OMAP 2.6.32.9:</div><p><span class="image">
-<a class="image" href="/assets/files/nitdroid/P1030161.JPG">
-<img src="/assets/files/nitdroid/P1030161_small.JPG" alt="Maemo userspace running custom Android OMAP 2.6.32.9" width="256" height="192" />
-</a>
-</span></p></div>
-<div class="paragraph"><p>FINALLY - a bootable kernel on top of Android OMAP!! I can&#8217;t even express how relieved &amp; proud I am for figuring this out after all this effort - and I barely slept in between&#8230;</p></div>
-<div class="paragraph"><p>Anyway, I figured out two important issues in the past three hours. Firstly, boot messages. I finally got the kernel to display boot messages after copying over the directories <code>drivers/video/omap</code> and <code>drivers/video/omap2</code> from the Gentoo mod; I do not know which one and which file(s) within are actually responsible for this, but that&#8217;s something I&#8217;ll figure out another day.</p></div>
-<div class="paragraph"><p>Secondly, with boot messages enabled, I could see the kernel was crashing on something related to the Menelaus driver. I tried enabling <code>CONFIG_BOOT_PRINTK_DELAY</code> in the kernel config so I could see the actual messages before the stack trace flooded the screen, but doing so made it unbootable again. I tried capturing the boot process with my digital camera, but even the latter could not capture the full messages on time. I then tried copying over <code>drivers/i2c</code>, but there were too many compilations errors to fix and I ended up just disabling <code>CONFIG_MENELAUS</code> and <code>CONFIG_MMC_OMAP</code>. And that was the magical touch.</p></div>
-<div class="paragraph"><p>So it turns out the Menelaus driver was what was causing the kernel to crash; more specifically, it was the Menelaus initialization routine according to the portions of the kernel messages I could see. My current roadmap is thus</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-Starting again from scratch, produce the minimal patch that would allow Android OMAP 2.6.32 to boot. Currently I bluntly copied over basically the entire <code>arch/arm</code> directory and that is undesirable for the simple reason that the resulting patch would contain differences between linux-omap 2.6.33 and linux-omap 2.6.32 and would not be applicable to future Android OMAP versions. I want a patch specific to the N810 so that I could apply it to any future Android OMAP version.
-</p>
-</li>
-<li>
-<p>
-Fix Menelaus and enable MMC. This could prove problematic as the version of Menelaus in the Gentoo mod appears to rely on the new I2C API in 2.6.33, and the version of Menelaus in 2.6.32 that uses the older I2C API crashes the kernel as I just found out. If I backport the version of Menelaus in the Gentoo mod, I could end up producing 2.6.32-specific patches. But I&#8217;ll figure that out.
-</p>
-</li>
-</ol></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Feb 13, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="http://seasonofcode.com/tag/projects.html">Projects</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="http://seasonofcode.com/posts/first-bootable-kernel.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="http://seasonofcode.com/posts/first-bootable-kernel.html">Permalink</a>
       </li>
     </ul>
   </footer>

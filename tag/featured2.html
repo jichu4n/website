@@ -78,6 +78,321 @@
 <article itemscope itemtype="http://schema.org/Article">
   <header>
     <h2 class="entry-title">
+      <a itemprop="name" href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html" rel="bookmark">
+      The Most Popular Fonts On The Web: A Study
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2014-04-04T23:04:00-07:00">
+          Apr 04, 2014
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,            <a href="http://seasonofcode.com/tag/misc.html">Misc</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p><link rel="image_src"
+href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/embed/oimg?id=1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc&oid=65057078&zx=ey1naahah70j">
+If you&#8217;ve ever worked on a web site, you already know that choosing the right
+fonts is one of the most important aesthetic decisions in the design of a site.
+But, like all aesthetic decisions, it is a highly subjective.</p></div>
+<div class="paragraph"><p>I decided to try to bring a little bit of objectivity into the equation by
+finding out, empirically, what fonts the most popular sites on the web are using
+today.</p></div>
+<div class="sect2">
+<h3 id="_methodology">Methodology</h3>
+<div class="paragraph"><p>I wrote a Python program that crawls the front page of the 100,000 most popular
+web sites according to <a href="http://www.alexa.com/topsites">Alexa&#8217;s top sites list</a>.
+It parses the HTML using
+<a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>, and parses all
+in-line and linked CSS stylesheets using <a href="http://cthedot.de/cssutils/">cssutils</a>.
+It then looks for <code>font</code> and <code>font-family</code> rules in the CSS rules, and stores
+the normalized form of each font in those rules in order. The result is kept in
+a <a href="https://sqlite.org">SQLite</a> database for analysis.</p></div>
+<div class="paragraph"><p>This all sounds pretty straightforward, but in fact it took me two weeks to
+build a crawler that doesn&#8217;t choke on all the crazy crap people throw at
+browsers. I will write up some of the more interesting cases in a separate post.</p></div>
+<div class="paragraph"><p>The final crawl success rate was about 96%. The size of all HTML and stylesheets
+downloaded was about 30GB.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_the_most_popular_first_choice_fonts">The Most Popular First-Choice Fonts</h3>
+<div class="paragraph"><p>First, let&#8217;s take a look at the first-choice/most preferred fonts, i.e., the
+ones that appear first in <code>font-family</code> rules. These fonts most closely
+represent the intention of the web site designers without compatibility
+compromises.</p></div>
+<div class="paragraph"><p>For each font, we calculate the number of distinct web sites that have at least
+one CSS <code>font</code> or <code>font-family</code> rule that lists the font as the first choice.
+This means that if a site has two rules, one listing Arial and another
+listing Times, it will count towards both. Thus, the numbers add up to much
+higher than the total number of sites.</p></div>
+<div class="paragraph"><p>Without further ado, here&#8217;s the breakdown of the top fonts on the web:
+<div align="center"><iframe
+height=620
+style="max-width: 610px; width: 100%"
+src="//docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=65057078"
+seamless frameborder=0 scrolling=yes></iframe></div>
+(The chart is interactive - hover/click to see actual numbers.)</p></div>
+<div class="paragraph"><p>A couple of observations:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Sans-serif fonts dominate the web.</strong> The top 25 fonts list only includes 4
+  serif fonts, compared to 16 sans-serif fonts. The most popular serif-font,
+  Georgia, ranks #4 on the list with about 20% of sites.
+</p>
+</li>
+<li>
+<p>
+<strong>Monospace fonts get no love.</strong> Most sites don&#8217;t bother
+  specifying a custom monospace font; the most common monospace font
+  specification just uses the browser default (12%). The most popular monospace
+  font, Monaco, is featured on 7.2% of sites. Both of these are quite high, in
+  fact, considering that we only crawl the front page of these sites.
+</p>
+</li>
+<li>
+<p>
+<strong>The most popular fonts of each family:</strong>
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Sans-serif:</strong> Arial (#1, 62%)
+</p>
+</li>
+<li>
+<p>
+<strong>Serif:</strong> Georgia (#4, 20%)
+</p>
+</li>
+<li>
+<p>
+<strong>Monospace:</strong> Monaco (#11, 7.2%)
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+<strong>Old Microsoft fonts still reign over the web.</strong> The top non-Microsoft font,
+  Helvetica Neue, ranks #6 with an impressive 18% of top web sites.
+</p>
+</li>
+<li>
+<p>
+<strong><a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a> is awesome</strong>. About
+  4.6% of the top 100K sites already use it for universal icons.
+</p>
+</li>
+<li>
+<p>
+<strong>The Chinese web is on the rise.</strong> 3 out of the top 25 fonts are Chinese fonts,
+  compared to 21 Latin fonts (and 1 symbol font). No other scripts made their
+  way into the list.
+</p>
+</li>
+</ul></div>
+<div class="sect3">
+<h4 id="_what_if_we_considered_8230">What If We Considered&#8230;</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Fonts in all positions</strong>: (<a href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=940843634">graph</a>) not much difference.
+</p>
+</li>
+<li>
+<p>
+<strong>The top 1,000 web sites only</strong>: (<a href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=1208179553">graph</a>) even more Arial (#1, 74%).
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_most_popular_heading_fonts">The Most Popular Heading Fonts</h3>
+<div class="paragraph"><p>Next, let&#8217;s look at first-choice fonts used in headings or titles.</p></div>
+<div class="paragraph"><p>I used a really crude metric to determine whether a CSS rule matches a heading:
+whether the CSS selector is for an <code>H1</code>&#8230;<code>H6</code> tag or contains the strings
+"heading" or "title". While this finds only a subset of actual headings, it is
+not a bad approximation as it matches rules on about 58% of the top 100,000
+web sites.</p></div>
+<div class="paragraph"><p>Let&#8217;s start with the graph:
+<div align="center"><iframe
+height=620
+style="max-width: 610px; width: 100%"
+src="//docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=1659247262"
+seamless frameborder=0 scrolling=yes></iframe></div>
+Observations:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Header fonts are more diverse.</strong> While Microsoft fonts still reign supreme, a
+  number or more exotic fonts are also on the list. In terms of distribution,
+  there&#8217;s a much longer tail. It may be a sign that designers pay a lot
+  more attention to fonts used in headings.
+</p>
+</li>
+<li>
+<p>
+<strong>Serif fonts are more popular in headings than elsewhere.</strong> While Arial still
+  claims to top spot with 27.31% of sites, the top serif font, Georgia, rises to
+  2nd place with 9% of sites.
+</p>
+</li>
+<li>
+<p>
+<strong>No monospace fonts in headings.</strong> Not surprising.
+</p>
+</li>
+<li>
+<p>
+Among Chinese fonts, <strong>宋体 is more commonly used for body text, while 雅黑 (or
+  Yahei) is more commonly used for heading text.</strong>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_concluding_thoughts">Concluding Thoughts</h3>
+<div class="paragraph"><p>Arial and friends are the <a href="http://screenfont.ca/fonts/today/interim/">most</a>
+<a href="http://pxlnv.com/blog/guaahhhhhhh-come-on/">hated</a>
+<a href="http://www.prepressure.com/fonts/interesting/most-hated">fonts</a>
+<a href="http://enjoytherandom.com/hipster-hitler-hates-arial/">ever</a>. Quoting
+<a href="http://www.marksimonson.com/notebook/view/the-scourge-of-arial">The Scourge of
+Arial</a>:</p></div>
+<div class="quoteblock">
+<div class="content">Despite its pervasiveness, a professional designer would rarely - at least for
+the moment - specify Arial.</div>
+<div class="attribution">
+</div></div>
+<div class="paragraph"><p>And yet, Arial is still the default font on the vast majority of sites on
+the web, followed closely by its friends. Why?</p></div>
+<div class="paragraph"><p>Quoting <a href="http://www.64notes.com/design/stop-helvetica-arial/">Stop Using Arial &amp;
+Helvetica</a>:</p></div>
+<div class="quoteblock">
+<div class="content">Some people actually have a reason to use them but most use it mindlessly - just
+because everyone else does. Often, no thought is given to design of the site,
+let alone typography.</div>
+<div class="attribution">
+</div></div>
+<div class="paragraph"><p>This is pretty sad. Paraphrasing
+<a href="http://www.dtelepathy.com/blog/graveyard/stop-using-lame-fonts">Stop Using Lame
+Fonts</a>, a good font stack has the potential to really make a site design shine,
+and it&#8217;s a shame web designers aren&#8217;t exploiting this opportunity.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_caveats">Caveats</h3>
+<div class="paragraph"><p>There are a couple of caveats with this dataset.</p></div>
+<div class="paragraph"><p>First, I am only surveying the landing page of each site. For many sites,
+notably those whose main interface is hidden behind a login (Facebook, Evernote,
+etc.), we may not be finding the styles that matter most to users. However, I
+figured since it would be pretty poor design to build a landing page that is
+aesthetically inconsistent with the rest of the site, it is not very likely that
+the font selection on the landing page would be too different from the fonts
+used elsewhere on the site. Of course, without creating fake accounts on these sites,
+we have no way to verify.</p></div>
+<div class="paragraph"><p>The numbers are not weighted by prominence on the web pages. One could argue
+that the font of the main body text on a page should carry more weight than that
+of the tiny disclaimer text at the bottom which no one reads. It would be tricky
+to determine what the right weight function is though.</p></div>
+<div class="paragraph"><p>The numbers are not weighted by the prominence of the web sites. For example, we
+could make it so that Google&#8217;s use of Arial would get more weight than some
+random obscure site&#8217;s use of Arial, as Google&#8217;s choice impacts many more users
+and was probably the result of deliberation by a team of expert designers.
+Again, it&#8217;s not entirely obvious how the weights should be assigned.</p></div>
+<div class="paragraph"><p>I am only looking at CSS rules in <code>&lt;style&gt;</code> tags or linked stylesheets. That
+means I am ignoring <code>style="&#8230;"</code> attributes in tags, <code>&lt;font&gt;</code> elements, or
+dynamically assigned fonts (i.e., through JavaScript). I would be surprised if
+this turns out to be a big loss though.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_next_steps">Next Steps</h3>
+<div class="paragraph"><p>I can think of quite a few other useful questions one might find the answer to
+from this dataset:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+What are the most common font pairings?
+</p>
+</li>
+<li>
+<p>
+What are the popular choices for heading fonts, given that I&#8217;ve chosen font X
+  as my body text font?
+</p>
+</li>
+<li>
+<p>
+What are the most common fonts on news sites/forums/productivity web
+  apps/social media sites?
+</p>
+</li>
+<li>
+<p>
+Is there any correlation between font choice and site popularity?
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>What do you think?</p></div>
+<div class="paragraph"><p>Please feel free to <a href="https://www.mediafire.com/?xqrk731716v078l">download</a> the top
+100 first-choice fonts as a CSV file.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Apr 04, 2014
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>,          <a href="http://seasonofcode.com/tag/misc.html">Misc</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="http://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
       <a itemprop="name" href="http://seasonofcode.com/posts/disabling-screen-off-animation-in-android.html" rel="bookmark">
       Disabling Screen-Off Animation In Android
       </a>
@@ -625,10 +940,11 @@ phone cannot work on Sprint or MetroPCS or Virgin Mobile or Boost Mobile, for
 example. Unlike GSM phones with swappable SIM&#8217;s, however, a CDMA phone sold in
 the U.S. is typically locked to a particular carrier; so how is that done?</p></div>
 <div class="paragraph"><p>I was recently able to figure out the answer to this question when I
-successfully flashed a CDMA phone from Sprint to Verizon (an exploit I may
-document separately some day). As I have not been able to find a compilation of
-this information elsewhere, I am writing up this document in the hope that it
-will help others with flashing phones or porting ROMs to different carriers.</p></div>
+successfully flashed a CDMA phone from Sprint to Verizon (an exploit documented
+in <a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html">Flashing a Sprint
+Nexus S 4G to Verizon</a>). As I have not been able to find a compilation of this
+information elsewhere, I am writing up this document in the hope that it will
+help others with flashing phones or porting ROMs to different carriers.</p></div>
 <div class="paragraph"><p>Note that this information is based on my research with the Jelly Bean (4.1 &amp;
 4.2), ICS (4.0) and Gingerbread (2.3.4) versions of Android and two major U.S.
 CDMA carriers, Verizon Wireless and Sprint. Hence, it may not be applicable to
@@ -764,6 +1080,13 @@ Nexus S 4G</a> or the
 <a href="https://github.com/CyanogenMod/android_vendor_cm/blob/ics/prebuilt/common/etc/apns-conf-cdma.xml">default
 CyanogenMod APN settings</a>.</p></div>
 </div>
+<div class="sect2">
+<h3 id="_step_by_step_guide">Step-by-step guide</h3>
+<div class="paragraph"><p>If you&#8217;re interested in learning more about how exactly this works, you&#8217;re
+welcome to take a look at my follow-up article
+<a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html">Flashing a Sprint Nexus
+S 4G to Verizon</a>, which documents the process of flashing an actual phone.</p></div>
+</div>
 
   </div>
 
@@ -879,275 +1202,6 @@ git checkout ece3f1b6f1e6a67d02e42490eca6c7de62220b57
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="http://seasonofcode.com/posts/using-alsa-audio-drivers-in-android.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html" rel="bookmark">
-      How Rooting Works -- A Technical Explanation of the Android Rooting Process
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-10-19T21:55:36-07:00">
-          Oct 19, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="http://seasonofcode.com/tag/android.html">Android</a>,            <a href="http://seasonofcode.com/tag/featured.html">Featured</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p><img src="/assets/files/rooting_android.png"
-align="right"
-style="max-width: 200px; width: 25%; margin: 1.5em 0 1.5em 1.5em;">
-I have always been curious how rooting actually worked behind the scenes. After
-recently acquiring a new Eee Pad Slider, a Honeycomb tablet that so far no one
-has been able to root, the frustration of being locked out of this amazing piece
-of hardware with so much potential led me to finally sit down and figure out
-what exactly rooting means, what it entails from a technical perspective, and
-how hackers out in the wild are approaching the rooting of a new device.
-Although all this information is out there, I have not been able to find a good
-article that had both the level of technical detail that I wanted and an
-appropriate introduction to the big picture, and so I decided to write my own.</p></div>
-<div class="paragraph"><p>This is NOT a noob-friendly guide to rooting a particular Android device.
-Rather, it is a general explanation of how stock Android ROMs try to prevent
-unprivileged access, how hackers attack this problem and how rooting software
-leverage various exploits to defeat these security mechanisms.</p></div>
-<div class="sect2">
-<h3 id="_i_the_goal">I. The Goal</h3>
-<div class="paragraph"><p>Let us first take a step back and consider <em>exactly</em> what we mean by rooting.
-Forget flashing custom ROMs, enabling WiFi tethering or installing
-Superuser.apk; fundamentally, rooting is about obtaining root access to the
-underlying Linux system beneath Android and thus gaining absolute control over
-the software that is running on the device. Things that require root access on a
-typical Linux system&#8201;&#8212;&#8201;mounting and unmounting file systems, starting your
-favorite SSH or HTTP or DHCP or DNS or proxy servers, killing system processes,
-chroot-ing, etc.,&#8201;&#8212;&#8201;require root access on Android as well. Being able to run
-arbitrary commands as the root user allows you to do absolutely <em>anything</em> on a
-Linux / Android system, and this is real goal of rooting.</p></div>
-<div class="paragraph"><p>Stock OEM Android builds typically do not allow users to execute arbitrary code
-as root. This essentially means that you as a user are granted only limited
-control over your own device; you can make your device do task <em>X</em> only if the
-manufacturer explicitly decided to allow it and shipped a program to do it.  You
-will not be able to use third-party apps to accomplish a task that your
-manufacturer does not wish you to do. WiFi tethering is a good example of this.
-Cell phone carriers obviously do not want you to tether your phone without
-paying them additional charges. Therefore, many phones come pre-packaged with
-their own proprietary WiFi tethering apps that demand extraneous fees. But
-without root access, you will not be able to install a free alternative like
-<a href="http://code.google.com/p/android-wifi-tether/"> Wireless Tether For Root
-Users</a>. Why this is accepted practice in the industry is a mystery to me.  The
-only difference between cell phones, tablets and computers is their form factor;
-but while a PC vendor would fail spectacularly if they tried to prevent users
-from running arbitrary programs on their machines, cell phone vendors are
-clearly not judged along the same lines. But such arguments would belong to
-another article.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_ii_the_enemy_protection_mechanisms_on_a_stock_oem_android_rom">II. The Enemy: Protection Mechanisms On A Stock OEM Android ROM</h3>
-<div class="sect3">
-<h4 id="_1_bootloader_and_recovery">1. Bootloader and Recovery</h4>
-<div class="paragraph"><p>The bootloader, the first piece of code executed when your device is powered on,
-is responsible for loading the Android OS and the recovery system and flashing a
-new ROM. People refer to some bootloaders as "unlocked" if a user can flash and
-boot arbitrary ROMs without hacking; unfortunately, many Android devices have
-locked bootloaders that you would have to hack around in order to make them do
-anything other than boot the stock ROM. A Samsung smartphone I had used some
-months ago had an unlocked bootloader; I could press a certain combination of
-hardware keys on the phone, connect it to my computer, and flash any custom ROM
-onto it using Samsung&#8217;s utilities without having to circumvent any protection
-mechanisms. The same is not true for my Motorola Droid 2 Global; the bootloader,
-as far as I know, cannot be hacked. The Eee Pad Slider, on the other hand, is an
-interesting beast; as with other nVidia Tegra 2 based devices, its bootloader is
-controllable through the <code>nvflash</code> utility, but only if you know the <em>secure
-boot key</em> (SBK) of the device.  (The SBK is a private AES key used to encrypt
-the commands sent to the bootloader; the bootloader will only accept the command
-if it has been encrypted by the particular key of the device.) Currently, as the
-SBK of the Eee Pad Slider is not publicly known, the bootloader remains
-inaccessible.</p></div>
-<div class="paragraph"><p>System recovery is the second piece of low-level code on board any Android
-device. It is separate from the Android userland and is typically located on its
-own partition; it is usually booted by the bootloader when you press a certain
-combination of hardware keys. It is important to understand that it is a totally
-independent program; Linux and the Android userland is not loaded when you boot
-into recovery, and any high-level concept such as root does not exist here. It
-is simple program that really is a very primitive OS, and it has absolute
-control over the system and will do anything you want as long as the code to do
-it is built in. Stock recovery varies with the manufacturer, but often includes
-functionalities like reformatting the <code>/data</code> partition (factory reset) and
-flashing an update ROM (<code>update.zip</code>, located at the root of the external
-microSD card) signed by the manufacturer.  Note I said <em>signed by the
-manufacturer</em>; typically it is not possible to flash custom update files unless
-you obtain the private key of the manufacturer and sign your custom update with
-it, which is both impossible for most and illegal under certain jurisdictions.
-However, since recovery is stored in a partition just like <code>/system</code>, <code>/data</code>
-and <code>/cache</code> (more about that later), you can replace it with a custom recovery
-if you have root access in Linux / Android.  Most people do just that upon
-rooting their device; <a href="http://www.clockworkmod.com/">ClockworkMod Recovery</a>
-is a popular third-party recovery image, and allows you to flash arbitrary ROMs,
-backup and restore partitions, and lots of other magic.</p></div>
-</div>
-<div class="sect3">
-<h4 id="_2_adb">2. ADB</h4>
-<div class="paragraph"><p>ADB (see
-<a href="http://developer.android.com/guide/developing/tools/adb.html">the official documentation for ADB</a>)
-allows a PC or a Mac to connect to an Android device and perform certain
-operations. One such operation is to launch a simple shell on the device, using
-the command <code>adb shell</code>. The real question is what user do the commands executed
-by that shell process run as. It turns out that it depends on the value of an
-Android system property, named <code>ro.secure</code>. (You can view the value of this
-property by typing <code>getprop ro.secure</code> either through an ADB shell or on a
-terminal emulator on the device.) If <code>ro.secure=0</code>, an ADB shell will run
-commands as the root user on the device. But if <code>ro.secure=1</code>, an ADB shell will
-run commands as an unprivileged user on the device. Guess what <code>ro.secure</code> is
-set to on almost every stock OEM Android build. But can we change the value of
-<code>ro.secure</code> on a system? The answer is no, as implied by the <code>ro</code> in the name of
-the property. The value of this property is set at boot time from the
-<code>default.prop</code> file in the root directory. The contents of the root directory
-are essentially <em>copied</em> from a partition in the internal storage on boot, but
-you cannot write to the partition if you are not already root. In other words,
-this property denies root access via ADB, and the only way you could change it
-is by gaining root access in the first place. Thus, it is secure.</p></div>
-</div>
-<div class="sect3">
-<h4 id="_3_android_ui">3. Android UI</h4>
-<div class="paragraph"><p>On an Android system, all Android applications that you can see or interact with
-directly are running as _un_privileged users in sandboxes. Logically, a program
-running as an unprivileged user cannot start another program that is run as the
-privileged user; otherwise any program can simply start another copy of itself
-in privileged mode and gain privileged access to everything. On the other hand,
-a program running as root can start another program as root or as an
-unprivileged user. On Linux, privilege escalation is usually accomplished via
-the <code>su</code> and <code>sudo</code> programs; they are often the only programs in the system
-that are able to execute the system call <code>setuid(0)</code> that changes the current
-program from running as an unprivileged user to running as root.  Apps that
-label themselves as requiring root are in reality just executing other programs
-(often just native binaries packaged with the app) through <code>su</code>. Unsurprisingly,
-stock OEM ROMs never come with these <code>su</code>. You cannot just download it or copy
-it over either; it needs to have its SUID bit set, which indicates to the system
-that the programs this allowed to escalate its runtime privileges to root. But
-of course, if you are not root, you cannot set the SUID bit on a program. To
-summarize, what this means is that any program that you can interact with on
-Android (and hence running in unprivileged mode) is unable to either 1) gain
-privileged access and execute in privileged mode, or 2) start another program
-that executes in privileged mode.  If this holds, the Android system by itself
-is pretty much immune to privilege escalation attempts. We will see the loophole
-exploited by on-device rooting applications in the next section.</p></div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_iii_fighting_the_system">III. Fighting the System</h3>
-<div class="paragraph"><p>So how the hell do you root an Android? Well, from the security mechanisms
-described above, we can figure out how to attack each component in turn.</p></div>
-<div class="paragraph"><p>If your device happens to have an unlocked bootloader, you&#8217;re pretty much done.
-An example is the Samsung phone that I had had. Since the bootloader allowed the
-flashing of arbitrary ROMs, somebody essentially pulled the stock ROM from the
-phone (using <code>dd</code>), added <code>su</code>, and repackaged it into a modified ROM. All I as
-a user needed to do was to power off the phone, press a certain combination of
-hardware keys to start the phone in flashing mode, and use Samsung&#8217;s utilities
-to flash the modified ROM onto the phone.</p></div>
-<div class="paragraph"><p>Believe it or not, certain manufacturers don&#8217;t actually set <code>ro.secure</code> to 1. If
-that is the case, rooting is even easier; just plug the phone into your computer
-and run ADB, and you now have a shell that can execute any program as root. You
-can then mount <code>/system</code> as read-write, install <code>su</code> and all your dreams have
-come true.</p></div>
-<div class="paragraph"><p>But many other Android devices have locked bootloaders and <code>ro.secure</code> set. As
-explained above, they should not be root-able because you can only interact with
-unprivileged programs on the system and they cannot help you execute any
-privileged code. So what&#8217;s the solution?</p></div>
-<div class="paragraph"><p>We know that a number of important programs, including low-level system
-services, must run as root even on Android in order to access hardware
-resources. Typing <code>ps</code> on an Android shell (either via ADB or a terminal
-emulator on the device) will give you an idea. These programs are started by the
-<code>init</code> process, the first process started by the kernel (I often feel that the
-kernel and the <code>init</code> process are kind of analogous to Adam and Eve&#8201;&#8212;&#8201;the
-kernel spawns <code>init</code> in a particular fashion, and <code>init</code> then goes on and spawns
-all other processes) which has to run as root because it needs to start other
-privileged system processes.</p></div>
-<div class="paragraph"><p>Now here&#8217;s the key insight: if you can hack / trick one of these system
-processes running in privileged mode to execute your arbitrary code, you have
-just gained privileged access to the system. This how all one-click-root methods
-work, including z4root, gingerbreak, and so on. If you are truly curious, I
-highly recommend
-<a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent
-presentation on the various exploits used by current rooting tools</a>, but the
-details are not as relevant here as the simple idea behind them. That idea is
-that there are vulnerabilities in the system processes running as root in the
-background that, if exploited, will allow us to execute arbitrary code as root.
-Well, that "arbitrary code" is most certainly a piece of code that mounts
-<code>/system</code> in read-write mode and installs a copy of <code>su</code> permanently on the
-system, so that from then on we don&#8217;t need to jump through the hoops to run the
-programs we really wanted to run in the first place.</p></div>
-<div class="paragraph"><p>Since Android is open source as is Linux, what people have done is to scrutinize
-and reason about the source code of the various system services until they find
-a security hole they can leverage. This becomes increasingly hard as Google and
-the maintainers of the various pieces of code fix those particular
-vulnerabilities when they are discovered and published, which means that the
-exploits will eventually become obsolete with newer devices. But the good news
-is that manufacturers are not stupid enough to push OTA updates to fix a
-vulnerability just to prevent rooting as it is very expensive for them; in
-addition, devices in the market are always lagging behind the newest software
-releases. Thus, it takes quite some time before these rooting tools are rendered
-useless by new patches, and by then hopefully other exploits would have been
-discovered.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_iv_see_it_in_action">IV. See It In Action!</h3>
-<div class="paragraph"><p>To see all of this in action, you are invited to check out my follow-up article:
-<a href="/posts/android-rooting-a-developers-guide.html">Android Rooting: A
-Developer&#8217;s Guide</a>, which explains how I applied this stuff to figure out how to
-root an actual device.</p></div>
-</div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Oct 19, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="http://seasonofcode.com/tag/android.html">Android</a>,          <a href="http://seasonofcode.com/tag/featured.html">Featured</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="http://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">Permalink</a>
       </li>
     </ul>
   </footer>
