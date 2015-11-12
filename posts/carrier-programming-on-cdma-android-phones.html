@@ -238,15 +238,15 @@ call, but would be unable to actually make or receive calls. The
 OS what it needs to display about a particular network (as an index into the
 PRL); for an example, take a look at
 <a href="https://android.googlesource.com/device/samsung/toroplus/<code>/refs/tags/android-4.2_r1/overlay/frameworks/base/core/res/res/xml/eri.xml">the
-stock +eri.xml</code> for the Sprint Galaxy Nexus</a> or
+stock eri.xml for the Sprint Galaxy Nexus</a> or
 <a href="https://github.com/CyanogenMod/android_device_samsung_toro/blob/ics/overlay/frameworks/base/core/res/res/xml/eri.xml">the
-CyanogenMod <code>eri.xml</code> for the Verizon Wireless Galaxy Nexus</a>. In particular,
+CyanogenMod eri.xml for the Verizon Wireless Galaxy Nexus</a>. In particular,
 this file instructs the OS whether to consider a network (tower) to be roaming
 (so whether a roaming icon is displayed), and gives the name of the network
 (tower) to be shown in the UI. It must be stressed that this file <em>has no
 functional effect</em>; all it changes is how the OS displays information about
 networks. Since APK packages are just ZIP archives, it is easy to replace the
-<code>eri.xml</code> within to change roaming and name settings for networks; note,
++eri.xml</code> within to change roaming and name settings for networks; note,
 however, that the file inside the APK is not a plain text XML, but some compiled
 binary form; you may need to Google for the appropriate binary form pulled from
 another phone.</p></div>

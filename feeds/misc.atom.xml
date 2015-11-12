@@ -285,7 +285,11 @@ at &lt;a href="http://www.mediafire.com/?g0vd7nfs47ksujz"&gt;this link&lt;/a&gt;
 &lt;/div&gt;
 &lt;div class="sect2"&gt;
 &lt;h3 id="_step_6_reboot_amp_profit"&gt;Step 6: Reboot &amp;amp; PROFIT&lt;/h3&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The Nexus S 4G should now be a fully functional Verizon Wireless phone.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The Nexus S 4G should now be a fully functional Verizon Wireless phone. If you
+are curious about what each of the steps means, you&amp;#8217;re welcome to check out my
+previous article
+&lt;a href="/posts/carrier-programming-on-cdma-android-phones.html"&gt;Carrier Programming
+on CDMA Android Phones&lt;/a&gt; for a high-level view of how CDMA phones are programmed.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;While your mileage may vary, I hope the above information have been of help.
 Since I no longer use Verizon Wireless and no longer own any of the phones
 mentioned above, please take all this information with a grain of salt.&lt;/p&gt;&lt;/div&gt;
@@ -3352,15 +3356,15 @@ call, but would be unable to actually make or receive calls. The
 OS what it needs to display about a particular network (as an index into the
 PRL); for an example, take a look at
 &lt;a href="https://android.googlesource.com/device/samsung/toroplus/&lt;code&gt;/refs/tags/android-4.2_r1/overlay/frameworks/base/core/res/res/xml/eri.xml"&gt;the
-stock +eri.xml&lt;/code&gt; for the Sprint Galaxy Nexus&lt;/a&gt; or
+stock eri.xml for the Sprint Galaxy Nexus&lt;/a&gt; or
 &lt;a href="https://github.com/CyanogenMod/android_device_samsung_toro/blob/ics/overlay/frameworks/base/core/res/res/xml/eri.xml"&gt;the
-CyanogenMod &lt;code&gt;eri.xml&lt;/code&gt; for the Verizon Wireless Galaxy Nexus&lt;/a&gt;. In particular,
+CyanogenMod eri.xml for the Verizon Wireless Galaxy Nexus&lt;/a&gt;. In particular,
 this file instructs the OS whether to consider a network (tower) to be roaming
 (so whether a roaming icon is displayed), and gives the name of the network
 (tower) to be shown in the UI. It must be stressed that this file &lt;em&gt;has no
 functional effect&lt;/em&gt;; all it changes is how the OS displays information about
 networks. Since APK packages are just ZIP archives, it is easy to replace the
-&lt;code&gt;eri.xml&lt;/code&gt; within to change roaming and name settings for networks; note,
++eri.xml&lt;/code&gt; within to change roaming and name settings for networks; note,
 however, that the file inside the APK is not a plain text XML, but some compiled
 binary form; you may need to Google for the appropriate binary form pulled from
 another phone.&lt;/p&gt;&lt;/div&gt;
