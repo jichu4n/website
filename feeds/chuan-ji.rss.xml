@@ -375,6 +375,7 @@ e-mails delivered by any server matching these expressions (such as
 &lt;code&gt;myserver_2.example.com&lt;/code&gt;).&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;127.0.0.1
+::1
 localhost
 192.168.0.1/24
 
@@ -506,9 +507,9 @@ PostSRSd. Let&amp;#8217;s start it now:&lt;/p&gt;&lt;/div&gt;
 &lt;code&gt;/etc/postfix/main.cf&lt;/code&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# PostSRSd settings.&lt;/span&gt;
-&lt;span class="nv"&gt;sender_canonical_maps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; tcp:127.0.0.1:10001
+&lt;span class="nv"&gt;sender_canonical_maps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; tcp:localhost:10001
 &lt;span class="nv"&gt;sender_canonical_classes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; envelope_sender
-&lt;span class="nv"&gt;recipient_canonical_maps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; tcp:127.0.0.1:10002
+&lt;span class="nv"&gt;recipient_canonical_maps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; tcp:localhost:10002
 &lt;span class="nv"&gt;recipient_canonical_classes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; envelope_recipient,header_recipient
 &lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;And restart Postfix with the new configuration:&lt;/p&gt;&lt;/div&gt;

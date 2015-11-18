@@ -563,6 +563,7 @@ e-mails delivered by any server matching these expressions (such as
 <code>myserver_2.example.com</code>).</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre>127.0.0.1
+::1
 localhost
 192.168.0.1/24
 
@@ -694,9 +695,9 @@ PostSRSd. Let&#8217;s start it now:</p></div>
 <code>/etc/postfix/main.cf</code>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="c"># PostSRSd settings.</span>
-<span class="nv">sender_canonical_maps</span> <span class="o">=</span> tcp:127.0.0.1:10001
+<span class="nv">sender_canonical_maps</span> <span class="o">=</span> tcp:localhost:10001
 <span class="nv">sender_canonical_classes</span> <span class="o">=</span> envelope_sender
-<span class="nv">recipient_canonical_maps</span> <span class="o">=</span> tcp:127.0.0.1:10002
+<span class="nv">recipient_canonical_maps</span> <span class="o">=</span> tcp:localhost:10002
 <span class="nv">recipient_canonical_classes</span><span class="o">=</span> envelope_recipient,header_recipient
 </pre></div></div></div>
 <div class="paragraph"><p>And restart Postfix with the new configuration:</p></div>
