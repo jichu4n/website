@@ -1559,7 +1559,16 @@ code for &lt;code&gt;basic_wm&lt;/code&gt; &lt;a href="https://github.com/jichua
 the cross-referenced code &lt;a href="http://code.openhub.net/project?pid=&amp;amp;ipid=568869"&gt;on
 Open Hub&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="Featured"></category><category term="Window Manager"></category></entry><entry><title>DEBUG trap and PROMPT_COMMAND in Bash</title><link href="http://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html" rel="alternate"></link><updated>2014-06-08T11:50:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/debug-trap-and-prompt_command-in-bash.html</id><summary type="html">&lt;div class="sect2"&gt;
+</summary><category term="Featured"></category><category term="Window Manager"></category></entry><entry><title>DEBUG trap and PROMPT_COMMAND in Bash</title><link href="http://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html" rel="alternate"></link><updated>2014-06-08T11:50:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/debug-trap-and-prompt_command-in-bash.html</id><summary type="html">&lt;div class="exampleblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;strong&gt;Update 03/08/2016&lt;/strong&gt;: A
+&lt;a href="https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html"&gt;patch&lt;/a&gt; by
+Dan Stromberg adds a &lt;code&gt;PS0&lt;/code&gt; variable to Bash that greatly simplifies what&amp;#8217;s
+described in this article. This patch will likely be merged into Bash 4.4.
+Please refer to &lt;a href="http://stromberg.dnsalias.org/~strombrg/PS0-prompt/"&gt;his
+post&lt;/a&gt; for details.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="sect2"&gt;
 &lt;h3 id="_the_debug_trap"&gt;The DEBUG trap&lt;/h3&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The DEBUG trap is an extremely handy feature of Bash. The idea is pretty
 straightforward: if you run&lt;/p&gt;&lt;/div&gt;
