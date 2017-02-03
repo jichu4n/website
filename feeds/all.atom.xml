@@ -1,5 +1,593 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Season of Code</title><link href="https://seasonofcode.com/" rel="alternate"></link><link href="https://seasonofcode.com/feeds/all.atom.xml" rel="self"></link><id>https://seasonofcode.com/</id><updated>2015-11-11T18:51:00-08:00</updated><entry><title>Flashing a Sprint Nexus S 4G to Verizon</title><link href="https://seasonofcode.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html" rel="alternate"></link><updated>2015-11-11T18:51:00-08:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2015-11-11:posts/flashing-a-sprint-nexus-s-4g-to-verizon.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;I originally wrote the following post in July 2012 to document how to fully
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Season of Code</title><link href="https://seasonofcode.com/" rel="alternate"></link><link href="https://seasonofcode.com/feeds/all.atom.xml" rel="self"></link><id>https://seasonofcode.com/</id><updated>2017-02-01T21:15:00-08:00</updated><entry><title>How X Window Managers Work, And How To Write One (Part III)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html" rel="alternate"></link><updated>2017-02-01T21:15:00-08:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2017-02-01:posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sidebarblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="title"&gt;Series Contents&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part I: Basic Concepts&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part II: Introduction, Setup &amp;amp; Teardown, Initialization, Event Loop&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;&lt;strong&gt;Part III: Interaction with Application Windows&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part
+II of this series&lt;/a&gt;, we discussed X libraries and implementation choices, and
+examined the basic structure of a window manager. In Part III, we will start
+interacting with client windows and the user through events. We will review the
+fundamentals of window manager implementation, using the implementation in our
+example non-compositing reparenting window manager,
+&lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt;, for reference.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_step_4_interaction_with_application_windows"&gt;Step 4: Interaction with Application Windows&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Following the steps in
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part II
+of this series&lt;/a&gt;, we now have a basic skeleton for our window manager. Our next
+step is to start talking to clients and the user via events.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The interaction between clients, X, and the window manager is fairly complex.
+To facilitate our discussion, I&amp;#8217;ve created a diagram that illustrates the flow of
+events throughout the lifetime of a client window, and how a window manager
+might respond to each of them. We&amp;#8217;ll be referring to this cheat sheet for window manager
+event handling throughout this series. You can click through for the full-sized diagram.
+&lt;div align="center"&gt;&lt;a
+href="https://docs.google.com/drawings/d/1Bk6s5od7gdeweYtzFRrUvvcm8aHaiAr1Dpaq66WyFhg/pub?w=1843&amp;h=1673"
+title="Click for the full-sized diagram"&gt;&lt;img
+src="https://docs.google.com/drawings/d/1Bk6s5od7gdeweYtzFRrUvvcm8aHaiAr1Dpaq66WyFhg/pub?w=1229&amp;h=1116"
+style="max-width: 1229px; width: 100%"&gt;&lt;/a&gt;&lt;/div&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In general, a window manager must handle two kinds of actions: those initiated by client applications (such as creating new windows), and those initiated by users (such as moving or minimizing windows).
+In this diagram, actions initiated by client applications are shown in the yellow box on the left hand side, and actions initiated by users are shown in blue on the right hand side.
+A window manager communicates with client applications via events, which are represented as parallelograms in red.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You may have noticed that some of the events in this diagram have the suffix &lt;em&gt;Request&lt;/em&gt;, while others have the suffix &lt;em&gt;Notify&lt;/em&gt;. This distinction is crucial to our discussion.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Recalling
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection"&gt;our discussion in Part I&lt;/a&gt;
+on substructure redirection,
+when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request.
+Such requests are delivered to a window manager as events with the &lt;em&gt;Request&lt;/em&gt; suffix.
+It is important to understand that when a window manager receives such an event, the action it represents &lt;em&gt;has not actually occurred&lt;/em&gt;, and it is the responsibility of the window manager to decide what to do with it.
+If the window manager does nothing, the request is implicitly denied.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;On the other hand, events with the &lt;em&gt;Notify&lt;/em&gt; suffix represent actions that have already been executed by the X server.
+The window manager can respond to such events, but of course cannot change the fact that they have already happened.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;With that in mind, let&amp;#8217;s dive into the implementation by looking at how our example window manager will handle the life cycle of a client window from creation to destruction.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_creating_a_window"&gt;Creating a Window&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;When an X client application creates a top-level window (&lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindow.3.html"&gt;&lt;code&gt;XCreateWindow()&lt;/code&gt;&lt;/a&gt;), our window manager will receive a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"&gt;&lt;code&gt;CreateNotify&lt;/code&gt;&lt;/a&gt; event. However, a newly created window is always invisible, so there&amp;#8217;s nothing for our window manager to do.
+In
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+  &lt;span class="c1"&gt;// 2. Main event loop.&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// 1. Get next event.&lt;/span&gt;
+    &lt;span class="p"&gt;...&lt;/span&gt;
+    &lt;span class="c1"&gt;// 2. Dispatch event.&lt;/span&gt;
+    &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;CreateNotify&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnCreateNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xcreatewindow&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnCreateNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XCreateWindowEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="configuring-a-newly-created-window"&gt;Configuring a Newly Created Window&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;At this stage, the application can configure the window to set its initial size, position, or other attributes.
+To do so, the application would invoke &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"&gt;&lt;code&gt;XConfigureWindow()&lt;/code&gt;&lt;/a&gt;,
+which would send a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"&gt;&lt;code&gt;ConfigureRequest&lt;/code&gt;&lt;/a&gt; event to the window manager.
+However, since the window is still invisible, the window manager doesn&amp;#8217;t need to care and can grant such requests without modification by invoking &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"&gt;&lt;code&gt;XConfigureWindow()&lt;/code&gt;&lt;/a&gt; itself with the same parameters.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;ConfigureRequest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnConfigureRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xconfigurerequest&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnConfigureRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XConfigureRequestEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;XWindowChanges&lt;/span&gt; &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;// Copy fields from e to changes.&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;width&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;border_width&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;border_width&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sibling&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;above&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stack_mode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;detail&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;// Grant request by calling XConfigureWindow().&lt;/span&gt;
+  &lt;span class="n"&gt;XConfigureWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value_mask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Resize &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; to &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;Size&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="mapping-a-window"&gt;Mapping a Window&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To make the window finally visible on screen, the client application will call &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"&gt;&lt;code&gt;XMapWindow()&lt;/code&gt;&lt;/a&gt; to &lt;em&gt;map&lt;/em&gt; it.
+This sends a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"&gt;&lt;code&gt;MapRequest&lt;/code&gt;&lt;/a&gt; event to the window manager.
+As noted earlier, at this point, the window is still not yet visible, as it&amp;#8217;s up to the window manager to actually make it so. This is probably the most important event in our discussion, as this is where a window manager would usually start really managing a window.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A reparenting window manager would typically respond to a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"&gt;&lt;code&gt;MapRequest&lt;/code&gt;&lt;/a&gt; for a client application window &lt;em&gt;w&lt;/em&gt; with the following actions:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="olist arabic"&gt;&lt;ol class="arabic"&gt;
+&lt;li&gt;
+&lt;p&gt;
+Create a frame window &lt;em&gt;f&lt;/em&gt;, perhaps with borders and window decoration (e.g. title, minimize / maximize / close buttons).
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Register for substructure redirect on &lt;em&gt;f&lt;/em&gt; with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XSelectInput.3.html"&gt;&lt;code&gt;XSelectInput()&lt;/code&gt;&lt;/a&gt;.
+Recall that substructure redirect only applies to direct child windows, so after reparenting, the substructure redirect previously registered on the root window would no longer apply to &lt;em&gt;w&lt;/em&gt;, hence this step.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Make &lt;em&gt;w&lt;/em&gt; a child of &lt;em&gt;f&lt;/em&gt; with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"&gt;&lt;code&gt;XReparentWindow()&lt;/code&gt;&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Render &lt;em&gt;f&lt;/em&gt; and &lt;em&gt;w&lt;/em&gt; with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"&gt;&lt;code&gt;XMapWindow()&lt;/code&gt;&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+Register for mouse or keyboard shortcuts on &lt;em&gt;w&lt;/em&gt; and/or &lt;em&gt;f&lt;/em&gt;.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The example implementation in &lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt; will create a very simple frame window that has the same size as the client window, but with a 3px red border:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;MapRequest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnMapRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xmaprequest&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnMapRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XMapRequestEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// 1. Frame or re-frame window.&lt;/span&gt;
+  &lt;span class="n"&gt;Frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 2. Actually map window.&lt;/span&gt;
+  &lt;span class="n"&gt;XMapWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// Visual properties of the frame to create.&lt;/span&gt;
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;BORDER_WIDTH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;BORDER_COLOR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xff0000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;BG_COLOR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x0000ff&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// 1. Retrieve attributes of window to frame.&lt;/span&gt;
+  &lt;span class="n"&gt;XWindowAttributes&lt;/span&gt; &lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;CHECK&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;XGetWindowAttributes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// 2. TODO - see Framing Existing Top-Level Windows section below.&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// 3. Create frame.&lt;/span&gt;
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;XCreateSimpleWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;BORDER_WIDTH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;BORDER_COLOR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;BG_COLOR&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 3. Select events on frame.&lt;/span&gt;
+  &lt;span class="n"&gt;XSelectInput&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;SubstructureRedirectMask&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;SubstructureNotifyMask&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 4. Add client to save set, so that it will be restored and kept alive if we&lt;/span&gt;
+  &lt;span class="c1"&gt;// crash.&lt;/span&gt;
+  &lt;span class="n"&gt;XAddToSaveSet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 5. Reparent client window.&lt;/span&gt;
+  &lt;span class="n"&gt;XReparentWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;// Offset of client window within frame.&lt;/span&gt;
+  &lt;span class="c1"&gt;// 6. Map frame.&lt;/span&gt;
+  &lt;span class="n"&gt;XMapWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 7. Save frame handle.&lt;/span&gt;
+  &lt;span class="n"&gt;clients_&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;// 8. Grab events for window management actions on client window.&lt;/span&gt;
+  &lt;span class="c1"&gt;//   a. Move windows with alt + left button.&lt;/span&gt;
+  &lt;span class="n"&gt;XGrabButton&lt;/span&gt;&lt;span class="p"&gt;(...);&lt;/span&gt;
+  &lt;span class="c1"&gt;//   b. Resize windows with alt + right button.&lt;/span&gt;
+  &lt;span class="n"&gt;XGrabButton&lt;/span&gt;&lt;span class="p"&gt;(...);&lt;/span&gt;
+  &lt;span class="c1"&gt;//   c. Kill windows with alt + f4.&lt;/span&gt;
+  &lt;span class="n"&gt;XGrabKey&lt;/span&gt;&lt;span class="p"&gt;(...);&lt;/span&gt;
+  &lt;span class="c1"&gt;//   d. Switch windows with alt + tab.&lt;/span&gt;
+  &lt;span class="n"&gt;XGrabKey&lt;/span&gt;&lt;span class="p"&gt;(...);&lt;/span&gt;
+
+  &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Framed window &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; [&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The outline of the code should be fairly clear following our discussion.
+A few additional points to note:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+Regarding the &lt;em&gt;save-set&lt;/em&gt; and &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"&gt;&lt;code&gt;XAddToSaveSet()&lt;/code&gt;&lt;/a&gt;:
+&lt;/p&gt;
+&lt;div class="quoteblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The save-set is a list of windows, usually maintained by the window manager, but including only windows created by other clients. If the window manager dies, all windows listed in the save-set will be reparented back to their closest living ancestor if they were reparented in the first place and mapped if the window manager has unmapped them so that it could map an icon.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The save-set is necessary because the window manager might not exit normally. The user might kill it with CTRL-C if it is running in the foreground, or more likely, the user might get the process number and kill it. Actually, the actions of the save-set are performed even if the window manager exits normally, so less code is needed since the save-set does the cleaning up.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Window managers almost always place in the save-set all the windows they reparent or iconify, using &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"&gt;&lt;code&gt;XAddToSaveSet()&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Windows are automatically removed from the save-set when they are destroyed.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="attribution"&gt;
+&amp;#8212; Xlib Programming Manual §16.4
+&lt;/div&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When our window manager creates a frame window (step 2 in the example code), it will also trigger a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"&gt;&lt;code&gt;CreateNotify&lt;/code&gt;&lt;/a&gt; event for the frame window.
+It will ignore it just like it ignores other &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"&gt;&lt;code&gt;CreateNotify&lt;/code&gt;&lt;/a&gt; events as discussed earlier.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When our window manager calls &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"&gt;&lt;code&gt;XReparentWindow()&lt;/code&gt;&lt;/a&gt; in step 5 in the example code,
+it will trigger a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"&gt;&lt;code&gt;ReparentNotify&lt;/code&gt;&lt;/a&gt; event, which it will ignore:
+&lt;/p&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;ReparentNotify&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnReparentNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xreparent&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnReparentNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XReparentEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When our window manager calls &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"&gt;&lt;code&gt;XMapWindow()&lt;/code&gt;&lt;/a&gt; to map the frame window (step 6 in the example code),
+the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"&gt;&lt;code&gt;MapRequest&lt;/code&gt;&lt;/a&gt; event.
+Our window manager will later receive a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"&gt;&lt;code&gt;MapNotify&lt;/code&gt;&lt;/a&gt; event, which it can ignore:
+&lt;/p&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;MapNotify&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnMapNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xmap&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnMapNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XMapEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_configuring_a_mapped_window"&gt;Configuring a Mapped Window&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A client application can configure a window that is currently visible, again with the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"&gt;&lt;code&gt;XConfigureWindow()&lt;/code&gt;&lt;/a&gt; function.
+For example, an application may want to resize a window to better accomodate its contents.
+When a reparenting window manager receives the resulting &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"&gt;&lt;code&gt;ConfigureRequest&lt;/code&gt;&lt;/a&gt; and decides to grant the request, it additionally needs to resize / reposition the corresponding frame window and any window decorations.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnConfigureRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XConfigureRequestEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;XWindowChanges&lt;/span&gt; &lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;// Copy fields from e to changes.&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;clients_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;clients_&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="n"&gt;XConfigureWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value_mask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Resize [&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;] to &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;Size&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="c1"&gt;// Grant request by calling XConfigureWindow().&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;When our window manager re-configures the frame window with the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"&gt;&lt;code&gt;XConfigureWindow()&lt;/code&gt;&lt;/a&gt; call above,
+the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"&gt;&lt;code&gt;ConfigureRequest&lt;/code&gt;&lt;/a&gt; event.
+Our window manager will then receive a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureEvent.3.html"&gt;&lt;code&gt;ConfigureNotify&lt;/code&gt;&lt;/a&gt; event, which it will ignore:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;ConfigureNotify&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnConfigureNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xconfigure&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnConfigureNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XConfigureEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_unmapping_a_window"&gt;Unmapping a Window&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;When a client application &lt;em&gt;unmaps&lt;/em&gt; (i.e. hides) a window with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"&gt;&lt;code&gt;XUnmapWindow()&lt;/code&gt;&lt;/a&gt;, for example in response to the user exiting or minimizing the application, the window manager will receive a &lt;code&gt;UnmapNotify&lt;/code&gt; event.
+Unlike the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"&gt;&lt;code&gt;MapRequest&lt;/code&gt;&lt;/a&gt; event, the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; event is delivered to the window manager after the fact, and the window manager can only respond to it, not intercept it.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A reparenting window manager will typically want to reverse the actions it performed in response to &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"&gt;&lt;code&gt;MapRequest&lt;/code&gt;&lt;/a&gt;.
+In other words, it would reparent the client window back to the root window, and destroy the corresponding frame window.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;UnmapNotify&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnUnmapNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xunmap&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnUnmapNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XUnmapEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// If the window is a client window we manage, unframe it upon UnmapNotify. We&lt;/span&gt;
+  &lt;span class="c1"&gt;// need the check because we will receive an UnmapNotify event for a frame&lt;/span&gt;
+  &lt;span class="c1"&gt;// window we just destroyed ourselves.&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;clients_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Ignore UnmapNotify for non-client window &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="n"&gt;Unframe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Unframe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// We reverse the steps taken in Frame().&lt;/span&gt;
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;clients_&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="c1"&gt;// 1. Unmap frame.&lt;/span&gt;
+  &lt;span class="n"&gt;XUnmapWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 2. Reparent client window back to root window.&lt;/span&gt;
+  &lt;span class="n"&gt;XReparentWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;// Offset of client window within root.&lt;/span&gt;
+  &lt;span class="c1"&gt;// 3. Remove client window from save set, as it is now unrelated to us.&lt;/span&gt;
+  &lt;span class="n"&gt;XRemoveFromSaveSet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 4. Destroy frame.&lt;/span&gt;
+  &lt;span class="n"&gt;XDestroyWindow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// 5. Drop reference to frame handle.&lt;/span&gt;
+  &lt;span class="n"&gt;clients_&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;erase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Unframed window &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; [&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;A few additional points to note:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+When our window manager unmaps the frame window with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"&gt;&lt;code&gt;XUnmapWindow()&lt;/code&gt;&lt;/a&gt; in step 1 in the example code above, it will again receive a corresponding &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; event.
+This is the reason why the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; event handler needs to check that the unmapped window is an actual client window.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When our window manager makes the client window a direct child of the root window with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"&gt;&lt;code&gt;XReparentWindow()&lt;/code&gt;&lt;/a&gt; in step 2 above, it will receive a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"&gt;&lt;code&gt;ReparentNotify&lt;/code&gt;&lt;/a&gt; event.
+As discussed in the &lt;a href="#mapping-a-window"&gt;Mapping a Window&lt;/a&gt; section above, this &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"&gt;&lt;code&gt;ReparentNotify&lt;/code&gt;&lt;/a&gt; event will be ignored.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+When our window manager destroys the frame window with &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"&gt;&lt;code&gt;XDestroyWindow()&lt;/code&gt;&lt;/a&gt; in step 4, it will trigger a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"&gt;&lt;code&gt;DestroyNotify&lt;/code&gt;&lt;/a&gt; event.
+This event will also be ignored, as shown in the next section.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;At this point, the client window has become invisible, but not yet destroyed.
+It can be displayed again with a call to &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"&gt;&lt;code&gt;XMapWindow()&lt;/code&gt;&lt;/a&gt;, which would take us back to the &lt;a href="#mapping-a-window"&gt;Mapping a Window&lt;/a&gt; step.
+It could also be reconfigured in this state, which would take us back to the &lt;a href="#configuring-a-newly-created-window"&gt;Configuring a Newly Created Window&lt;/a&gt; step.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_destroying_a_window"&gt;Destroying a Window&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;When a client application exits or no longer needs a window, it will call &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"&gt;&lt;code&gt;XDestroyWindow()&lt;/code&gt;&lt;/a&gt; to dispose of the window.
+This triggers a &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"&gt;&lt;code&gt;DestroyNotify&lt;/code&gt;&lt;/a&gt; event.
+In our case, there&amp;#8217;s nothing we need to do in response.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nl"&gt;DestroyNotify&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;OnDestroyNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xdestroywindow&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnDestroyNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XDestroyWindowEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect3"&gt;
+&lt;h4 id="_framing_existing_top_level_windows"&gt;Framing Existing Top-Level Windows&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Now that we&amp;#8217;ve walked through the life cycle of a client window, from creation to destruction, let&amp;#8217;s turn our attention to the problem of existing top-level windows.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;You may recall from &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part I&lt;/a&gt; that X applications in general run just fine without a window manager.
+Depending on how an X session is started (e.g. &lt;code&gt;xinitrc&lt;/code&gt;), by the time a window manager starts, any number of windows may have already been created by other applications.
+Additionally, the user can kill a running window manager and replace it with a different window manager, without affecting windows from other applications.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Therefore, when our window manager starts up, it needs to handle any existing top-level windows that are already mapped.
+As a reparenting window manager, it will invoke the same &lt;code&gt;Frame()&lt;/code&gt; function on such windows as if these windows are being mapped for the first time:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// 1. Initialization.&lt;/span&gt;
+  &lt;span class="c1"&gt;//   a. Select events on root window. Use a special error handler so we can&lt;/span&gt;
+  &lt;span class="c1"&gt;//   exit gracefully if another window manager is already running.&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+  &lt;span class="c1"&gt;//   b. Set error handler.&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+  &lt;span class="c1"&gt;//   c. Grab X server to prevent windows from changing under us while we&lt;/span&gt;
+  &lt;span class="c1"&gt;//   frame them.&lt;/span&gt;
+  &lt;span class="n"&gt;XGrabServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;//   d. Frame existing top-level windows.&lt;/span&gt;
+  &lt;span class="c1"&gt;//     i. Query existing top-level windows.&lt;/span&gt;
+  &lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;returned_root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;returned_parent&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;Window&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;top_level_windows&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;num_top_level_windows&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;CHECK&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;XQueryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;returned_root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;returned_parent&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;top_level_windows&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;num_top_level_windows&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;CHECK_EQ&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;returned_root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;//     ii. Frame each top-level window.&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;num_top_level_windows&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;top_level_windows&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt; &lt;span class="cm"&gt;/* was_created_before_window_manager */&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="c1"&gt;//     iii. Free top-level window array.&lt;/span&gt;
+  &lt;span class="n"&gt;XFree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;top_level_windows&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;//   e. Ungrab X server.&lt;/span&gt;
+  &lt;span class="n"&gt;XUngrabServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// 2. Main event loop.&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnMapRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XMapRequestEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// 1. Frame or re-frame window.&lt;/span&gt;
+  &lt;span class="n"&gt;Frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt; &lt;span class="cm"&gt;/* was_created_before_window_manager */&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Window&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;was_created_before_window_manager&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+  &lt;span class="c1"&gt;// 1. Retrieve attributes of window to frame.&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+  &lt;span class="c1"&gt;// 2. If window was created before window manager started, we should frame&lt;/span&gt;
+  &lt;span class="c1"&gt;// it only if it is visible and doesn&amp;#39;t set override_redirect.&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;was_created_before_window_manager&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;override_redirect&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt;
+        &lt;span class="n"&gt;x_window_attrs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map_state&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;IsViewable&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="c1"&gt;// 3. Create frame.&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnUnmapNotify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;XUnmapEvent&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;...&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Ignore event if it is triggered by reparenting a window that was mapped&lt;/span&gt;
+  &lt;span class="c1"&gt;// before the window manager started.&lt;/span&gt;
+  &lt;span class="c1"&gt;//&lt;/span&gt;
+  &lt;span class="c1"&gt;// Since we receive UnmapNotify events from the SubstructureNotify mask, the&lt;/span&gt;
+  &lt;span class="c1"&gt;// event attribute specifies the parent window of the window that was&lt;/span&gt;
+  &lt;span class="c1"&gt;// unmapped. This means that an UnmapNotify event from a normal client window&lt;/span&gt;
+  &lt;span class="c1"&gt;// should have this attribute set to a frame window we maintain. Only an&lt;/span&gt;
+  &lt;span class="c1"&gt;// UnmapNotify event triggered by reparenting a pre-existing window will have&lt;/span&gt;
+  &lt;span class="c1"&gt;// this attribute set to the root window.&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Ignore UnmapNotify for reparented pre-existing window &amp;quot;&lt;/span&gt;
+              &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="n"&gt;Unframe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Some additional things to note:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+You may notice that the process of framing existing top-level windows is guarded by
+&lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XGrabServer.3.html"&gt;&lt;code&gt;XGrabServer()&lt;/code&gt;&lt;/a&gt; and &lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUngrabServer.3.html"&gt;&lt;code&gt;XUngrabServer()&lt;/code&gt;&lt;/a&gt;.
+From the &lt;em&gt;Xlib Programming Manual&lt;/em&gt;:
+&lt;/p&gt;
+&lt;div class="quoteblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;These functions can be used to control processing of output on other connections by the window system server. While the server is grabbed, no processing of requests or close downs on any other connection will occur.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="attribution"&gt;
+&amp;#8212; Xlib Programming Manual §9.5
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;By &lt;em&gt;grabbing&lt;/em&gt; the X server, our window manager ensures that, between the time when it fetches the list of existing top-level windows and when it finishes framing them, no other application can interfere and mess up our state:
+no new windows can be created, and no existing windows can be modified or destroyed.&lt;/p&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"&gt;&lt;code&gt;override_redirect&lt;/code&gt;&lt;/a&gt; attribute, if set to true, indicates that a window should not be managed by window managers.
+From the &lt;em&gt;Xlib Programming Manual&lt;/em&gt;:
+&lt;/p&gt;
+&lt;div class="quoteblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To control window placement or to add decoration, a window manager often needs to intercept (redirect) any map or configure request.
+Pop-up windows, however, often need to be mapped without a window manager getting in the way. [&amp;#8230;]&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The override-redirect flag specifies whether map and configure requests on this window should override a &lt;code&gt;SubstructureRedirectMask&lt;/code&gt; on the parent.
+You can set the override-redirect flag to True or False (default).
+Window managers use this information to avoid tampering with pop-up windows [&amp;#8230;].&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="attribution"&gt;
+&amp;#8212; Xlib Programming Manual §3.2.8
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The reason our window manager doesn&amp;#8217;t need to check for this attribute except at start up is that the X server knows not to redirect events from such windows:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="quoteblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The window manager [&amp;#8230;] will normally ignore windows that are mapped with their &lt;code&gt;override_redirect&lt;/code&gt; attribute set, since no *Request events will be generated for them.&lt;/p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="attribution"&gt;
+&amp;#8212; Xlib Programming Manual §16.3
+&lt;/div&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+The &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"&gt;&lt;code&gt;map_state&lt;/code&gt;&lt;/a&gt; attribute indicates whether a window is currently visible (mapped).
+When &lt;code&gt;Frame()&lt;/code&gt; is invoked for pre-existing windows during start up, we want to ignore windows that are currently unmapped.
+However, when &lt;code&gt;Frame()&lt;/code&gt; is invoked during the event loop as part of the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"&gt;&lt;code&gt;MapRequest&lt;/code&gt;&lt;/a&gt; handler, we know that the client window to be framed is necessarily still unmapped,
+as our window manager wouldn&amp;#8217;t have granted the request yet.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+You might be wondering why an additional check for &lt;code&gt;e.event == root_&lt;/code&gt; is needed in the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; handler.
+It turns out that reparenting an already mapped window (&lt;a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"&gt;&lt;code&gt;XReparentWindow()&lt;/code&gt;&lt;/a&gt;)
+will trigger a pair of &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; and &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"&gt;&lt;code&gt;MapNotify&lt;/code&gt;&lt;/a&gt; events in addition to &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"&gt;&lt;code&gt;ReparentNotify&lt;/code&gt;&lt;/a&gt;.
+Therefore, when we enter into the event loop, we will receive an &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; event for every pre-existing top-level window we reparented.
+We can distinguish these events by their &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;event&lt;/code&gt;&lt;/a&gt; attribute, which in this case represents the parent of the client window.
+Normally, when a client window we already framed is unmapped, the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;event&lt;/code&gt;&lt;/a&gt; attribute would be its frame window.
+But when a pre-existing window is reparented at start up, the &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;event&lt;/code&gt;&lt;/a&gt; attribute in the resulting &lt;a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"&gt;&lt;code&gt;UnmapNotify&lt;/code&gt;&lt;/a&gt; event will be its original parent - i.e., the root window.
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="_what_8217_s_next"&gt;What&amp;#8217;s Next&lt;/h3&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;At this point, we have a basic but functional reparenting window manager that will correctly handle the life cycle of windows.
+If you strip out window decorations, shortcuts and fancy UI, the core structure of every X window manager will quite closely resemble what we have here.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In our next installment, we will improve the user-facing functionality of our window manager by adding ways to move, resize and close windows.
+In the meantime, you’re more than welcome to check out the code for &lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt; on GitHub.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sidebarblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="title"&gt;Series Contents&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part I: Basic Concepts&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part II: Introduction, Setup &amp;amp; Teardown, Initialization, Event Loop&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;&lt;strong&gt;Part III: Interaction with Application Windows&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+</summary><category term="Featured"></category><category term="Window Manager"></category></entry><entry><title>Flashing a Sprint Nexus S 4G to Verizon</title><link href="https://seasonofcode.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon.html" rel="alternate"></link><updated>2015-11-11T18:51:00-08:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2015-11-11:posts/flashing-a-sprint-nexus-s-4g-to-verizon.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;I originally wrote the following post in July 2012 to document how to fully
 flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing
 it. I have long since switched away from Verizon Wireless and no longer own any
 of the phones mentioned, and decided to publish it for what it&amp;#8217;s worth.&lt;/p&gt;&lt;/div&gt;
@@ -1134,12 +1722,35 @@ born!&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Bugs? Improvement ideas? All feedback is appreciated at
 &lt;a href="mailto:ji@chu4n.com"&gt;ji@chu4n.com&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="Projects"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part II)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html" rel="alternate"></link><updated>2014-06-08T23:14:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part
-I of this series&lt;/a&gt;, we examined the role of X window managers on a modern
-Linux/BSD desktop, and how they interact with the X server and applications. In
-Part II, we will dig down into the dirty details and walk through the code of a
-basic reparenting, non-compositing window manager,
-&lt;a href="https://github.com/jichuan89/basic_wm"&gt;basic_wm&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+</summary><category term="Projects"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part II)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html" rel="alternate"></link><updated>2014-06-08T23:14:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sidebarblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="title"&gt;Series Contents&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part I: Basic Concepts&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;&lt;strong&gt;Part II: Introduction, Setup &amp;amp; Teardown, Initialization, Event Loop&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;Part III: Interaction with Application Windows&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part
+I of this series&lt;/a&gt;, we examined the role of X window managers in a modern
+Linux/BSD desktop environment, and how they interact with the X server and
+applications. In Part II, we will dig into the dirty details and walk through
+the code of an example reparenting non-compositing window manager,
+&lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="sect2"&gt;
 &lt;h3 id="_introduction"&gt;Introduction&lt;/h3&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Before we start with the code, let&amp;#8217;s go over a couple of basic implementation
@@ -1149,9 +1760,9 @@ choices such as language and API.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;You can write a window manager in &lt;a href="http://xmonad.org"&gt;Haskell&lt;/a&gt;,
 &lt;a href="http://qtile.org"&gt;Python&lt;/a&gt;, &lt;a href="http://www.nongnu.org/stumpwm/"&gt;Lisp&lt;/a&gt;,
 &lt;a href="https://github.com/BurntSushi/wingo"&gt;Go&lt;/a&gt;,
-&lt;a href="http://escher.sourceforge.net/"&gt;Java&lt;/a&gt;, or any other language that has X bindings
-- i.e., a library for talking to an X server.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;I chose C++ for &lt;a href="https://github.com/jichuan89/basic_wm"&gt;basic_wm&lt;/a&gt;, our example
+&lt;a href="http://escher.sourceforge.net/"&gt;Java&lt;/a&gt;, or any other language that has X bindings,
+i.e. a library for communicating with X servers.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I chose C++ for &lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt;, our example
 window manager, mainly because the C libraries for X11 are the best documented.
 In addition to books such as the
 &lt;a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023"&gt;Xlib
@@ -1161,7 +1772,7 @@ XOpenDisplay&lt;/code&gt; at a terminal). Example usage and common patterns abou
 source code of many great window managers written in the past three decades.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;We will use C++11 and C++14 features where convenient, so you will need a
 compatible compiler (GCC 4.9 or higher, or Clang 3.4 or higher) if you want to
-play with the source code.&lt;/p&gt;&lt;/div&gt;
+play with the example source code.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="sect3"&gt;
 &lt;h4 id="a-tale-of-two-x-libraries"&gt;A Tale of Two X Libraries&lt;/h4&gt;
@@ -1173,11 +1784,11 @@ introduction of XCB in 2001. The two libraries have very different philosophies:
 whereas Xlib tries to hide the X protocol behind a friendly C API with lots of
 bells and whistles, XCB directly exposes the plumbing beneath.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In practice, this different manifests itself most prominently in how the two
-libraries handle the fundamental asynchronous nature of the X protocol. Xlib
-attempts to hide the asynchronous X protocol behind a mixed
-synchronous and asynchronous API, whereas XCB is fully asynchronous.&lt;/p&gt;&lt;/div&gt;
+libraries handle the fundamental asynchronous nature of X&amp;#8217;s client-server
+architecture. Xlib attempts to hide the asynchronous X protocol behind a mixed
+synchronous and asynchronous API, whereas XCB exposes a fully asynchronous API.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;For example, to lookup the attributes (e.g., size and position) of a window, you
-would write the following using Xlib:&lt;/p&gt;&lt;/div&gt;
+would write the following code using Xlib:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;XWindowAttributes&lt;/span&gt; &lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="n"&gt;XGetWindowAttributes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;window&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;attrs&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -1204,17 +1815,18 @@ server, and returns immediately without waiting for the reply; in other words,
 it is &lt;em&gt;asynchronous&lt;/em&gt;. The client program must subsequently call
 &lt;code&gt;xcb_get_window_attributes_reply&lt;/code&gt; to block on the response.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The advantage of the asynchronous approach is obvious if we consider an example
-where we need to retrieve the attributes of, say, 5 windows. Using XCB, we can
-fire off all 5 requests to the X server at once, and then wait for 5 responses.
-With Xlib, we have to wait for the response to each request before we can send
-the next one. Therefore, we only block for one round-trip network latency using
-XCB, compared to 5 with Xlib.&lt;/p&gt;&lt;/div&gt;
+where we need to retrieve the attributes of, say, 5 windows at once. Using XCB,
+we can immediately fire off all 5 requests to the X server, and then wait for
+all of them to return. With Xlib, we have send one request at a time and wait
+for its response to come back before we can send the next request. Therefore,
+we&amp;#8217;d expect to only block for the duration of one round-trip to the X server
+using XCB, compared to 5 with Xlib.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The downside of XCB&amp;#8217;s fully asynchronous approach is verbosity and a less
-programmer-friendly API.  The Xlib code above looks like your average C library
-call; the XCB code above is significantly more involved.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;However, it is important to note that whereas XCB is fully asynchronous, Xlib
-isn&amp;#8217;t fully synchronous; rather, &lt;strong&gt;Xlib has a mixture of synchronous and
-asynchronous APIs&lt;/strong&gt;. In general, functions that do not return values (e.g.,
+programmer-friendly interface.  The Xlib code above looks like your average C
+library call; the XCB code above is significantly more involved.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;However, it is important to note that Xlib isn&amp;#8217;t fully synchronous. Rather,
+&lt;strong&gt;Xlib has a mixture of synchronous and asynchronous APIs&lt;/strong&gt;. In general, functions
+that do not return values (e.g.,
 &lt;a href="http://manpages.ubuntu.com/manpages/en/man3/XConfigureWindow.3.html"&gt;XResizeWindow&lt;/a&gt;,
 which changes the size of a window) are asynchronous, while functions that
 return values (e.g.,
@@ -1245,19 +1857,19 @@ changes even when there is no user input.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="attribution"&gt;
 &amp;#8212; Xlib Programming Manual §2.1.2
 &lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is &lt;em&gt;the&lt;/em&gt; most confusing aspect of Xlib, and was a source of endless
-frustration for those new to X programming. One of the major motivations for the
-creation of XCB was to eliminate this unnecessary complexity.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Most popular window managers have already been ported to XCB from Xlib for the
-performance benefits. (If you are interested, you can read up on
-&lt;a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf"&gt;how they ported
-Awesome&lt;/a&gt; and
-&lt;a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/"&gt;KWin&lt;/a&gt;).
-I chose Xlib for &lt;a href="https://github.com/jichuan89/basic_wm"&gt;basic_wm&lt;/a&gt;, however,
-because for pedagogical example code readability is of course much more
+&lt;div class="paragraph"&gt;&lt;p&gt;This is &lt;em&gt;the&lt;/em&gt; most confusing aspect of Xlib, and a source of endless frustration
+for those new to X programming. One of the major motivations for the creation of
+XCB was to eliminate this complexity.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Many popular window managers have already been ported to XCB from Xlib for the
+performance benefits. If you are interested, you can read up on how the
+&lt;a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf"&gt;Awesome&lt;/a&gt; and
+&lt;a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/"&gt;KWin&lt;/a&gt;
+window managers were ported to XCB.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;I chose to use Xlib for &lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt;, however,
+because as a pedagogical example, readability and simplicity is much more
 important than performance. In fact, I would recommend starting with Xlib first
 for any project and worry about porting to XCB later, as Xlib is much easier to
-work with.&lt;/p&gt;&lt;/div&gt;
+learn and prototype with.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;While an in-depth discussion of the merits of Xlib and XCB is beyond the scope
 of this discussion, I do recommend you check out
 &lt;a href="http://www.x.org/wiki/guide/xlib-and-xcb/"&gt;the official article on Xlib vs. XCB&lt;/a&gt;
@@ -1265,15 +1877,19 @@ as it presents a fascinating case study of API design.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="sect3"&gt;
 &lt;h4 id="_dependencies_and_building"&gt;Dependencies and Building&lt;/h4&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Firstly, you will need Xlib development headers in order to compile against
+Xlib. They are available on Debian/Ubuntu as &lt;code&gt;libx11-dev&lt;/code&gt;, on Fedora as
+&lt;code&gt;libX11-devel&lt;/code&gt;, and on Arch Linux as part of &lt;code&gt;libx11&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The only additional library used by the example
-&lt;a href="https://github.com/jichuan89/basic_wm"&gt;basic_wm&lt;/a&gt; code is
+&lt;a href="https://github.com/jichu4n/basic_wm"&gt;basic_wm&lt;/a&gt; code is
 &lt;a href="https://code.google.com/p/google-glog/"&gt;google-glog&lt;/a&gt;, Google&amp;#8217;s open source C++
-logging library. (It is available on Debian/Ubuntu as &lt;code&gt;libgoogle-glog-dev&lt;/code&gt;, on
-Fedora as &lt;code&gt;glog&lt;/code&gt;, and on Arch Linux as &lt;code&gt;google-glog&lt;/code&gt;.)&lt;/p&gt;&lt;/div&gt;
+logging library. It is available on Debian/Ubuntu as &lt;code&gt;libgoogle-glog-dev&lt;/code&gt;, on
+Fedora as &lt;code&gt;glog-devel&lt;/code&gt;, and on Arch Linux as &lt;code&gt;google-glog&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The recommended way to build the source code is with
-&lt;a href="http://www.scons.org/"&gt;SCons&lt;/a&gt;, although &lt;code&gt;g++ *.cpp&lt;/code&gt; will also do the trick if you
-supply all the libraries correctly.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;To test it, you will likely need
+&lt;a href="https://www.gnu.org/software/make/manual/html_node/Running.html"&gt;GNU Make&lt;/a&gt;: just
+run &lt;code&gt;make&lt;/code&gt; in the source directory.  Alternatively, &lt;code&gt;g++ *.cpp&lt;/code&gt; will also do the
+trick if you supply all the libraries correctly.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;To test the window manager, you will likely need
 &lt;a href="http://www.freedesktop.org/wiki/Software/Xephyr/"&gt;Xephyr&lt;/a&gt; along with a couple of
 simple X programs such as &lt;code&gt;xeyes&lt;/code&gt; or &lt;code&gt;xterm&lt;/code&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -1285,7 +1901,7 @@ which will encapsulate all the window management logic in our example. All it
 will do for now is set up a connection to the X server on construction, and
 close that connection on destruction.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.hpp"&gt;&lt;code&gt;window_manager.hpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"&gt;&lt;code&gt;window_manager.hpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;C&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="cp"&gt;#include &amp;lt;X11/Xlib.h&amp;gt;&lt;/span&gt;
@@ -1296,7 +1912,7 @@ close that connection on destruction.&lt;/p&gt;&lt;/div&gt;
  &lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
   &lt;span class="c1"&gt;// Factory method for establishing a connection to an X server and creating a&lt;/span&gt;
   &lt;span class="c1"&gt;// WindowManager instance.&lt;/span&gt;
-  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Create&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Create&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
   &lt;span class="c1"&gt;// Disconnects from the X server.&lt;/span&gt;
   &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
   &lt;span class="c1"&gt;// The entry point to this class. Enters the main event loop.&lt;/span&gt;
@@ -1313,12 +1929,14 @@ close that connection on destruction.&lt;/p&gt;&lt;/div&gt;
 &lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include &amp;quot;window_manager.hpp&amp;quot;&lt;/span&gt;
 &lt;span class="cp"&gt;#include &amp;lt;glog/logging.h&amp;gt;&lt;/span&gt;
 
-&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Create&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Create&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="c1"&gt;// 1. Open X display.&lt;/span&gt;
   &lt;span class="n"&gt;Display&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;display&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;XOpenDisplay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;nullptr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="k"&gt;nullptr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -1326,7 +1944,7 @@ close that connection on destruction.&lt;/p&gt;&lt;/div&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;nullptr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
   &lt;span class="p"&gt;}&lt;/span&gt;
   &lt;span class="c1"&gt;// 2. Construct WindowManager instance.&lt;/span&gt;
-  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 
 &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Display&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1341,16 +1959,18 @@ close that connection on destruction.&lt;/p&gt;&lt;/div&gt;
 &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="cm"&gt;/* TODO */&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The &lt;code&gt;main&lt;/code&gt; function in
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/main.cpp"&gt;&lt;code&gt;main.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/main.cpp"&gt;&lt;code&gt;main.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include &amp;lt;cstdlib&amp;gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include &amp;lt;glog/logging.h&amp;gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include &amp;quot;window_manager.hpp&amp;quot;&lt;/span&gt;
 
-&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;argc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-  &lt;span class="n"&gt;google&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;InitGoogleLogging&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+&lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;window_manager&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Create&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;argc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;google&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;InitGoogleLogging&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+
+  &lt;span class="n"&gt;unique_ptr&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;window_manager&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Create&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;window_manager&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ERROR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Failed to initialize window manager.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;EXIT_FAILURE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -1385,45 +2005,41 @@ connection, and exit. Hooray!&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Now, let&amp;#8217;s dig into the mysterious &lt;code&gt;Run()&lt;/code&gt; function above. We&amp;#8217;ll start with the
 initialization steps required after opening an X server connection.
 In
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.hpp"&gt;&lt;code&gt;window_manager.hpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"&gt;&lt;code&gt;window_manager.hpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;WindowManager&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="p"&gt;...&lt;/span&gt;
-  &lt;span class="c1"&gt;// Xlib error handler.&lt;/span&gt;
+  &lt;span class="c1"&gt;// Xlib error handler. It must be static as its address is passed to Xlib.&lt;/span&gt;
   &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;OnXError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Display&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;XErrorEvent&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="c1"&gt;// Xlib error handler used to determine whether another window manager is&lt;/span&gt;
   &lt;span class="c1"&gt;// running. It is set as the error handler right before selecting substructure&lt;/span&gt;
   &lt;span class="c1"&gt;// redirection mask on the root window, so it is invoked if and only if&lt;/span&gt;
-  &lt;span class="c1"&gt;// another window manager is running.&lt;/span&gt;
+  &lt;span class="c1"&gt;// another window manager is running. It must be static as its address is&lt;/span&gt;
+  &lt;span class="c1"&gt;// passed to Xlib.&lt;/span&gt;
   &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;OnWMDetected&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Display&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;XErrorEvent&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-  &lt;span class="c1"&gt;// Whether an existing window manager has been detected. Set by OnWMDetected.&lt;/span&gt;
+  &lt;span class="c1"&gt;// Whether an existing window manager has been detected. Set by OnWMDetected,&lt;/span&gt;
+  &lt;span class="c1"&gt;// and hence must be static.&lt;/span&gt;
   &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;wm_detected_&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="c1"&gt;// A mutex for protecting wm_detected_.&lt;/span&gt;
-  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;mutex&lt;/span&gt; &lt;span class="n"&gt;wm_detected_mutex_&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="c1"&gt;// 1. Initialization.&lt;/span&gt;
   &lt;span class="c1"&gt;//   a. Select events on root window. Use a special error handler so we can&lt;/span&gt;
   &lt;span class="c1"&gt;//   exit gracefully if another window manager is already running.&lt;/span&gt;
-  &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;lock_guard&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;mutex&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;wm_detected_mutex_&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="n"&gt;wm_detected_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;XSetErrorHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnWMDetected&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;XSelectInput&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="n"&gt;SubstructureRedirectMask&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;SubstructureNotifyMask&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;XSync&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;wm_detected_&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-      &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ERROR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Detected another window manager on display &amp;quot;&lt;/span&gt;
-                 &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;XDisplayString&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-      &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;wm_detected_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;XSetErrorHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnWMDetected&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;XSelectInput&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;root_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;SubstructureRedirectMask&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;SubstructureNotifyMask&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;XSync&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;wm_detected_&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;LOG&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ERROR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Detected another window manager on display &amp;quot;&lt;/span&gt;
+               &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;XDisplayString&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
   &lt;span class="p"&gt;}&lt;/span&gt;
   &lt;span class="c1"&gt;//   b. Set error handler.&lt;/span&gt;
   &lt;span class="n"&gt;XSetErrorHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;OnXError&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -1455,23 +2071,24 @@ at any given time; the second client to attempt to do so will get a &lt;code&gt;
 error.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Catching this error is somewhat tricky, however.
 &lt;a href="http://manpages.ubuntu.com/manpages/en/man3/XSelectInput.3.html"&gt;&lt;code&gt;XSelectInput&lt;/code&gt;&lt;/a&gt;,
-like most Xlib functions, does not actually send a request to the X server, but
-instead only &lt;em&gt;queues&lt;/em&gt; the request and returns. Hence, we have to explicitly
-flush the request queue with
+like all asynchronous Xlib functions, does not actually send a request to the X
+server, but instead only &lt;em&gt;queues&lt;/em&gt; the request and returns. Hence, we have to
+explicitly flush the request queue with
 &lt;a href="http://manpages.ubuntu.com/manpages/en/man3/XSync.3.html"&gt;&lt;code&gt;XSync&lt;/code&gt;&lt;/a&gt; (see our
 discussion above in &lt;a href="#a-tale-of-two-x-libraries"&gt;A Tale of Two X Libraries&lt;/a&gt;).
-We set up a temporary error handler to catch errors.&lt;/p&gt;&lt;/div&gt;
+We set up a temporary error handler, &lt;code&gt;OnWMDetected&lt;/code&gt;, to catch errors during this
+&lt;code&gt;XSync&lt;/code&gt; invocation.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Next, we set up our regular error handler which will be invoked for any future
-errors.  Our implementation, which logs the error and continues, will be an
+errors. Our implementation, which logs the error and continues, will be an
 important debugging aid as we implement and test our window manager. I will not
 show it here for the sake of brevity; for reference, check it out in
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="sect2"&gt;
 &lt;h3 id="_step_3_the_event_loop"&gt;Step 3: The Event Loop&lt;/h3&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Now let&amp;#8217;s add to &lt;code&gt;Run()&lt;/code&gt; method above the signature construct of every modern
 GUI program - the event loop. In
-&lt;a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"&gt;&lt;code&gt;window_manager.cpp&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;WindowManager&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="c1"&gt;// 1. Initialization.&lt;/span&gt;
@@ -1504,7 +2121,7 @@ GUI program - the event loop. In
   &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;If you have done low-level GUI programming before, this should look fairly
+&lt;div class="paragraph"&gt;&lt;p&gt;If you have done low-level GUI programming before, this should look very
 familiar. We sit in an event loop and repeatedly fetch the next event with
 &lt;a href="http://manpages.ubuntu.com/manpages/en/man3/XNextEvent.3.html"&gt;&lt;code&gt;XNextEvent()&lt;/code&gt;&lt;/a&gt; and
 dispatch it to the appropriate handlers.&lt;/p&gt;&lt;/div&gt;
@@ -1538,8 +2155,7 @@ field of each &lt;code&gt;struct&lt;/code&gt; is always &lt;code&gt;int type&lt;
 &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="n"&gt;XEvent&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;This way, the type is always available regardless of the type of event and
-requires no additional storage. This, of course, is essentially C++ object
-inheritance, and the same pattern can be observed in
+requires no additional storage. The same pattern can be observed in
 &lt;a href="http://en.wikipedia.org/wiki/GObject"&gt;GTK+/GLib&lt;/a&gt;,
 &lt;a href="https://docs.python.org/3/c-api/structures.html"&gt;Python&amp;#8217;s C API&lt;/a&gt;, and many other
 object-oriented C APIs.&lt;/p&gt;&lt;/div&gt;
@@ -1552,12 +2168,35 @@ out who does what.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;We now have a basic skeleton for our window manager, and we can start filling in
 the meat - the event handlers. The million-dollar question is, what events does
 a window manager handle, and what should it do with them?&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In the next installment of this series, we&amp;#8217;ll answer that question by diving
+&lt;div class="paragraph"&gt;&lt;p&gt;In the &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;
+next installment&lt;/a&gt; in this series, we&amp;#8217;ll answer that question by diving
 into the complex ways window managers, clients and the user interact with each
 other via X events. In the meantime, you&amp;#8217;re more than welcome to check out the
-code for &lt;code&gt;basic_wm&lt;/code&gt; &lt;a href="https://github.com/jichuan89/basic_wm"&gt;on GitHub&lt;/a&gt; or browse
-the cross-referenced code &lt;a href="http://code.openhub.net/project?pid=&amp;amp;ipid=568869"&gt;on
-Open Hub&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+code for &lt;code&gt;basic_wm&lt;/code&gt; &lt;a href="https://github.com/jichu4n/basic_wm"&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;strong&gt;Next chapter:&lt;/strong&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;&lt;strong&gt;How X
+Window Managers Work, And How To Write One (Part III)&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sidebarblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="title"&gt;Series Contents&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part I: Basic Concepts&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;&lt;strong&gt;Part II: Introduction, Setup &amp;amp; Teardown, Initialization, Event Loop&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;Part III: Interaction with Application Windows&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
 &lt;/div&gt;
 </summary><category term="Featured"></category><category term="Window Manager"></category></entry><entry><title>DEBUG trap and PROMPT_COMMAND in Bash</title><link href="https://seasonofcode.com/posts/debug-trap-and-prompt_command-in-bash.html" rel="alternate"></link><updated>2014-06-08T11:50:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/debug-trap-and-prompt_command-in-bash.html</id><summary type="html">&lt;div class="exampleblock"&gt;
 &lt;div class="content"&gt;
@@ -1684,7 +2323,30 @@ Please feel free to
 &lt;a href="https://github.com/jichuan89/bash-command-timer"&gt;check it out on GitHub&lt;/a&gt; :)&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Happy Bash hacking!&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="Linux"></category><category term="Featured"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part I)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html" rel="alternate"></link><updated>2014-04-10T01:08:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-04-10:posts/how-x-window-managers-work-and-how-to-write-one-part-i.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;Window managers are one of the core components of the modern Linux/BSD desktop.
+</summary><category term="Linux"></category><category term="Featured"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part I)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html" rel="alternate"></link><updated>2014-04-10T01:08:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-04-10:posts/how-x-window-managers-work-and-how-to-write-one-part-i.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sidebarblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="title"&gt;Series Contents&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;&lt;strong&gt;Part I: Basic Concepts&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part II: Introduction, Setup &amp;amp; Teardown, Initialization, Event Loop&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;Part III: Interaction with Application Windows&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Window managers are one of the core components of the modern Linux/BSD desktop.
 It is not an exaggeration to say that they define to a large degree our
 day-to-day user experience, as they are responsible for deciding how individual
 windows look, move around, react to input, and organize themselves. Hence,
@@ -1770,9 +2432,9 @@ can be independently moved around, closed, resized, etc..&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;X, however, was designed to be as low-level as possible. The fundamental UI
 model that X provides, upon which UI frameworks such as
 &lt;a href="http://www.gtk.org/"&gt;GTK+&lt;/a&gt; and &lt;a href="http://qt-project.org"&gt;Qt&lt;/a&gt; are built, is that of an
-&lt;em&gt;hierarchy of rectangles&lt;/em&gt;. In X terminology, all top level windows, UI elements,
-etc., are &lt;em&gt;windows&lt;/em&gt;. A &lt;em&gt;window&lt;/em&gt;, then, is any rectangular area that is an unit
-of user interaction and/or graphic display.&lt;/p&gt;&lt;/div&gt;
+&lt;em&gt;hierarchy of rectangles&lt;/em&gt;. In X terminology, all top level windows and all UI
+elements within are &lt;em&gt;windows&lt;/em&gt;. In other words, a &lt;em&gt;window&lt;/em&gt;, is any rectangular
+area that is an unit of user interaction and/or graphic display.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Windows are organized into a tree hierarchy. At the root of the hierarchy is the
 &lt;em&gt;root window&lt;/em&gt;, a virtual, invisible window that has the same size as the screen,
 and is always present. Top level windows are direct children of the root
@@ -1780,10 +2442,10 @@ window. UI elements within a top level window are descendants of that window.&lt
 &lt;div class="paragraph"&gt;&lt;p&gt;&lt;div align="center"&gt;&lt;img src="/assets/files/wm_sample_dialog.png" alt="An
 example X window" style="max-width: 402px; width: 100%;"&gt;&lt;/div&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;For example, consider the dialog box above from the &lt;a href="http://www.xfce.org/"&gt;Xfce&lt;/a&gt;
-desktop environment. The entire dialog is an X &lt;em&gt;window&lt;/em&gt;. Each UI element in the
+desktop environment. The entire dialog is an X &lt;em&gt;window&lt;/em&gt;. All UI elements in the
 dialog box - the magnifying glass icon, the text box, the green down arrow, the
-Close and Launch buttons, and the icons int those buttons - is also an X
-&lt;em&gt;window&lt;/em&gt;.&lt;/p&gt;&lt;/div&gt;
+Close and Launch buttons, and the icons inside those buttons - are also X
+_window_s.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;The whole dialog window is a child of the root window. The magnifying glass
 icon, the text box, and the Close and Launch buttons are children of the dialog
 window. The green down arrow is a child of the text box window, and the icons in
@@ -1806,23 +2468,22 @@ root window.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="sect3"&gt;
 &lt;h4 id="substructure-redirection"&gt;Substructure Redirection&lt;/h4&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In the absence of a window manager, when an application wants to reconfigure a
-window - move, resize, show/hide, etc. - its request is directly processed by
-the X server, and that&amp;#8217;s the end of that. A window manager, however, needs to
-intercept these requests. For example, a window manager may need to know that a
-new top level window has been created and displayed, in order to draw window
-decorations around it. It may also need to know that an existing top level
-window has been resized, in order to update the window decorations to reflect
-the change.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;A window manager can intercept such requests using a mechanism called
+&lt;div class="paragraph"&gt;&lt;p&gt;In the absence of a window manager, when an application wants to do something
+with a window - move it, resize it, show/hide it, etc. - its request is directly
+processed by the X server, and that&amp;#8217;s the end of that. A window manager,
+however, needs to intercept these requests. For example, a window manager may
+need to know that a new top level window has been created and displayed, in
+order to draw window decorations (e.g. minimize / maximize / close buttons)
+around it. It may also need to know that an existing top level window has been
+resized, in order to redraw the window decorations to reflect the change.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;The mechanism that allows a window manager to intercept such requests is called
 &lt;em&gt;substructure redirection&lt;/em&gt;.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;This is how substructure redirection works. Suppose we have a window &lt;em&gt;W&lt;/em&gt;, which
-has a child window &lt;em&gt;C&lt;/em&gt;. If a program &lt;em&gt;M&lt;/em&gt; registers for the substructure
-redirection of some types of requests on &lt;em&gt;W&lt;/em&gt;, a matching request to modify &lt;em&gt;C&lt;/em&gt;
-will &lt;em&gt;not&lt;/em&gt; be executed by the X server.  Instead, the X server redirects this
-request to the program &lt;em&gt;M&lt;/em&gt;, which can do whatever it wants with the request,
-including granting the request with modifications or denying the request. More
-formally,&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;This is how substructure redirection works. Suppose we have a window &lt;em&gt;W&lt;/em&gt;. If a
+program &lt;em&gt;M&lt;/em&gt; registers for substructure redirection on &lt;em&gt;W&lt;/em&gt;, a matching request to
+modify any direct child window of &lt;em&gt;W&lt;/em&gt; will &lt;em&gt;not&lt;/em&gt; be executed by the X server.
+Instead, the X server redirects this request to the program &lt;em&gt;M&lt;/em&gt;, which can do
+whatever it wants with the request, including denying the request outright or
+granting the request with modifications. More formally,&lt;/p&gt;&lt;/div&gt;
 &lt;div class="quoteblock"&gt;
 &lt;div class="content"&gt;The &lt;em&gt;structure&lt;/em&gt;, as the term is used here, is the location, size, stacking
 order, border width, and mapping status of a window. The &lt;em&gt;substructure&lt;/em&gt; is all
@@ -1872,7 +2533,7 @@ simultaneously on the same screen.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="sect3"&gt;
 &lt;h4 id="_reparenting"&gt;Reparenting&lt;/h4&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In the example dialog box above, we see a title bar with, for example, little
-buttons for closing, maximizing, and minimizing the window. These UI elements
+buttons for minimizing, maximizing, and closing the window. These UI elements
 are not created by the application, but by the window manager, via a process
 known as &lt;em&gt;reparenting&lt;/em&gt; or &lt;em&gt;framing&lt;/em&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="quoteblock"&gt;
@@ -1894,12 +2555,17 @@ then be descendants of &lt;code&gt;&lt;em&gt;parent&lt;/em&gt;&lt;/code&gt;.&lt;
 present, the top level window of the application would be a direct child of the
 root window. With a window manager running, however, the top level window of the
 application may be &lt;em&gt;reparented&lt;/em&gt; by the window manager; it becomes a child of a
-frame window which is created by the window manager, and which is itself a child
-of the root window. The window manager can add other UI elements inside this
-frame window alongside the application&amp;#8217;s top level window as it sees fit.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Therefore, I had lied to you just now: the dialog box above is actually a child
-of a frame created by &lt;a href="http://www.xfce.org"&gt;Xfce&lt;/a&gt;'s window manager, Xfwm, along
-with the other UI elements for window management.&lt;/p&gt;&lt;/div&gt;
+frame window which is created by the window manager, and which is itself a
+direct child of the root window. The window manager can add other UI elements
+inside this frame window alongside the application&amp;#8217;s top level window as it sees
+fit.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Therefore, I&amp;#8217;ve kind of lied to you several paragraphs ago: the dialog box shown
+earlier is really a child window within a frame window created by
+&lt;a href="http://www.xfce.org"&gt;Xfce&lt;/a&gt;'s window manager, Xfwm, along with other UI elements
+for window management:
+&lt;div align="center"&gt;&lt;img
+src="https://docs.google.com/drawings/d/1JIaZeVZBB2Yu5t8e7l0Euln_ix61bg-pGEG086P-cLg/pub?w=412&amp;amp;h=248"
+style="max-width: 412px; width: 100%;"&gt;&lt;/div&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Reparenting is what allows different window managers to draw different window
 decorations, and thereby achieve a consistent look-and-feel across windows.
 However, there are also window managers that do &lt;em&gt;not&lt;/em&gt; reparent at all: these are
@@ -1931,8 +2597,8 @@ creates a frame &lt;em&gt;F&lt;/em&gt; and reparents &lt;em&gt;W&lt;/em&gt;, so 
 itself is a child of the root window. But since now &lt;em&gt;W&lt;/em&gt; is no longer a direct
 child of the root window, the window manager will no longer be able to intercept
 changes to &lt;em&gt;W&lt;/em&gt;!&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Therefore, a reparenting window manager must also register for substructure
-redirection on the frames it creates.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Therefore, a reparenting window manager must also subsequently register for
+substructure redirection on each frame window it creates.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="sect3"&gt;
 &lt;h4 id="_compositing"&gt;Compositing&lt;/h4&gt;
@@ -1953,7 +2619,7 @@ through a framework such as &lt;a href="http://www.gtk.org"&gt;GTK+&lt;/a&gt; or
 &lt;a href="http://qt-project.org/"&gt;Qt&lt;/a&gt;, and the window manager has no right to interfere
 there. The application that creates a top level window is responsible for
 rendering and handling events for any descendant windows (UI elements), and does
-so directly through X. This is shown in &lt;a href="#role-of-a-window-manager"&gt;the first graph above&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+so directly through X. This is shown in &lt;a href="#role-of-a-window-manager"&gt;the first diagram above&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;As the computing power of graphics hardware grew, so did people&amp;#8217;s expectations
 from their window managers. With hardware acceleration, it became possible to
 build much more computationally intensive user interfaces, such as the
@@ -1964,8 +2630,7 @@ or the Shift Switcher:
 &lt;div align="center"&gt;&lt;img src="/assets/files/wm_compiz_2.png"
 style="max-width: 640px; width: 100%;"&gt;&lt;/div&gt;
 Let&amp;#8217;s take a moment to think about how we can implement an interface such as the
-Shift Switcher above. When the user triggers our wonderful interface, we need
-to:&lt;/p&gt;&lt;/div&gt;
+Shift Switcher above. When the user triggers this interface, we need to:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="olist arabic"&gt;&lt;ol class="arabic"&gt;
 &lt;li&gt;
 &lt;p&gt;
@@ -1980,8 +2645,8 @@ Transform (rotate, contort, etc.) each buffer according to our design.
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;
-Composite the transformed buffers into a final buffer along with background
-   and anything else we need to display.
+Composite the transformed buffers into a final buffer along with a background
+   and any other floating UI elements else we need to display.
 &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -2000,36 +2665,38 @@ Render the final buffer into the overlay window.
 &lt;div class="ulist"&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;
-We must be able to retrieve the contents of top level windows. However, top
-  level windows render directly through X.
+We must be able to retrieve the displayed contents of top level windows.
+  However, as we described earlier, top level windows render their contents
+  directly through X, without going through the window manager.
 &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;
 We need to update our interface in real time as the contents of the
-  top level windows change. However, top level windows render directly through
-  X and do not notify window managers when their contents change.
+  top level windows change. However, top level windows do not notify window
+  managers when their contents change, again because they render their contents
+  directly through X.
 &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;
-A top level window &lt;em&gt;A&lt;/em&gt; may normally overlap with another top level window
-  &lt;em&gt;B&lt;/em&gt;, and thus a portion of &lt;em&gt;B&lt;/em&gt; isn&amp;#8217;t currently visible. Our interface,
-  however, must capture the &lt;em&gt;full&lt;/em&gt; rendering of &lt;em&gt;A&lt;/em&gt; and &lt;em&gt;B&lt;/em&gt;, regardless of
-  overlapping regions.
+A top level window &lt;em&gt;A&lt;/em&gt; may overlap with another top level window
+  &lt;em&gt;B&lt;/em&gt; below, which means a portion of &lt;em&gt;B&lt;/em&gt; isn&amp;#8217;t currently displayed. Our
+  interface, however, must capture the &lt;em&gt;full&lt;/em&gt; rendering of &lt;em&gt;A&lt;/em&gt; and &lt;em&gt;B&lt;/em&gt;,
+  regardless of overlapping regions.
 &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;
-The compositing process is computationally intensive and requires hardware
-  acceleration to function adequately.
+All this complex compositing process is computationally intensive and requires
+  hardware acceleration to function adequately.
 &lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;It is clear that none of this is possible without heavy cooperation from the X
-server. Enter
-&lt;a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt"&gt;the
-Composite extension&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;It is clear that none of this would be possible without some heavy cooperation
+from the X server. Enter the
+&lt;a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt"&gt;Composite
+extension&lt;/a&gt;:&lt;/p&gt;&lt;/div&gt;
 &lt;div class="quoteblock"&gt;
 &lt;div class="content"&gt;Many user interface operations would benefit from having pixel contents of
 window hierarchies available without respect to sibling and antecedent clipping.
@@ -2039,32 +2706,32 @@ dynamic application content presentation.&lt;/div&gt;
 &lt;div class="attribution"&gt;
 &amp;#8212; X Composite Extension
 &lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;The Composite extension provides is a mechanism to request the X server not to
+&lt;div class="paragraph"&gt;&lt;p&gt;The Composite extension provides a mechanism to request the X server not to
 render a specific window and its descendants directly to hardware, but to a
 special buffer maintained by the X server, and do so without the normal clipping
 and overlap computations. This buffer can then be read and used by the client
 that made the request.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;In fact, that&amp;#8217;s exactly what a compositing window manager does: it will ask X to
-render each top level window to an off-screen, in-memory buffer and composite
-the results into an overlay window. And it needs to do this not just for fancy
-interfaces, but also to achieve effects like translucency, window animations,
-soft shadows, and the like.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;That&amp;#8217;s exactly what a compositing window manager does: it will ask X to render
+each top level window to an off-screen, in-memory buffer and composite the
+results into an overlay window itself. And it needs to do this not just for
+fancy task switcher interfaces as in our example, but also to achieve effects
+like translucency, animations, soft shadows, and the like.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;This is illustrated in the following diagram:
 &lt;div align="center"&gt;&lt;img
 src="https://docs.google.com/drawings/d/1eK05Uzlr2ix4NpsiEBUu42IwZ3DEjX8MvYTiE3-chqA/pub?w=573&amp;amp;h=509"
 style="max-width: 573px; width: 100%;"&gt;&lt;/div&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Let&amp;#8217;s end this section by considering whether a compositing window manager
 should reparent top level windows.&lt;/p&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;Since a compositing window manager knows the size and position of all top level
-windows, it&amp;#8217;s trivial for it to just draw window decorations during compositing
-into the overlay window using graphics operations, without ever creating an
-actual frame window and reparenting. Some compositing window managers do operate
-this way.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;Since a compositing window manager already knows the size and position of all
+top level windows, it&amp;#8217;s easy for it to just draw window decorations during
+compositing into the overlay window using graphics operations (e.g. OpenGL),
+without ever creating an actual X frame window and reparenting. Some compositing
+window managers do operate this way.&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;On the other hand, a window manager may need to support both a compositing and a
 non-compositing mode, for compatibility with older or unsupported graphics
 hardware. In this case, it needs to implement reparenting and frame windows for
 non-compositing mode anyway, so additionally implementing drawing window
-decorations using graphics operations becomes redundant. This is why some other
+decorations using graphics operations becomes redundant. This is why may other
 compositing window managers still choose to reparent.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2075,12 +2742,31 @@ urge to cry out "&lt;em&gt;Enough talk - show me some code!&lt;/em&gt;" I don&am
 &lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;the
 next installment&lt;/a&gt; in this series, I will walk you through a basic
 implementation of a reparenting, non-compositing window manager. Impatient?
-Check out the code &lt;a href="https://github.com/jichuan89/basic_wm"&gt;on GitHub&lt;/a&gt; or browse
-the cross-referenced code &lt;a href="http://code.openhub.net/project?pid=&amp;amp;ipid=568869"&gt;on
-Open Hub&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
+Check out the code &lt;a href="https://github.com/jichu4n/basic_wm"&gt;on GitHub&lt;/a&gt;!&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;&lt;strong&gt;Next chapter:&lt;/strong&gt;
 &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;&lt;strong&gt;How X
 Window Managers Work, And How To Write One (Part II)&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="sidebarblock"&gt;
+&lt;div class="content"&gt;
+&lt;div class="title"&gt;Series Contents&lt;/div&gt;
+&lt;div class="ulist"&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;&lt;strong&gt;Part I: Basic Concepts&lt;/strong&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part II: Introduction, Setup &amp;amp; Teardown, Initialization, Event Loop&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"&gt;Part III: Interaction with Application Windows&lt;/a&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
 &lt;/div&gt;
 </summary><category term="Featured"></category><category term="Window Manager"></category></entry><entry><title>The Most Popular Fonts On The Web: A Study</title><link href="https://seasonofcode.com/posts/the-most-popular-fonts-on-the-web-a-study.html" rel="alternate"></link><updated>2014-04-04T23:04:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-04-04:posts/the-most-popular-fonts-on-the-web-a-study.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;link rel="image_src"
 href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/embed/oimg?id=1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc&amp;oid=65057078&amp;zx=ey1naahah70j"&gt;

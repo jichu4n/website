@@ -11,7 +11,7 @@
       <link href="https://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="https://seasonofcode.com/theme/style.min.css?918c51a9" rel="stylesheet" />
+      <link href="https://seasonofcode.com/theme/style.min.css?26e193e7" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://seasonofcode.com/theme/html5shiv.min.js"></script>
@@ -102,6 +102,97 @@
       <div class="row">
         <div class="col-xs-12 col-md-8 col-md-offset-2">
     <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="https://seasonofcode.com/posts/nitdroid-userland-update-v.html" rel="bookmark">
+      NITDroid userland update V
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-10-24T02:12:24-07:00">
+          Oct 24, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="https://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="https://seasonofcode.com/posts/nitdroid-userland-update-v.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>In short - I compiled Gingerbread (2.3.7_r1) without modification and it boots on the N810 out of the box. That was SO much easier than with Froyo&#8230;</p></div>
+<div class="paragraph"><div class="title">Gingerbread (2.3.7 r1) on the Nokia N810:</div><p><span class="image">
+<a class="image" href="/assets/files/nitdroid/nitdroid_20111024.jpg">
+<img src="/assets/files/nitdroid/nitdroid_20111024_small.jpg" alt="Gingerbread (2.3.7 r1) on the Nokia N810" width="300" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>I uploaded my device configuration files for Android to <a href="https://gitorious.org/nitdroid/device">this Git repository</a>. To build, the files should be kept in a folder with any name, say <code>nitdroid_device</code>, under <code>$ANDROID_SOURCE/device</code>. To build, run <code>make PRODUCT-nitdroid-eng</code> or a variant from the root of the source tree.</p></div>
+<div class="paragraph"><p>I also calibrated the TSC2005 touchscreen. The code I pulled off <a href="http://groups.google.com/group/android-internals/msg/7c6ff76e0381e95a">this thread</a> back in May resulted in weird coordinates on my touchscreen since when I was running Froyo, and I took the time to correct the numeric values by trial and error on my touchscreen. The final diff from the <code>tsc2005.c</code> created by the OpenWRT patches is:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="gd">--- a/drivers/input/touchscreen/tsc2005.c</span>
+<span class="gi">+++ b/drivers/input/touchscreen/tsc2005.c</span>
+<span class="gu">@@ -304,8 +304,8 @@ static void tsc2005_ts_update_pen_state(struct tsc2005 *ts,</span>
+                                        int x, int y, int pressure)
+ {
+        if (pressure) {
+<span class="gi">+                x = abs((x - 260) * 800 / 3550);</span>
+<span class="gi">+                y = abs((3600 - y) * 480 / 3750);</span>
+                input_report_abs(ts-&gt;idev, ABS_X, x);
+                input_report_abs(ts-&gt;idev, ABS_Y, y);
+                input_report_abs(ts-&gt;idev, ABS_PRESSURE, pressure);
+</pre></div></div></div>
+<div class="paragraph"><p>I have committed it to <a href="https://gitorious.org/nitdroid/kernel_patches">my kernel patches repository</a>.</p></div>
+<div class="paragraph"><p>There are still a million issues though&#8230;sound and wireless don&#8217;t work yet, and most importantly the system panics after about a minute of inaction, complaining (untruthfully) that the SD card had been removed. But it&#8217;s a start.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Oct 24, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="https://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="https://seasonofcode.com/posts/nitdroid-userland-update-v.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="https://seasonofcode.com/posts/nitdroid-userland-update-v.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
         <section class="article content">
 <article itemscope itemtype="http://schema.org/Article">
   <header>
@@ -604,77 +695,6 @@ root an actual device.</p></div>
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="https://seasonofcode.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="https://seasonofcode.com/posts/connectbot-on-the-asus-eee-pad-slider-sl101.html" rel="bookmark">
-      ConnectBot on the Asus Eee Pad Slider (SL101)
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-10-18T03:45:15-07:00">
-          Oct 18, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="https://seasonofcode.com/tag/misc.html">Misc</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="https://seasonofcode.com/posts/connectbot-on-the-asus-eee-pad-slider-sl101.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>I recently acquired an <a href="http://www.asus.com/Eee/Eee_Pad/Eee_Pad_Slider_SL101">Eee Pad Slider</a>, a truly groundbreaking Android tablet running Honeycomb 3.2. Its unique sliding keyboard allows it to transcend the conventional definition of tablets as content consumption devices while preserving to perfection the intimacy of touch interface interaction. To be honest, however, up until last week I had always seen tablets as these flashy toys whose only purpose in life was to satisfy the vanity of a few mindless and unfortunately privileged gadget fanboys. But I fell in love with the Eee Pad Slider at first sight. This was a device that perfectly bridged that gap between my laptop and my smartphone; this was a device that was as immediately accessible, friendly, and visually appealing as my smartphone for casual use, but as pragmatic and dependable as my Thinkpad T400 when I need to get down and serious and reply to that one email or fix that one bug in my code. It&#8217;s simply the most versatile mobile device between a phone and a full blown PC.</p></div>
-<div class="paragraph"><p>Before I am dismissed as a crazed and dangerous fanatic, however, I should admit that I fully understand the fact that the Slider is not the best tablet for everyone. The Slider is probably twice as thick as the iPad or the Samsung Galaxy Tab and about the same price as either one of the two. Its keys are much less comfortable than those on your typical ultraportable laptop. It is also brown, a color I would not place very high on my list of good colors for electronic devices. It is probably not the best consumer lifestyle gadget you can find on the market, nor the most suitable for mobile office computing. But it is a very innovative and intelligent cross of the two worlds, and that happened to be exactly that one device I could not find in the hugely diverse and volatile market of mobile devices of today.</p></div>
-<div class="paragraph"><p>Back, then, to the real deal. I am a computer geek and I cannot live very well without SSH. On Android the SSH client that I (and it looks like everyone else) have been using is ConnectBot. So among the first apps I installed on my brand new Eee Pad Slider was ConnectBot; <em>finally</em> I thought, there was a mobile keyboard that had real control, shift, and alt keys that I could use. I was very surprised, therefore, when I realized that none of them worked. Given that the Slider has only been released for a month, forum threads and other helpful resources are nonexistent. I dug up <a href="http://code.google.com/p/connectbot/wiki/KeyboardShortcuts"> the discussion on this document</a> and found <a href="https://github.com/lorantkurthy/connectbot">Lorant Kurthy&#8217;s fork of ConnectBot on GitHub</a> that fixed the same issues for the Eee Pad Transformer. I cloned his repository and, with a one-line change in the source code, enabled his fix for the Slider as well. So there we go - here is <a href="/assets/files/ConnectBot-release.apk">my version of ConnectBot with fixes for the Eee Pad Transformer and Eee Pad Slider hardware keyboards</a>. As far as I can tell it works fine; in fact, I am typing this post on the Eee Pad Slider using Vim in an SSH session to my laptop via my version of ConnectBot. All the credit goes to Lorant Kurthy though.</p></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Oct 18, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="https://seasonofcode.com/tag/misc.html">Misc</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="https://seasonofcode.com/posts/connectbot-on-the-asus-eee-pad-slider-sl101.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="https://seasonofcode.com/posts/connectbot-on-the-asus-eee-pad-slider-sl101.html">Permalink</a>
       </li>
     </ul>
   </footer>

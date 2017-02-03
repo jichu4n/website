@@ -11,7 +11,7 @@
       <link href="https://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="https://seasonofcode.com/theme/style.min.css?918c51a9" rel="stylesheet" />
+      <link href="https://seasonofcode.com/theme/style.min.css?26e193e7" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://seasonofcode.com/theme/html5shiv.min.js"></script>
@@ -136,7 +136,30 @@
   </header>
 
   <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>Window managers are one of the core components of the modern Linux/BSD desktop.
+    <div class="paragraph"><p><!--googleoff: index--></p></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Series Contents</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"><strong>Part I: Basic Concepts</strong></a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a>
+</p>
+</li>
+</ul></div>
+</div></div>
+<div class="paragraph"><p><!--googleon: index--></p></div>
+<div class="paragraph"><p>Window managers are one of the core components of the modern Linux/BSD desktop.
 It is not an exaggeration to say that they define to a large degree our
 day-to-day user experience, as they are responsible for deciding how individual
 windows look, move around, react to input, and organize themselves. Hence,
@@ -222,9 +245,9 @@ can be independently moved around, closed, resized, etc..</p></div>
 <div class="paragraph"><p>X, however, was designed to be as low-level as possible. The fundamental UI
 model that X provides, upon which UI frameworks such as
 <a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an
-<em>hierarchy of rectangles</em>. In X terminology, all top level windows, UI elements,
-etc., are <em>windows</em>. A <em>window</em>, then, is any rectangular area that is an unit
-of user interaction and/or graphic display.</p></div>
+<em>hierarchy of rectangles</em>. In X terminology, all top level windows and all UI
+elements within are <em>windows</em>. In other words, a <em>window</em>, is any rectangular
+area that is an unit of user interaction and/or graphic display.</p></div>
 <div class="paragraph"><p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the
 <em>root window</em>, a virtual, invisible window that has the same size as the screen,
 and is always present. Top level windows are direct children of the root
@@ -232,10 +255,10 @@ window. UI elements within a top level window are descendants of that window.</p
 <div class="paragraph"><p><div align="center"><img src="/assets/files/wm_sample_dialog.png" alt="An
 example X window" style="max-width: 402px; width: 100%;"></div></p></div>
 <div class="paragraph"><p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a>
-desktop environment. The entire dialog is an X <em>window</em>. Each UI element in the
+desktop environment. The entire dialog is an X <em>window</em>. All UI elements in the
 dialog box - the magnifying glass icon, the text box, the green down arrow, the
-Close and Launch buttons, and the icons int those buttons - is also an X
-<em>window</em>.</p></div>
+Close and Launch buttons, and the icons inside those buttons - are also X
+_window_s.</p></div>
 <div class="paragraph"><p>The whole dialog window is a child of the root window. The magnifying glass
 icon, the text box, and the Close and Launch buttons are children of the dialog
 window. The green down arrow is a child of the text box window, and the icons in
@@ -258,23 +281,22 @@ root window.</p></div>
 </div>
 <div class="sect3">
 <h4 id="substructure-redirection">Substructure Redirection</h4>
-<div class="paragraph"><p>In the absence of a window manager, when an application wants to reconfigure a
-window - move, resize, show/hide, etc. - its request is directly processed by
-the X server, and that&#8217;s the end of that. A window manager, however, needs to
-intercept these requests. For example, a window manager may need to know that a
-new top level window has been created and displayed, in order to draw window
-decorations around it. It may also need to know that an existing top level
-window has been resized, in order to update the window decorations to reflect
-the change.</p></div>
-<div class="paragraph"><p>A window manager can intercept such requests using a mechanism called
+<div class="paragraph"><p>In the absence of a window manager, when an application wants to do something
+with a window - move it, resize it, show/hide it, etc. - its request is directly
+processed by the X server, and that&#8217;s the end of that. A window manager,
+however, needs to intercept these requests. For example, a window manager may
+need to know that a new top level window has been created and displayed, in
+order to draw window decorations (e.g. minimize / maximize / close buttons)
+around it. It may also need to know that an existing top level window has been
+resized, in order to redraw the window decorations to reflect the change.</p></div>
+<div class="paragraph"><p>The mechanism that allows a window manager to intercept such requests is called
 <em>substructure redirection</em>.</p></div>
-<div class="paragraph"><p>This is how substructure redirection works. Suppose we have a window <em>W</em>, which
-has a child window <em>C</em>. If a program <em>M</em> registers for the substructure
-redirection of some types of requests on <em>W</em>, a matching request to modify <em>C</em>
-will <em>not</em> be executed by the X server.  Instead, the X server redirects this
-request to the program <em>M</em>, which can do whatever it wants with the request,
-including granting the request with modifications or denying the request. More
-formally,</p></div>
+<div class="paragraph"><p>This is how substructure redirection works. Suppose we have a window <em>W</em>. If a
+program <em>M</em> registers for substructure redirection on <em>W</em>, a matching request to
+modify any direct child window of <em>W</em> will <em>not</em> be executed by the X server.
+Instead, the X server redirects this request to the program <em>M</em>, which can do
+whatever it wants with the request, including denying the request outright or
+granting the request with modifications. More formally,</p></div>
 <div class="quoteblock">
 <div class="content">The <em>structure</em>, as the term is used here, is the location, size, stacking
 order, border width, and mapping status of a window. The <em>substructure</em> is all
@@ -324,7 +346,7 @@ simultaneously on the same screen.</p></div>
 <div class="sect3">
 <h4 id="_reparenting">Reparenting</h4>
 <div class="paragraph"><p>In the example dialog box above, we see a title bar with, for example, little
-buttons for closing, maximizing, and minimizing the window. These UI elements
+buttons for minimizing, maximizing, and closing the window. These UI elements
 are not created by the application, but by the window manager, via a process
 known as <em>reparenting</em> or <em>framing</em>:</p></div>
 <div class="quoteblock">
@@ -346,12 +368,17 @@ then be descendants of <code><em>parent</em></code>.</p></div>
 present, the top level window of the application would be a direct child of the
 root window. With a window manager running, however, the top level window of the
 application may be <em>reparented</em> by the window manager; it becomes a child of a
-frame window which is created by the window manager, and which is itself a child
-of the root window. The window manager can add other UI elements inside this
-frame window alongside the application&#8217;s top level window as it sees fit.</p></div>
-<div class="paragraph"><p>Therefore, I had lied to you just now: the dialog box above is actually a child
-of a frame created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along
-with the other UI elements for window management.</p></div>
+frame window which is created by the window manager, and which is itself a
+direct child of the root window. The window manager can add other UI elements
+inside this frame window alongside the application&#8217;s top level window as it sees
+fit.</p></div>
+<div class="paragraph"><p>Therefore, I&#8217;ve kind of lied to you several paragraphs ago: the dialog box shown
+earlier is really a child window within a frame window created by
+<a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along with other UI elements
+for window management:
+<div align="center"><img
+src="https://docs.google.com/drawings/d/1JIaZeVZBB2Yu5t8e7l0Euln_ix61bg-pGEG086P-cLg/pub?w=412&amp;h=248"
+style="max-width: 412px; width: 100%;"></div></p></div>
 <div class="paragraph"><p>Reparenting is what allows different window managers to draw different window
 decorations, and thereby achieve a consistent look-and-feel across windows.
 However, there are also window managers that do <em>not</em> reparent at all: these are
@@ -383,8 +410,8 @@ creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes 
 itself is a child of the root window. But since now <em>W</em> is no longer a direct
 child of the root window, the window manager will no longer be able to intercept
 changes to <em>W</em>!</p></div>
-<div class="paragraph"><p>Therefore, a reparenting window manager must also register for substructure
-redirection on the frames it creates.</p></div>
+<div class="paragraph"><p>Therefore, a reparenting window manager must also subsequently register for
+substructure redirection on each frame window it creates.</p></div>
 </div>
 <div class="sect3">
 <h4 id="_compositing">Compositing</h4>
@@ -405,7 +432,7 @@ through a framework such as <a href="http://www.gtk.org">GTK+</a> or
 <a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere
 there. The application that creates a top level window is responsible for
 rendering and handling events for any descendant windows (UI elements), and does
-so directly through X. This is shown in <a href="#role-of-a-window-manager">the first graph above</a>.</p></div>
+so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p></div>
 <div class="paragraph"><p>As the computing power of graphics hardware grew, so did people&#8217;s expectations
 from their window managers. With hardware acceleration, it became possible to
 build much more computationally intensive user interfaces, such as the
@@ -416,8 +443,7 @@ or the Shift Switcher:
 <div align="center"><img src="/assets/files/wm_compiz_2.png"
 style="max-width: 640px; width: 100%;"></div>
 Let&#8217;s take a moment to think about how we can implement an interface such as the
-Shift Switcher above. When the user triggers our wonderful interface, we need
-to:</p></div>
+Shift Switcher above. When the user triggers this interface, we need to:</p></div>
 <div class="olist arabic"><ol class="arabic">
 <li>
 <p>
@@ -432,8 +458,8 @@ Transform (rotate, contort, etc.) each buffer according to our design.
 </li>
 <li>
 <p>
-Composite the transformed buffers into a final buffer along with background
-   and anything else we need to display.
+Composite the transformed buffers into a final buffer along with a background
+   and any other floating UI elements else we need to display.
 </p>
 </li>
 <li>
@@ -452,36 +478,38 @@ Render the final buffer into the overlay window.
 <div class="ulist"><ul>
 <li>
 <p>
-We must be able to retrieve the contents of top level windows. However, top
-  level windows render directly through X.
+We must be able to retrieve the displayed contents of top level windows.
+  However, as we described earlier, top level windows render their contents
+  directly through X, without going through the window manager.
 </p>
 </li>
 <li>
 <p>
 We need to update our interface in real time as the contents of the
-  top level windows change. However, top level windows render directly through
-  X and do not notify window managers when their contents change.
+  top level windows change. However, top level windows do not notify window
+  managers when their contents change, again because they render their contents
+  directly through X.
 </p>
 </li>
 <li>
 <p>
-A top level window <em>A</em> may normally overlap with another top level window
-  <em>B</em>, and thus a portion of <em>B</em> isn&#8217;t currently visible. Our interface,
-  however, must capture the <em>full</em> rendering of <em>A</em> and <em>B</em>, regardless of
-  overlapping regions.
+A top level window <em>A</em> may overlap with another top level window
+  <em>B</em> below, which means a portion of <em>B</em> isn&#8217;t currently displayed. Our
+  interface, however, must capture the <em>full</em> rendering of <em>A</em> and <em>B</em>,
+  regardless of overlapping regions.
 </p>
 </li>
 <li>
 <p>
-The compositing process is computationally intensive and requires hardware
-  acceleration to function adequately.
+All this complex compositing process is computationally intensive and requires
+  hardware acceleration to function adequately.
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>It is clear that none of this is possible without heavy cooperation from the X
-server. Enter
-<a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">the
-Composite extension</a>:</p></div>
+<div class="paragraph"><p>It is clear that none of this would be possible without some heavy cooperation
+from the X server. Enter the
+<a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">Composite
+extension</a>:</p></div>
 <div class="quoteblock">
 <div class="content">Many user interface operations would benefit from having pixel contents of
 window hierarchies available without respect to sibling and antecedent clipping.
@@ -491,32 +519,32 @@ dynamic application content presentation.</div>
 <div class="attribution">
 &#8212; X Composite Extension
 </div></div>
-<div class="paragraph"><p>The Composite extension provides is a mechanism to request the X server not to
+<div class="paragraph"><p>The Composite extension provides a mechanism to request the X server not to
 render a specific window and its descendants directly to hardware, but to a
 special buffer maintained by the X server, and do so without the normal clipping
 and overlap computations. This buffer can then be read and used by the client
 that made the request.</p></div>
-<div class="paragraph"><p>In fact, that&#8217;s exactly what a compositing window manager does: it will ask X to
-render each top level window to an off-screen, in-memory buffer and composite
-the results into an overlay window. And it needs to do this not just for fancy
-interfaces, but also to achieve effects like translucency, window animations,
-soft shadows, and the like.</p></div>
+<div class="paragraph"><p>That&#8217;s exactly what a compositing window manager does: it will ask X to render
+each top level window to an off-screen, in-memory buffer and composite the
+results into an overlay window itself. And it needs to do this not just for
+fancy task switcher interfaces as in our example, but also to achieve effects
+like translucency, animations, soft shadows, and the like.</p></div>
 <div class="paragraph"><p>This is illustrated in the following diagram:
 <div align="center"><img
 src="https://docs.google.com/drawings/d/1eK05Uzlr2ix4NpsiEBUu42IwZ3DEjX8MvYTiE3-chqA/pub?w=573&amp;h=509"
 style="max-width: 573px; width: 100%;"></div></p></div>
 <div class="paragraph"><p>Let&#8217;s end this section by considering whether a compositing window manager
 should reparent top level windows.</p></div>
-<div class="paragraph"><p>Since a compositing window manager knows the size and position of all top level
-windows, it&#8217;s trivial for it to just draw window decorations during compositing
-into the overlay window using graphics operations, without ever creating an
-actual frame window and reparenting. Some compositing window managers do operate
-this way.</p></div>
+<div class="paragraph"><p>Since a compositing window manager already knows the size and position of all
+top level windows, it&#8217;s easy for it to just draw window decorations during
+compositing into the overlay window using graphics operations (e.g. OpenGL),
+without ever creating an actual X frame window and reparenting. Some compositing
+window managers do operate this way.</p></div>
 <div class="paragraph"><p>On the other hand, a window manager may need to support both a compositing and a
 non-compositing mode, for compatibility with older or unsupported graphics
 hardware. In this case, it needs to implement reparenting and frame windows for
 non-compositing mode anyway, so additionally implementing drawing window
-decorations using graphics operations becomes redundant. This is why some other
+decorations using graphics operations becomes redundant. This is why may other
 compositing window managers still choose to reparent.</p></div>
 </div>
 </div>
@@ -527,12 +555,31 @@ urge to cry out "<em>Enough talk - show me some code!</em>" I don&#8217;t blame 
 <div class="paragraph"><p>In <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">the
 next installment</a> in this series, I will walk you through a basic
 implementation of a reparenting, non-compositing window manager. Impatient?
-Check out the code <a href="https://github.com/jichuan89/basic_wm">on GitHub</a> or browse
-the cross-referenced code <a href="http://code.openhub.net/project?pid=&amp;ipid=568869">on
-Open Hub</a>.</p></div>
+Check out the code <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>!</p></div>
 <div class="paragraph"><p><strong>Next chapter:</strong>
 <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>How X
 Window Managers Work, And How To Write One (Part II)</strong></a></p></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Series Contents</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"><strong>Part I: Basic Concepts</strong></a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a>
+</p>
+</li>
+</ul></div>
+</div></div>
 </div>
 
   </div>

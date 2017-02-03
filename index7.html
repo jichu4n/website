@@ -11,7 +11,7 @@
       <link href="https://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="https://seasonofcode.com/theme/style.min.css?918c51a9" rel="stylesheet" />
+      <link href="https://seasonofcode.com/theme/style.min.css?26e193e7" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://seasonofcode.com/theme/html5shiv.min.js"></script>
@@ -102,6 +102,115 @@
       <div class="row">
         <div class="col-xs-12 col-md-8 col-md-offset-2">
     <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="https://seasonofcode.com/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change.html" rel="bookmark">
+      Prevent Android app from restarting on rotate / hardware keyboard state change
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-05-13T03:19:41-07:00">
+          May 13, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="https://seasonofcode.com/tag/android.html">Android</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="https://seasonofcode.com/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I came across a puzzling phenomenon while working on an Android
+application today.</p></div>
+<div class="sect2">
+<h3 id="_problem">Problem</h3>
+<div class="paragraph"><p>When I rotate the device (change orientation) or pop out the hardware keyboard,
+my <code>Activity</code> gets paused (<code>onPause()</code>), stopped (<code>onStop()</code>), destroyed
+(<code>onDestroy()</code>), then recreated (<code>onCreate()</code>), started (<code>onStart()</code>), and
+resumed (<code>onResume()</code>). It was as if the user had quit the application and
+killed it and launched it again.  It was crashing my application as nowhere in
+the documentation had I ever read that rotating the deviced would cause such a
+strange chain of events to happen.</p></div>
+<div class="paragraph"><p>Although my app had implemented its <code>onSurfaceChanged()</code> method which, according
+to the documentation, should be called when the device is rotated among other
+things, it wasn&#8217;t happening according to my logs.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_solution">Solution</h3>
+<div class="paragraph"><p>It turns out that the <code>&lt;activity&gt;</code> tags in the <code>AndroidManifest.xml</code> have a
+<code>configChanges</code> attribute that specifies which of a number of events the
+application is set up to handle itself. Any of the events, if not explicitly
+listed in an <code>&lt;activity&gt;</code> tag in <code>AndroidManifest.xml</code>, would cause Android to
+destroy and then restart the <code>Activity</code> anew. (See
+<a href="http://developer.android.com/guide/topics/manifest/activity-element.html#config">official
+documentation</a>.)</p></div>
+<div class="paragraph"><p>These include notably the orientation change (rotation) and the hardware
+keyboard state. To handle these, the <code>&lt;activity&gt;</code> tag in your
+<code>AndroidManifest.xml</code> must contain at least the following:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="nt">&lt;activity</span>
+    <span class="err">...</span>
+    <span class="na">android:configChanges=</span><span class="s">&quot;keyboard|keyboardHidden|orientation|screenSize&quot;</span><span class="nt">&gt;</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Note that <code>screenSize</code> was added in API level 13 (Honeycomb 3.2).</p></div>
+<div class="paragraph"><p>I guess in a way this makes sense; if an application did not include adequate
+event handlers, all of these events could potentially cause the application to
+crash if left running on its own. Therefore, Android just kills it and restarts
+it so that it would presumably correctly initialize itself in the new
+environment when it starts up again. But this attribute really ought to be
+heavily publicized in any introductory text as it is likely to cause noobs like
+me quite some bewilderment.</p></div>
+</div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        May 13, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="https://seasonofcode.com/tag/android.html">Android</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="https://seasonofcode.com/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="https://seasonofcode.com/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
         <section class="article content">
 <article itemscope itemtype="http://schema.org/Article">
   <header>
@@ -660,93 +769,6 @@ WiFi.
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="https://seasonofcode.com/posts/man-page-browser-for-android.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="https://seasonofcode.com/posts/ugh.html" rel="bookmark">
-      Ugh...
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-05-04T03:50:15-07:00">
-          May 04, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="https://seasonofcode.com/tag/projects.html">Projects</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="https://seasonofcode.com/posts/ugh.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>Haven&#8217;t been able to work on NITDroid in a while&#8230;anyway I came across a couple of interesting links and I&#8217;ll look more into them when I get to it.</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<a href="http://www.kandroid.org/android_pdk/display_drivers.html">Android Porting Guide - Display Drivers</a> is a cool page that discusses implementing a framebuffer device driver for Android.
-</p>
-</li>
-<li>
-<p>
-<a href="http://git.kernel.org/?p=linux/kernel/git/stable/linux-2.6.32.y.git;a=blob;f=Documentation/fb/framebuffer.txt">The Frame Buffer Device</a> in the Linux kernel documentation. This really isn&#8217;t a link, but it gives a good overview of what a framebuffer device driver looks like in Linux.
-</p>
-</li>
-<li>
-<p>
-<a href="http://linuxconsole.sourceforge.net/fbdev/HOWTO/index.html">Linux Framebuffer Driver Writing HOWTO</a> was a wow-moment for me. Will have to follow this closer. I only hope it&#8217;s not too outdated as it was last updated in 2001.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>That&#8217;s it for now. This summer is going to be fun.</p></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        May 04, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="https://seasonofcode.com/tag/projects.html">Projects</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="https://seasonofcode.com/posts/ugh.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="https://seasonofcode.com/posts/ugh.html">Permalink</a>
       </li>
     </ul>
   </footer>

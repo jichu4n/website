@@ -11,7 +11,7 @@
       <link href="https://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="https://seasonofcode.com/theme/style.min.css?918c51a9" rel="stylesheet" />
+      <link href="https://seasonofcode.com/theme/style.min.css?26e193e7" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://seasonofcode.com/theme/html5shiv.min.js"></script>
@@ -102,6 +102,154 @@
       <div class="row">
         <div class="col-xs-12 col-md-8 col-md-offset-2">
     <section id="content" class="content">
+        <section class="article content">
+<article itemscope itemtype="http://schema.org/Article">
+  <header>
+    <h2 class="entry-title">
+      <a itemprop="name" href="https://seasonofcode.com/posts/merging-n810-device-drivers.html" rel="bookmark">
+      Merging N810 device drivers
+      </a>
+    </h2>
+    <!--googleoff: snippet-->
+    <aside>
+      <ul class="article-meta text-muted small">
+        <li class="article-author">
+          By <span itemprop="author">Chuan Ji</span>
+        </li>
+        <li class="spacer">|</li>
+        <li class="article-date">
+        <span itemprop="datePublished" content="2011-02-10T14:52:52-08:00">
+          Feb 10, 2011
+        </span>
+        </li>
+        <li class="spacer">|</li>
+        <li>
+          Tags:
+            <a href="https://seasonofcode.com/tag/projects.html">Projects</a>        </li>
+        <li class="spacer">|</li>
+        <li class="article-comments-count">
+          <a href="https://seasonofcode.com/posts/merging-n810-device-drivers.html#disqus_thread">Comments</a>
+        </li>
+      </ul>
+    </aside>
+    <!--googleon: snippet-->
+  </header>
+
+  <div itemprop="articleBody" class="entry-content">
+    <div class="paragraph"><p>I&#8217;ve begun work on incorporating N810 device drivers into the Android OMAP kernel. I am basically following the list of individual components of the N810 on <a href="http://elinux.org/N800">this page</a> from the eLinux wiki. It took quite a while (~3h) just to make everything compile. Some random notes follow.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>lm8323</strong>, keyboard driver for the N810: The driver for the lm8323 is included in the stock Android OMAP tree under <code>drivers/input/keyboard</code> as <code>CONFIG_KEYBOARD_LM8323</code> (<code>Device Drivers &#8594; Input device support &#8594; Generic input layer &#8594; Keyboards</code>). It requires <code>CONFIG_I2C</code> (<code>Device Drivers &#8594; I2C support</code>) and <code>CONFIG_LEDS_CLASS</code> (<code>Device Drivers &#8594; LED Support &#8594; LEDS Class Support</code>).
+</p>
+</li>
+<li>
+<p>
+<strong>tsc2005</strong>, touchscreen driver for the N810: I backported the TSC2005 driver from linux-omap 2.6.37. This was complicated by
+</p>
+</li>
+<li>
+<p>
+The GPIO API changed sometime in Nov 2008; I had to manually replace the following functions following compilation errors:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>omap_gpio_request(int) &#8594; gpio_request(int, const char *)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_gpio_free(int) &#8594; gpio_free(int)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_get_gpio_datain(int) &#8594; gpio_get_value(int)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_set_gpio_dataout(int, int) &#8594; gpio_set_value(int, int)</code>
+</p>
+</li>
+<li>
+<p>
+<code>omap_set_gpio_direction(int, int) &#8594; gpio_direction_input(int, int), gpio_direction_output(int, int)</code>
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+The TSC2005 driver relies on a series of macros, constants and functions in a <code>mux.h</code>; I had to backport most of the functionality from <code>arch/arm/mach-omap2/mux2420.{h,c}</code> in linux-omap 2.6.37. The porting wasn&#8217;t smooth.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>I have also have had to manually merge the N810-specific structures and routines
+from <code>arch/arm/mach-omap2/board-n810.c</code> in the Maemo source tree into
+<code>arch/arm/mach-omap2/board-n8x0.c</code> in the Android OMAP tree. This was
+complicated by the fact that the latter contained code for both the N800 and the
+N810 and there were conflicts; in the <code>n8x0_ts_set_config</code> function, for
+instance, there was no runtime detection of which touch screen, the TSC2301 in
+the N800 or the TSC2005 in the N810, needs to be initialized; the code for the
+former was compiled in, since tmr&#8217;s patch was just for N800&#8217;s.</p></div>
+<div class="paragraph"><p>The result:
+<a href="/assets/files/nitdroid/7bc11a1aaba032747343f821600215d4f6180010.diff">this</a>
+is the newest diff against the <code>archive/android-omap-2.6.32</code> branch of the
+Android OMAP tree (commit 69a7364c16c5aeb246dbb4c4e7696e39841492f5), featuring:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+TSC2005
+</p>
+</li>
+<li>
+<p>
+Modified <code>board-n8x0.c</code> with (rudimentary) N810 support
+</p>
+</li>
+<li>
+<p>
+Now actually compiles.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The <a href="/assets/files/nitdroid/config-20110210">config</a> file.</p></div>
+
+  </div>
+
+  <footer class="article-info text-muted small">
+    <ul class="article-meta text-right">
+      <li class="article-author">
+        By Chuan Ji
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-date">
+        Feb 10, 2011
+      </li>
+      <li class="spacer">|</li>
+      <li>
+        Tags:
+          <a href="https://seasonofcode.com/tag/projects.html">Projects</a>      </li>
+      <li class="spacer">|</li>
+      <li class="article-comments-count">
+        <a href="https://seasonofcode.com/posts/merging-n810-device-drivers.html#disqus_thread">Comments</a>
+      </li>
+      <li class="spacer">|</li>
+      <li class="article-link">
+        <a href="https://seasonofcode.com/posts/merging-n810-device-drivers.html">Permalink</a>
+      </li>
+    </ul>
+  </footer>
+</article>        </section>
+        <div class="article-divider">
+          <span class="bullet_1">&bull;</span>
+          <span class="bullet_2">&bull;</span>
+          <span class="bullet_3">&bull;</span>
+          <span class="bullet_4">&bull;</span>
+          <span class="bullet_5">&bull;</span>
+        </div>
         <section class="article content">
 <article itemscope itemtype="http://schema.org/Article">
   <header>
@@ -481,75 +629,6 @@ instead of as modules, but to no avail. Further investigation pending.</p></div>
       <li class="spacer">|</li>
       <li class="article-link">
         <a href="https://seasonofcode.com/posts/the-maemo-kernel.html">Permalink</a>
-      </li>
-    </ul>
-  </footer>
-</article>        </section>
-        <div class="article-divider">
-          <span class="bullet_1">&bull;</span>
-          <span class="bullet_2">&bull;</span>
-          <span class="bullet_3">&bull;</span>
-          <span class="bullet_4">&bull;</span>
-          <span class="bullet_5">&bull;</span>
-        </div>
-        <section class="article content">
-<article itemscope itemtype="http://schema.org/Article">
-  <header>
-    <h2 class="entry-title">
-      <a itemprop="name" href="https://seasonofcode.com/posts/new-website.html" rel="bookmark">
-      New website!!
-      </a>
-    </h2>
-    <!--googleoff: snippet-->
-    <aside>
-      <ul class="article-meta text-muted small">
-        <li class="article-author">
-          By <span itemprop="author">Chuan Ji</span>
-        </li>
-        <li class="spacer">|</li>
-        <li class="article-date">
-        <span itemprop="datePublished" content="2011-02-08T02:28:02-08:00">
-          Feb 08, 2011
-        </span>
-        </li>
-        <li class="spacer">|</li>
-        <li>
-          Tags:
-            <a href="https://seasonofcode.com/tag/misc.html">Misc</a>        </li>
-        <li class="spacer">|</li>
-        <li class="article-comments-count">
-          <a href="https://seasonofcode.com/posts/new-website.html#disqus_thread">Comments</a>
-        </li>
-      </ul>
-    </aside>
-    <!--googleon: snippet-->
-  </header>
-
-  <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>This afternoon I decided to buy a domain and a year of shared hosting services from <a href="http://www.startlogic.com">StartLogic</a>. I&#8217;ve been working on the site since it was activated several hours ago; I added the <a href="http://wordpress.org/extend/plugins/sociable-30">Sociable</a> plugin and the <a href="http://mobilepress.co.za/">MobilePress</a> plugin to the WordPress install and the site is looking great. I modified several aspects of the desktop and mobile themes; I will setup a backup scheme soon. The registration of the domain cjix.info and a year of hosting cost altogether roughly $60. I&#8217;m pretty excited about the site though.</p></div>
-
-  </div>
-
-  <footer class="article-info text-muted small">
-    <ul class="article-meta text-right">
-      <li class="article-author">
-        By Chuan Ji
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-date">
-        Feb 08, 2011
-      </li>
-      <li class="spacer">|</li>
-      <li>
-        Tags:
-          <a href="https://seasonofcode.com/tag/misc.html">Misc</a>      </li>
-      <li class="spacer">|</li>
-      <li class="article-comments-count">
-        <a href="https://seasonofcode.com/posts/new-website.html#disqus_thread">Comments</a>
-      </li>
-      <li class="spacer">|</li>
-      <li class="article-link">
-        <a href="https://seasonofcode.com/posts/new-website.html">Permalink</a>
       </li>
     </ul>
   </footer>

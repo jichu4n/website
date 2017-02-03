@@ -11,7 +11,7 @@
       <link href="https://seasonofcode.com/theme/asciidoc.min.css?0e298cf5" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://seasonofcode.com/theme/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="https://seasonofcode.com/theme/style.min.css?918c51a9" rel="stylesheet" />
+      <link href="https://seasonofcode.com/theme/style.min.css?26e193e7" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://seasonofcode.com/theme/html5shiv.min.js"></script>
@@ -136,12 +136,35 @@
   </header>
 
   <div itemprop="articleBody" class="entry-content">
-    <div class="paragraph"><p>In <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part
-I of this series</a>, we examined the role of X window managers on a modern
-Linux/BSD desktop, and how they interact with the X server and applications. In
-Part II, we will dig down into the dirty details and walk through the code of a
-basic reparenting, non-compositing window manager,
-<a href="https://github.com/jichuan89/basic_wm">basic_wm</a>.</p></div>
+    <div class="paragraph"><p><!--googleoff: index--></p></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Series Contents</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</strong></a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a>
+</p>
+</li>
+</ul></div>
+</div></div>
+<div class="paragraph"><p><!--googleon: index--></p></div>
+<div class="paragraph"><p>In <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part
+I of this series</a>, we examined the role of X window managers in a modern
+Linux/BSD desktop environment, and how they interact with the X server and
+applications. In Part II, we will dig into the dirty details and walk through
+the code of an example reparenting non-compositing window manager,
+<a href="https://github.com/jichu4n/basic_wm">basic_wm</a>.</p></div>
 <div class="sect2">
 <h3 id="_introduction">Introduction</h3>
 <div class="paragraph"><p>Before we start with the code, let&#8217;s go over a couple of basic implementation
@@ -151,9 +174,9 @@ choices such as language and API.</p></div>
 <div class="paragraph"><p>You can write a window manager in <a href="http://xmonad.org">Haskell</a>,
 <a href="http://qtile.org">Python</a>, <a href="http://www.nongnu.org/stumpwm/">Lisp</a>,
 <a href="https://github.com/BurntSushi/wingo">Go</a>,
-<a href="http://escher.sourceforge.net/">Java</a>, or any other language that has X bindings
-- i.e., a library for talking to an X server.</p></div>
-<div class="paragraph"><p>I chose C++ for <a href="https://github.com/jichuan89/basic_wm">basic_wm</a>, our example
+<a href="http://escher.sourceforge.net/">Java</a>, or any other language that has X bindings,
+i.e. a library for communicating with X servers.</p></div>
+<div class="paragraph"><p>I chose C++ for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, our example
 window manager, mainly because the C libraries for X11 are the best documented.
 In addition to books such as the
 <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib
@@ -163,7 +186,7 @@ XOpenDisplay</code> at a terminal). Example usage and common patterns abound in 
 source code of many great window managers written in the past three decades.</p></div>
 <div class="paragraph"><p>We will use C++11 and C++14 features where convenient, so you will need a
 compatible compiler (GCC 4.9 or higher, or Clang 3.4 or higher) if you want to
-play with the source code.</p></div>
+play with the example source code.</p></div>
 </div>
 <div class="sect3">
 <h4 id="a-tale-of-two-x-libraries">A Tale of Two X Libraries</h4>
@@ -175,11 +198,11 @@ introduction of XCB in 2001. The two libraries have very different philosophies:
 whereas Xlib tries to hide the X protocol behind a friendly C API with lots of
 bells and whistles, XCB directly exposes the plumbing beneath.</p></div>
 <div class="paragraph"><p>In practice, this different manifests itself most prominently in how the two
-libraries handle the fundamental asynchronous nature of the X protocol. Xlib
-attempts to hide the asynchronous X protocol behind a mixed
-synchronous and asynchronous API, whereas XCB is fully asynchronous.</p></div>
+libraries handle the fundamental asynchronous nature of X&#8217;s client-server
+architecture. Xlib attempts to hide the asynchronous X protocol behind a mixed
+synchronous and asynchronous API, whereas XCB exposes a fully asynchronous API.</p></div>
 <div class="paragraph"><p>For example, to lookup the attributes (e.g., size and position) of a window, you
-would write the following using Xlib:</p></div>
+would write the following code using Xlib:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="n">XWindowAttributes</span> <span class="n">attrs</span><span class="p">;</span>
 <span class="n">XGetWindowAttributes</span><span class="p">(</span><span class="n">display</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">attrs</span><span class="p">);</span>
@@ -206,17 +229,18 @@ server, and returns immediately without waiting for the reply; in other words,
 it is <em>asynchronous</em>. The client program must subsequently call
 <code>xcb_get_window_attributes_reply</code> to block on the response.</p></div>
 <div class="paragraph"><p>The advantage of the asynchronous approach is obvious if we consider an example
-where we need to retrieve the attributes of, say, 5 windows. Using XCB, we can
-fire off all 5 requests to the X server at once, and then wait for 5 responses.
-With Xlib, we have to wait for the response to each request before we can send
-the next one. Therefore, we only block for one round-trip network latency using
-XCB, compared to 5 with Xlib.</p></div>
+where we need to retrieve the attributes of, say, 5 windows at once. Using XCB,
+we can immediately fire off all 5 requests to the X server, and then wait for
+all of them to return. With Xlib, we have send one request at a time and wait
+for its response to come back before we can send the next request. Therefore,
+we&#8217;d expect to only block for the duration of one round-trip to the X server
+using XCB, compared to 5 with Xlib.</p></div>
 <div class="paragraph"><p>The downside of XCB&#8217;s fully asynchronous approach is verbosity and a less
-programmer-friendly API.  The Xlib code above looks like your average C library
-call; the XCB code above is significantly more involved.</p></div>
-<div class="paragraph"><p>However, it is important to note that whereas XCB is fully asynchronous, Xlib
-isn&#8217;t fully synchronous; rather, <strong>Xlib has a mixture of synchronous and
-asynchronous APIs</strong>. In general, functions that do not return values (e.g.,
+programmer-friendly interface.  The Xlib code above looks like your average C
+library call; the XCB code above is significantly more involved.</p></div>
+<div class="paragraph"><p>However, it is important to note that Xlib isn&#8217;t fully synchronous. Rather,
+<strong>Xlib has a mixture of synchronous and asynchronous APIs</strong>. In general, functions
+that do not return values (e.g.,
 <a href="http://manpages.ubuntu.com/manpages/en/man3/XConfigureWindow.3.html">XResizeWindow</a>,
 which changes the size of a window) are asynchronous, while functions that
 return values (e.g.,
@@ -247,19 +271,19 @@ changes even when there is no user input.</p></div>
 <div class="attribution">
 &#8212; Xlib Programming Manual §2.1.2
 </div></div>
-<div class="paragraph"><p>This is <em>the</em> most confusing aspect of Xlib, and was a source of endless
-frustration for those new to X programming. One of the major motivations for the
-creation of XCB was to eliminate this unnecessary complexity.</p></div>
-<div class="paragraph"><p>Most popular window managers have already been ported to XCB from Xlib for the
-performance benefits. (If you are interested, you can read up on
-<a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf">how they ported
-Awesome</a> and
-<a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/">KWin</a>).
-I chose Xlib for <a href="https://github.com/jichuan89/basic_wm">basic_wm</a>, however,
-because for pedagogical example code readability is of course much more
+<div class="paragraph"><p>This is <em>the</em> most confusing aspect of Xlib, and a source of endless frustration
+for those new to X programming. One of the major motivations for the creation of
+XCB was to eliminate this complexity.</p></div>
+<div class="paragraph"><p>Many popular window managers have already been ported to XCB from Xlib for the
+performance benefits. If you are interested, you can read up on how the
+<a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf">Awesome</a> and
+<a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/">KWin</a>
+window managers were ported to XCB.</p></div>
+<div class="paragraph"><p>I chose to use Xlib for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, however,
+because as a pedagogical example, readability and simplicity is much more
 important than performance. In fact, I would recommend starting with Xlib first
 for any project and worry about porting to XCB later, as Xlib is much easier to
-work with.</p></div>
+learn and prototype with.</p></div>
 <div class="paragraph"><p>While an in-depth discussion of the merits of Xlib and XCB is beyond the scope
 of this discussion, I do recommend you check out
 <a href="http://www.x.org/wiki/guide/xlib-and-xcb/">the official article on Xlib vs. XCB</a>
@@ -267,15 +291,19 @@ as it presents a fascinating case study of API design.</p></div>
 </div>
 <div class="sect3">
 <h4 id="_dependencies_and_building">Dependencies and Building</h4>
+<div class="paragraph"><p>Firstly, you will need Xlib development headers in order to compile against
+Xlib. They are available on Debian/Ubuntu as <code>libx11-dev</code>, on Fedora as
+<code>libX11-devel</code>, and on Arch Linux as part of <code>libx11</code>.</p></div>
 <div class="paragraph"><p>The only additional library used by the example
-<a href="https://github.com/jichuan89/basic_wm">basic_wm</a> code is
+<a href="https://github.com/jichu4n/basic_wm">basic_wm</a> code is
 <a href="https://code.google.com/p/google-glog/">google-glog</a>, Google&#8217;s open source C++
-logging library. (It is available on Debian/Ubuntu as <code>libgoogle-glog-dev</code>, on
-Fedora as <code>glog</code>, and on Arch Linux as <code>google-glog</code>.)</p></div>
+logging library. It is available on Debian/Ubuntu as <code>libgoogle-glog-dev</code>, on
+Fedora as <code>glog-devel</code>, and on Arch Linux as <code>google-glog</code>.</p></div>
 <div class="paragraph"><p>The recommended way to build the source code is with
-<a href="http://www.scons.org/">SCons</a>, although <code>g++ *.cpp</code> will also do the trick if you
-supply all the libraries correctly.</p></div>
-<div class="paragraph"><p>To test it, you will likely need
+<a href="https://www.gnu.org/software/make/manual/html_node/Running.html">GNU Make</a>: just
+run <code>make</code> in the source directory.  Alternatively, <code>g++ *.cpp</code> will also do the
+trick if you supply all the libraries correctly.</p></div>
+<div class="paragraph"><p>To test the window manager, you will likely need
 <a href="http://www.freedesktop.org/wiki/Software/Xephyr/">Xephyr</a> along with a couple of
 simple X programs such as <code>xeyes</code> or <code>xterm</code>.</p></div>
 </div>
@@ -287,7 +315,7 @@ which will encapsulate all the window management logic in our example. All it
 will do for now is set up a connection to the X server on construction, and
 close that connection on destruction.</p></div>
 <div class="paragraph"><p>In
-<a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
 <span class="cp">#include &lt;X11/Xlib.h&gt;</span>
@@ -298,7 +326,7 @@ close that connection on destruction.</p></div>
  <span class="k">public</span><span class="o">:</span>
   <span class="c1">// Factory method for establishing a connection to an X server and creating a</span>
   <span class="c1">// WindowManager instance.</span>
-  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span> <span class="n">Create</span><span class="p">();</span>
+  <span class="k">static</span> <span class="o">::</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span> <span class="n">Create</span><span class="p">();</span>
   <span class="c1">// Disconnects from the X server.</span>
   <span class="o">~</span><span class="n">WindowManager</span><span class="p">();</span>
   <span class="c1">// The entry point to this class. Enters the main event loop.</span>
@@ -315,12 +343,14 @@ close that connection on destruction.</p></div>
 <span class="p">};</span>
 </pre></div></div></div>
 <div class="paragraph"><p>In
-<a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="cp">#include &quot;window_manager.hpp&quot;</span>
 <span class="cp">#include &lt;glog/logging.h&gt;</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span> <span class="n">WindowManager</span><span class="o">::</span><span class="n">Create</span><span class="p">()</span> <span class="p">{</span>
+<span class="k">using</span> <span class="o">::</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="p">;</span>
+
+<span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span> <span class="n">WindowManager</span><span class="o">::</span><span class="n">Create</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// 1. Open X display.</span>
   <span class="n">Display</span><span class="o">*</span> <span class="n">display</span> <span class="o">=</span> <span class="n">XOpenDisplay</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">display</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="p">{</span>
@@ -328,7 +358,7 @@ close that connection on destruction.</p></div>
     <span class="k">return</span> <span class="k">nullptr</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="c1">// 2. Construct WindowManager instance.</span>
-  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">WindowManager</span><span class="p">(</span><span class="n">display</span><span class="p">));</span>
+  <span class="k">return</span> <span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">WindowManager</span><span class="p">(</span><span class="n">display</span><span class="p">));</span>
 <span class="p">}</span>
 
 <span class="n">WindowManager</span><span class="o">::</span><span class="n">WindowManager</span><span class="p">(</span><span class="n">Display</span><span class="o">*</span> <span class="n">display</span><span class="p">)</span>
@@ -343,16 +373,18 @@ close that connection on destruction.</p></div>
 <span class="kt">void</span> <span class="n">WindowManager</span><span class="o">::</span><span class="n">Run</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* TODO */</span> <span class="p">}</span>
 </pre></div></div></div>
 <div class="paragraph"><p>The <code>main</code> function in
-<a href="https://github.com/jichuan89/basic_wm/blob/master/main.cpp"><code>main.cpp</code></a>:</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/main.cpp"><code>main.cpp</code></a>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="cp">#include &lt;cstdlib&gt;</span>
 <span class="cp">#include &lt;glog/logging.h&gt;</span>
 <span class="cp">#include &quot;window_manager.hpp&quot;</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">google</span><span class="o">::</span><span class="n">InitGoogleLogging</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="k">using</span> <span class="o">::</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="p">;</span>
 
-  <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span> <span class="n">window_manager</span><span class="p">(</span><span class="n">WindowManager</span><span class="o">::</span><span class="n">Create</span><span class="p">());</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">::</span><span class="n">google</span><span class="o">::</span><span class="n">InitGoogleLogging</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+  <span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WindowManager</span><span class="o">&gt;</span> <span class="n">window_manager</span><span class="p">(</span><span class="n">WindowManager</span><span class="o">::</span><span class="n">Create</span><span class="p">());</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">window_manager</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">LOG</span><span class="p">(</span><span class="n">ERROR</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Failed to initialize window manager.&quot;</span><span class="p">;</span>
     <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
@@ -387,45 +419,41 @@ connection, and exit. Hooray!</p></div>
 <div class="paragraph"><p>Now, let&#8217;s dig into the mysterious <code>Run()</code> function above. We&#8217;ll start with the
 initialization steps required after opening an X server connection.
 In
-<a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="k">class</span> <span class="nc">WindowManager</span> <span class="p">{</span>
   <span class="p">...</span>
-  <span class="c1">// Xlib error handler.</span>
+  <span class="c1">// Xlib error handler. It must be static as its address is passed to Xlib.</span>
   <span class="k">static</span> <span class="kt">int</span> <span class="n">OnXError</span><span class="p">(</span><span class="n">Display</span><span class="o">*</span> <span class="n">display</span><span class="p">,</span> <span class="n">XErrorEvent</span><span class="o">*</span> <span class="n">e</span><span class="p">);</span>
   <span class="c1">// Xlib error handler used to determine whether another window manager is</span>
   <span class="c1">// running. It is set as the error handler right before selecting substructure</span>
   <span class="c1">// redirection mask on the root window, so it is invoked if and only if</span>
-  <span class="c1">// another window manager is running.</span>
+  <span class="c1">// another window manager is running. It must be static as its address is</span>
+  <span class="c1">// passed to Xlib.</span>
   <span class="k">static</span> <span class="kt">int</span> <span class="nf">OnWMDetected</span><span class="p">(</span><span class="n">Display</span><span class="o">*</span> <span class="n">display</span><span class="p">,</span> <span class="n">XErrorEvent</span><span class="o">*</span> <span class="n">e</span><span class="p">);</span>
-  <span class="c1">// Whether an existing window manager has been detected. Set by OnWMDetected.</span>
+  <span class="c1">// Whether an existing window manager has been detected. Set by OnWMDetected,</span>
+  <span class="c1">// and hence must be static.</span>
   <span class="k">static</span> <span class="kt">bool</span> <span class="n">wm_detected_</span><span class="p">;</span>
-  <span class="c1">// A mutex for protecting wm_detected_.</span>
-  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">wm_detected_mutex_</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div></div></div>
 <div class="paragraph"><p>In
-<a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="kt">void</span> <span class="n">WindowManager</span><span class="o">::</span><span class="n">Run</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// 1. Initialization.</span>
   <span class="c1">//   a. Select events on root window. Use a special error handler so we can</span>
   <span class="c1">//   exit gracefully if another window manager is already running.</span>
-  <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">wm_detected_mutex_</span><span class="p">);</span>
-
-    <span class="n">wm_detected_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-    <span class="n">XSetErrorHandler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">WindowManager</span><span class="o">::</span><span class="n">OnWMDetected</span><span class="p">);</span>
-    <span class="n">XSelectInput</span><span class="p">(</span>
-        <span class="n">display_</span><span class="p">,</span>
-        <span class="n">root_</span><span class="p">,</span>
-        <span class="n">SubstructureRedirectMask</span> <span class="o">|</span> <span class="n">SubstructureNotifyMask</span><span class="p">);</span>
-    <span class="n">XSync</span><span class="p">(</span><span class="n">display_</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">wm_detected_</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">LOG</span><span class="p">(</span><span class="n">ERROR</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Detected another window manager on display &quot;</span>
-                 <span class="o">&lt;&lt;</span> <span class="n">XDisplayString</span><span class="p">(</span><span class="n">display_</span><span class="p">);</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span>
+  <span class="n">wm_detected_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="n">XSetErrorHandler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">WindowManager</span><span class="o">::</span><span class="n">OnWMDetected</span><span class="p">);</span>
+  <span class="n">XSelectInput</span><span class="p">(</span>
+      <span class="n">display_</span><span class="p">,</span>
+      <span class="n">root_</span><span class="p">,</span>
+      <span class="n">SubstructureRedirectMask</span> <span class="o">|</span> <span class="n">SubstructureNotifyMask</span><span class="p">);</span>
+  <span class="n">XSync</span><span class="p">(</span><span class="n">display_</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">wm_detected_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">LOG</span><span class="p">(</span><span class="n">ERROR</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Detected another window manager on display &quot;</span>
+               <span class="o">&lt;&lt;</span> <span class="n">XDisplayString</span><span class="p">(</span><span class="n">display_</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="c1">//   b. Set error handler.</span>
   <span class="n">XSetErrorHandler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">WindowManager</span><span class="o">::</span><span class="n">OnXError</span><span class="p">);</span>
@@ -457,23 +485,24 @@ at any given time; the second client to attempt to do so will get a <code>BadAcc
 error.</p></div>
 <div class="paragraph"><p>Catching this error is somewhat tricky, however.
 <a href="http://manpages.ubuntu.com/manpages/en/man3/XSelectInput.3.html"><code>XSelectInput</code></a>,
-like most Xlib functions, does not actually send a request to the X server, but
-instead only <em>queues</em> the request and returns. Hence, we have to explicitly
-flush the request queue with
+like all asynchronous Xlib functions, does not actually send a request to the X
+server, but instead only <em>queues</em> the request and returns. Hence, we have to
+explicitly flush the request queue with
 <a href="http://manpages.ubuntu.com/manpages/en/man3/XSync.3.html"><code>XSync</code></a> (see our
 discussion above in <a href="#a-tale-of-two-x-libraries">A Tale of Two X Libraries</a>).
-We set up a temporary error handler to catch errors.</p></div>
+We set up a temporary error handler, <code>OnWMDetected</code>, to catch errors during this
+<code>XSync</code> invocation.</p></div>
 <div class="paragraph"><p>Next, we set up our regular error handler which will be invoked for any future
-errors.  Our implementation, which logs the error and continues, will be an
+errors. Our implementation, which logs the error and continues, will be an
 important debugging aid as we implement and test our window manager. I will not
 show it here for the sake of brevity; for reference, check it out in
-<a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>.</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>.</p></div>
 </div>
 <div class="sect2">
 <h3 id="_step_3_the_event_loop">Step 3: The Event Loop</h3>
 <div class="paragraph"><p>Now let&#8217;s add to <code>Run()</code> method above the signature construct of every modern
 GUI program - the event loop. In
-<a href="https://github.com/jichuan89/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p></div>
+<a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p></div>
 <div class="listingblock">
 <div class="content"><div class="highlight"><pre><span class="kt">void</span> <span class="n">WindowManager</span><span class="o">::</span><span class="n">Run</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// 1. Initialization.</span>
@@ -506,7 +535,7 @@ GUI program - the event loop. In
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div></div></div>
-<div class="paragraph"><p>If you have done low-level GUI programming before, this should look fairly
+<div class="paragraph"><p>If you have done low-level GUI programming before, this should look very
 familiar. We sit in an event loop and repeatedly fetch the next event with
 <a href="http://manpages.ubuntu.com/manpages/en/man3/XNextEvent.3.html"><code>XNextEvent()</code></a> and
 dispatch it to the appropriate handlers.</p></div>
@@ -540,8 +569,7 @@ field of each <code>struct</code> is always <code>int type</code>. The <code>XEv
 <span class="p">}</span> <span class="n">XEvent</span><span class="p">;</span>
 </pre></div></div></div>
 <div class="paragraph"><p>This way, the type is always available regardless of the type of event and
-requires no additional storage. This, of course, is essentially C++ object
-inheritance, and the same pattern can be observed in
+requires no additional storage. The same pattern can be observed in
 <a href="http://en.wikipedia.org/wiki/GObject">GTK+/GLib</a>,
 <a href="https://docs.python.org/3/c-api/structures.html">Python&#8217;s C API</a>, and many other
 object-oriented C APIs.</p></div>
@@ -554,12 +582,35 @@ out who does what.</p></div>
 <div class="paragraph"><p>We now have a basic skeleton for our window manager, and we can start filling in
 the meat - the event handlers. The million-dollar question is, what events does
 a window manager handle, and what should it do with them?</p></div>
-<div class="paragraph"><p>In the next installment of this series, we&#8217;ll answer that question by diving
+<div class="paragraph"><p>In the <a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">
+next installment</a> in this series, we&#8217;ll answer that question by diving
 into the complex ways window managers, clients and the user interact with each
 other via X events. In the meantime, you&#8217;re more than welcome to check out the
-code for <code>basic_wm</code> <a href="https://github.com/jichuan89/basic_wm">on GitHub</a> or browse
-the cross-referenced code <a href="http://code.openhub.net/project?pid=&amp;ipid=568869">on
-Open Hub</a>.</p></div>
+code for <code>basic_wm</code> <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>.</p></div>
+<div class="paragraph"><p><strong>Next chapter:</strong>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>How X
+Window Managers Work, And How To Write One (Part III)</strong></a></p></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Series Contents</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</strong></a>
+</p>
+</li>
+<li>
+<p>
+<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a>
+</p>
+</li>
+</ul></div>
+</div></div>
 </div>
 
   </div>
