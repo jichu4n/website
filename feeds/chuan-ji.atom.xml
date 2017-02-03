@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Season of Code</title><link href="https://seasonofcode.com/" rel="alternate"></link><link href="https://seasonofcode.com/feeds/chuan-ji.atom.xml" rel="self"></link><id>https://seasonofcode.com/</id><updated>2017-02-01T21:15:00-08:00</updated><entry><title>How X Window Managers Work, And How To Write One (Part III)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html" rel="alternate"></link><updated>2017-02-01T21:15:00-08:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2017-02-01:posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: index--&gt;&lt;/p&gt;&lt;/div&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Season of Code</title><link href="https://seasonofcode.com/" rel="alternate"></link><link href="https://seasonofcode.com/feeds/chuan-ji.atom.xml" rel="self"></link><id>https://seasonofcode.com/</id><updated>2017-02-01T21:15:00-08:00</updated><entry><title>How X Window Managers Work, And How To Write One (Part III)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html" rel="alternate"></link><updated>2017-02-01T21:15:00-08:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2017-02-01:posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: snippet--&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="sidebarblock"&gt;
 &lt;div class="content"&gt;
 &lt;div class="title"&gt;Series Contents&lt;/div&gt;
@@ -21,7 +21,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: snippet--&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"&gt;Part
 II of this series&lt;/a&gt;, we discussed X libraries and implementation choices, and
 examined the basic structure of a window manager. In Part III, we will start
@@ -1722,7 +1722,7 @@ born!&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Bugs? Improvement ideas? All feedback is appreciated at
 &lt;a href="mailto:ji@chu4n.com"&gt;ji@chu4n.com&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="Projects"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part II)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html" rel="alternate"></link><updated>2014-06-08T23:14:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: index--&gt;&lt;/p&gt;&lt;/div&gt;
+</summary><category term="Projects"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part II)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html" rel="alternate"></link><updated>2014-06-08T23:14:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-06-08:posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: snippet--&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="sidebarblock"&gt;
 &lt;div class="content"&gt;
 &lt;div class="title"&gt;Series Contents&lt;/div&gt;
@@ -1744,7 +1744,7 @@ born!&lt;/p&gt;&lt;/div&gt;
 &lt;/li&gt;
 &lt;/ul&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: snippet--&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;In &lt;a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"&gt;Part
 I of this series&lt;/a&gt;, we examined the role of X window managers in a modern
 Linux/BSD desktop environment, and how they interact with the X server and
@@ -2323,7 +2323,7 @@ Please feel free to
 &lt;a href="https://github.com/jichuan89/bash-command-timer"&gt;check it out on GitHub&lt;/a&gt; :)&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Happy Bash hacking!&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="Linux"></category><category term="Featured"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part I)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html" rel="alternate"></link><updated>2014-04-10T01:08:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-04-10:posts/how-x-window-managers-work-and-how-to-write-one-part-i.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: index--&gt;&lt;/p&gt;&lt;/div&gt;
+</summary><category term="Linux"></category><category term="Featured"></category></entry><entry><title>How X Window Managers Work, And How To Write One (Part I)</title><link href="https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html" rel="alternate"></link><updated>2014-04-10T01:08:00-07:00</updated><author><name>Chuan Ji</name></author><id>tag:seasonofcode.com,2014-04-10:posts/how-x-window-managers-work-and-how-to-write-one-part-i.html</id><summary type="html">&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleoff: snippet--&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="sidebarblock"&gt;
 &lt;div class="content"&gt;
 &lt;div class="title"&gt;Series Contents&lt;/div&gt;
@@ -2345,7 +2345,7 @@ Please feel free to
 &lt;/li&gt;
 &lt;/ul&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/div&gt;
-&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: index--&gt;&lt;/p&gt;&lt;/div&gt;
+&lt;div class="paragraph"&gt;&lt;p&gt;&lt;!--googleon: snippet--&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div class="paragraph"&gt;&lt;p&gt;Window managers are one of the core components of the modern Linux/BSD desktop.
 It is not an exaggeration to say that they define to a large degree our
 day-to-day user experience, as they are responsible for deciding how individual
