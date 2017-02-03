@@ -44,6 +44,8 @@
 
   padding-top: 1em;
   padding-bottom: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
 
   font-size: 0.9em;
 
@@ -58,12 +60,29 @@
 
 #author-box-info-links a {
   color: #3e7c9f;
-}
+  text-decoration: none;
 
+  .fa-github-square {
+    color: #333;
+  }
+  .fa-twitter-square {
+    color: #00aced;
+  }
+  .fa-linkedin-square {
+    color: #0077b5;
+  }
+  .fa-google-plus-square {
+    color: #d34836;
+  }
 
-@media (min-width: 768px) {
-  #author-box-info {
-    padding-left: 2em;
-    padding-right: 2em;
+  .fa {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  .author-box-info-link-expansion {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
   }
 }
