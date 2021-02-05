@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>Android Rooting: A Developer&#x27;s Guide</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/android-rooting-a-developers-guide/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Android Rooting: A Developer&#x27;s Guide" />
+    <meta property="og:description" content="First things first — this is not about how to apply a rooting method, e.g., a one-click-root, to an Android device. Rather, it is about how one could go about developing a rooting method for a device that no one has rooted before, and is told through my experiences with" />
+    <meta property="og:url" content="https://jichu4n.com/posts/android-rooting-a-developers-guide/" />
+    <meta property="article:published_time" content="2012-11-21T08:16:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T07:17:45.000Z" />
+    <meta property="article:tag" content="Android" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Android Rooting: A Developer&#x27;s Guide" />
+    <meta name="twitter:description" content="First things first — this is not about how to apply a rooting method, e.g., a one-click-root, to an Android device. Rather, it is about how one could go about developing a rooting method for a device that no one has rooted before, and is told through my experiences with" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/android-rooting-a-developers-guide/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Android, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "Android Rooting: A Developer&#x27;s Guide",
+    "url": "https://jichu4n.com/posts/android-rooting-a-developers-guide/",
+    "datePublished": "2012-11-21T08:16:00.000Z",
+    "dateModified": "2018-10-17T07:17:45.000Z",
+    "keywords": "Android, Technical Notes",
+    "description": "First things first — this is not about how to apply a rooting method, e.g., a\none-click-root, to an Android device. Rather, it is about how one could go about \ndeveloping a rooting method for a device that no one has rooted before, and is\ntold through my experiences with rooting a particular device — the Barnes &amp;\nNoble Nook Tablet 8GB. For context, you can read my original thread &quot;Root for\nNook Tablet 8GB (w/ Android Market)\n[http://forum.xda-developers.com/showthread.php?t&#x3D;1529553] on XDA-Devel",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">Android Rooting: A Developer&#x27;s Guide</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2012-11-21">21 Nov 2012</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <p>First things first — this is not about how to apply a rooting method, e.g., a one-click-root, to an Android device. Rather, it is about how one could go about <em>developing</em> a rooting method for a device that no one has rooted before, and is told through my experiences with rooting a particular device — the Barnes &amp; Noble Nook Tablet 8GB. For context, you can read my original thread "<a href="http://forum.xda-developers.com/showthread.php?t=1529553">Root for Nook Tablet 8GB (w/ Android Market)</a> on XDA-Developers where I published my rooting method, which has reached a download count of — wait for it — OVER NINE THOUSAND!!!</p>
+<p>For an overview of how rooting works behind the scenes, you may want to read my previous article <a href="https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">How Rooting Works - A Technical Explanation of the Android Rooting Process</a> as background.</p>
+<p>Sometime in late February (2012), on a visit to to a Barnes &amp; Noble store in Boston, I bought the then freshly released Nook Tablet 8GB entirely on impulse for $199. Being the hax0r that I am, the first thing I did when I got home was to try to root the device. It came as a nasty surprise, therefore, when I discovered that no one had yet succeeded in rooting the device. All I could find was a <a href="http://www.youtube.com/watch?v=x8e0OLWQYc4">YouTube video</a> showing that the existing rooting method for its cousin, the Nook Tablet 16GB, did not work. After waiting for a few days, the absolutely pathetic app store and handicaps instituted by B&amp;N finally motivated me to develop a rooting method for the device myself.</p>
+<h1 id="theplan">The Plan</h1>
+<p>So, how do you go about rooting an Android device? As I explain in <a href="https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">my previous article</a>, rooting is basically a two-step process:</p>
+<ol>
+<li>
+<p>Find exploit that allows execution of arbitrary code as root</p>
+</li>
+<li>
+<p>Use exploit to install <code>su</code> (with SUID bit set) and <code>Superuser.apk</code> as root</p>
+</li>
+</ol>
+<p>After <code>su</code> and <code>Superuser.apk</code> are installed correctly, apps that require root (such as <a href="http://matrixrewriter.com/android/">Titanium Backup</a> or <a href="https://play.google.com/store/apps/details?id=org.adaway&amp;hl=en">AdAway</a>) will invoke <code>su</code> to run code as the privileged user.</p>
+<h1 id="theprocess">The Process</h1>
+<p>There are many generic or device-specific exploits that a hax0r may leverage to achieve privileged execution of arbitrary code. I would again refer you to <a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent presentation on various Android root exploits</a> that have been or may still be used for this purpose.</p>
+<p>However, none of these methods that I knew of could work on the Nook Tablet, which is probably one of the most locked-down Android ROMs out there:</p>
+<ul>
+<li>
+<p>Bootloader is locked.</p>
+</li>
+<li>
+<p>ADB is disabled, and cannot be enabled from the UI.</p>
+</li>
+<li>
+<p>Installing non-market apps (raw APKs) is disabled, and cannot be enabled from the UI.</p>
+</li>
+<li>
+<p>No access to Google Play / Android Market (or any Google Apps).</p>
+</li>
+</ul>
+<p>This rules out 1) root APKs and 2) the majority of exploits out there that require executing commands over ADB. It means that one cannot run any code on the device that does not come from B&amp;N period.</p>
+<p>But of course there was another way in. Somebody on XDA-Developers had discovered that the bootloader of the Nook Tablet supported booting off an Android system located in partition images stored on an external microSD card. This mechanism is probably used to repair corrupted system partitions by B&amp;N customer support.</p>
+<p>The solution, then, is clear: we create dummy system partition images that, instead of booting an Android system, installs <code>su</code> and <code>Superuser.apk</code> into the "normal" Android system in internal flash memory. More concretely, I modified the system initialization file inside the initrd inside the boot partition image to invoke a custom script that copied the relevant files into the <code>system</code> partition in the internal flash memory.</p>
+<p>I based my work on <a href="http://forum.xda-developers.com/showthread.php?t=1517513">bauwks’s 2nduboot images</a> and used <a href="https://gitorious.org/ac100/abootimg">abootimg</a> to unpack files in the boot partition image <code>boot.img</code>:</p>
+<pre><code># Extracts files in the boot partition image into the current directory.
+abootimg -x ./boot.img
+# Extract files in the initrd cpio archive into the folder ./ramdisk/
+aboot-unpack-initrd ./initrd.img
+</code></pre>
+<p>I changed the system initialization file <code>init.omap4430.rc</code> in the initrd to mount the system partition of the internal flash memory at <code>/foo</code> rather than <code>/system</code>, because later system initialization steps attempt to remount <code>/system</code> as read-only and so on, and for some reason I could not disable that behavior:</p>
+<pre><code>on fs
+    mkdir /foo
+    mount ext4 /dev/block/platform/mmci-omap-hs.1/by-name/system /foo wait
+</code></pre>
+<p>I added the following to the system initialization file <code>init.rc</code> in the initrd to start my rooting script:</p>
+<pre><code>service root_script /sbin/busybox ash /assets/run.sh
+    oneshot
+</code></pre>
+<p>My rooting script, which I place in the directory <code>assets</code> in the initrd, installs not only <code>su</code>, but also Google Play and other Google apps which are missing from the Nook Tablet ROM:</p>
+<pre><code># Install su and Superuser.apk
+/sbin/busybox cp /assets/su /foo/bin/
+/sbin/busybox cp /assets/su /foo/xbin/
+/sbin/busybox chmod 06755 /foo/xbin/su
+/sbin/busybox chmod 06755 /foo/bin/su
+/sbin/busybox cp /assets/Superuser.apk /foo/app/
+
+# Install Busybox.
+/sbin/busybox cp /sbin/busybox /foo/xbin/
+/sbin/busybox chmod 06755 /foo/xbin/busybox
+
+# Install Google Play and other Google apps.
+/sbin/busybox cp /assets/*.apk /foo/app/
+/sbin/busybox cp /assets/com.google.android.maps..xml /foo/etc/permissions/
+/sbin/busybox cp /assets/com.google.android.maps.jar /foo/framework/
+/sbin/busybox cp /assets/libvoicesearch.so /foo/lib/
+
+# Done.
+/sbin/busybox mount -o ro,remount /foo
+</code></pre>
+<p>In accordance with the above script, I had placed all assets in the <code>assets</code> directory inside the initrd, and the Busybox binary in <code>sbin</code> inside the initrd. With all changes done, I pack everything back into a new boot.img:</p>
+<pre><code># Build initrd cpio archive
+abootimg-pack-initrd initrd.img.new
+# Build new boot.img using previously extracted components
+abootimg --create boot.img.new -f ./bootimg.cfg -k ./zImage -r ./initrd.img.new
+</code></pre>
+<p>Then I replace the <code>boot.img</code> on the SD card image with my <code>boot.img.new</code>, and the rooting method is done.</p>
+<h1 id="finalwords">Final words</h1>
+<p>The actual process, of course, was much, much more painful. The Nook Tablet’s bootloader is very picky; some microSD cards just won’t work, there is a file size limit on <code>boot.img</code>, etc.. It was also after much frustration that I discovered the mount-to-<code>/foo</code> trick. And I could not even keep track of how many factory restores I had to perform on the device to undo bad modifications. But it was still a lot of fun, and the euphoria at the end and the feeling of accomplishment when reply posts started rolling in and random people were donating $5 as a token of their appreciation could not be overstated.</p>
+<p>Good luck rooting!</p>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

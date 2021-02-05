@@ -1,0 +1,4 @@
+User-agent: *
+Sitemap: https://jichu4n.com/sitemap.xml
+Disallow: /ghost/
+Disallow: /p/

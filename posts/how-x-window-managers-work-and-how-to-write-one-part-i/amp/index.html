@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>How X Window Managers Work, And How To Write One (Part I)</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part I)" />
+    <meta property="og:description" content="Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves." />
+    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
+    <meta property="article:published_time" content="2014-04-11T05:54:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T06:24:52.000Z" />
+    <meta property="article:tag" content="Window Manager" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part I)" />
+    <meta name="twitter:description" content="Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves." />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Window Manager, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "How X Window Managers Work, And How To Write One (Part I)",
+    "url": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/",
+    "datePublished": "2014-04-11T05:54:00.000Z",
+    "dateModified": "2018-10-17T06:24:52.000Z",
+    "keywords": "Window Manager, Technical Notes",
+    "description": "Window managers are one of the core components of the modern Linux/BSD desktop.\nIt is not an exaggeration to say that they define to a large degree our\nday-to-day user experience, as they are responsible for deciding how individual\nwindows look, move around, react to input, and organize themselves. Hence,\nalmost 30 years since the first X window manager\n[http://en.wikipedia.org/wiki/Ultrix_Window_Manager], we still argue over the\nmerits of different window managers, and new window managers conti",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">How X Window Managers Work, And How To Write One (Part I)</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2014-04-10">10 Apr 2014</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves. Hence, almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager">the first X window manager</a>, we still argue over the merits of different window managers, and new window managers continue to reinvent how we interact with our digital world.</p>
+<p>In this series of posts, I hope to demystify how window managers work, and how you might go about writing one yourself.</p>
+<p>I will be quoting quite heavily from the seminal <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O’Reilly. Despite its age, it remains amazingly relevant and is the best available introductory text to the internals of X, which has not changed over the past two decades as much as you’d think. Since you could buy the book plus shipping for less than the price of a cup of coffee, I strongly recommend it to anyone interested in learning more about X. In addition, its chapter 16 also covers the basics of window management.</p>
+<h1 id="theroleofanxwindowmanager">The Role of an X Window Manager</h1>
+<p>Let’s start with an examination of the role of the window manager in a modern Linux/BSD desktop environment.</p>
+<h2 id="therightsofxwindowmanagers">The Rights of X Window Managers</h2>
+<p>Unlike other windowing systems such as Microsoft Windows or Mac OS X, X does not dictate a window manager or how a window manager should behave. This decision is to thank for the wild diversity of X window managers we see today.</p>
+<blockquote>
+<p>X is somewhat unusual in that it does not mandate a particular type of window manager. Its developers have tried to make X itself as free of window management or user interface policy as possible.</p>
+<p>—  Xlib Programming Manual §1.2.3</p>
+</blockquote>
+<p>In fact, it does not even require a window manager to be present at all:</p>
+<blockquote>
+<p>Unlike citizens, the window manager has rights but not responsibilities. Programs must be prepared to cooperate with any type of window manager or with none at all […].</p>
+<p>—  Xlib Programming Manual §1.2.3</p>
+</blockquote>
+<p>This is in stark contrast to the integrative approach of other GUI systems. On Mac OS X and <a href="https://unity.ubuntu.com/">Unity</a>, for example, an application could not possibly function without the window manager, as the latter is responsible for rendering a part of the application’s interface (e.g., menus).</p>
+<h2 id="theresponsibilitiesofxwindowmanagers">The Responsibilities of X Window Managers</h2>
+<p>As you probably already know, X operates in a server-client model. An X <em>server</em> controls one or more physical display devices as well as input devices (mouse, keyboard, etc.). An application that wants to interact with these devices assumes the role of an X <em>client</em>. An X server and its clients may run on the same computer, in which case they communicate via <a href="http://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different computers, in which case they communicate through TCP/IP.</p>
+<p><strong>A window manager is a regular X client.</strong> It doesn’t have any superuser privileges or keys to kernel backdoors; it is a normal user process that is allowed by the X server to call a set of special APIs. X ensures that no more than one window manager is running at any given point by denying a client access to these APIs if another client currently has access. The first client to attempt to access these APIs always succeeds.</p>
+<p>A window manager communicates with the windows it manages through two X mechanisms: properties and events. We will discuss these in detail in later sections, but the takeaway is that the communication happens through the X server, not directly between the window manager and other applications.</p>
+<p>This is illustrated by the following diagram:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/so1jXbe2d2Vvx917pbA5Cjw.png" alt="so1jXbe2d2Vvx917pbA5Cjw" width="553" height="402" layout="responsive"></amp-img></p>
+<h1 id="howanxwindowmanagermanageswindows">How an X Window Manager Manages Windows</h1>
+<p>Let’s now dive into the details of how a window manager does its job.</p>
+<h2 id="thewindowhierarchy">The Window Hierarchy</h2>
+<p>When we think about modern GUIs, we usually use the term <em>widgets</em> or <em>controls</em> to refer to UI elements such as buttons, scrollbars, or text boxes, and the term <em>windows</em> to refer to a container for such widgets that has its own name and can be independently moved around, closed, resized, etc..</p>
+<p>X, however, was designed to be as low-level as possible. The fundamental UI model that X provides, upon which UI frameworks such as <a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an <em>hierarchy of rectangles</em>. In X terminology, all top level windows and all UI elements within are <em>windows</em>. In other words, a <em>window</em>, is any rectangular area that is an unit of user interaction and/or graphic display.</p>
+<p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the <em>root window</em>, a virtual, invisible window that has the same size as the screen, and is always present. Top level windows are direct children of the root window. UI elements within a top level window are descendants of that window.</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/wm_sample_dialog.png" alt="wm_sample_dialog" width="402" height="110" layout="responsive"></amp-img></p>
+<p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a> desktop environment. The entire dialog is an X <em>window</em>. All UI elements in the dialog box - the magnifying glass icon, the text box, the green down arrow, the Close and Launch buttons, and the icons inside those buttons - are also X _window_s.</p>
+<p>The whole dialog window is a child of the root window. The magnifying glass icon, the text box, and the Close and Launch buttons are children of the dialog window. The green down arrow is a child of the text box window, and the icons in the Close and Launch buttons are children of those buttons respectively.</p>
+<p>An important thing to note about X windows is that a child window is clipped to the boundaries of its parent:</p>
+<blockquote>
+<p>A child may be positioned partially or completely outside its parent window, but output to the child is displayed and input received only in the area where the child overlaps with the parent.</p>
+<p>—  Xlib Programming Manual §2.2.2</p>
+</blockquote>
+<p>For example, if we increase the width of the text box in the dialog above by 2x without changing the size of the dialog box, the portion of the text box that extends outside of the dialog box will become invisible, and clicking on it will not send an event to the text box.</p>
+<p>A window manager manages top level windows - that is, direct children of the root window.</p>
+<h2 id="substructureredirection">Substructure Redirection</h2>
+<p>In the absence of a window manager, when an application wants to do something with a window - move it, resize it, show/hide it, etc. - its request is directly processed by the X server, and that’s the end of that. A window manager, however, needs to intercept these requests. For example, a window manager may need to know that a new top level window has been created and displayed, in order to draw window decorations (e.g. minimize / maximize / close buttons) around it. It may also need to know that an existing top level window has been resized, in order to redraw the window decorations to reflect the change.</p>
+<p>The mechanism that allows a window manager to intercept such requests is called <em>substructure redirection</em>.</p>
+<p>This is how substructure redirection works. Suppose we have a window <em>W</em>. If a program <em>M</em> registers for substructure redirection on <em>W</em>, a matching request to modify any direct child window of <em>W</em> will <em>not</em> be executed by the X server. Instead, the X server redirects this request to the program <em>M</em>, which can do whatever it wants with the request, including denying the request outright or granting the request with modifications. More formally,</p>
+<blockquote>
+<p>The <em>structure</em>, as the term is used here, is the location, size, stacking order, border width, and mapping status of a window. The <em>substructure</em> is all these statistics about the children of a particular window. This is the complete set of information about screen layout that the window manager might need in order to implement its policy. <em>Redirection</em> means that an event is sent to the client selecting redirection (usually the window manager), and the original structure−changing request is not executed.</p>
+<p>—  Xlib Programming Manual §16.2</p>
+</blockquote>
+<p>Note that only direct children of a window <em>W</em> is affected by substructure redirection on <em>W</em>, not any windows further down the hierarchy.</p>
+<p>This gets interesting when we consider substructure redirection on the root window:</p>
+<blockquote>
+<p>When the window manager selects <code>SubstructureRedirectMask</code> on the root window, an attempt by any other client to change the configuration of any child of the root window will fail. Instead an event describing the layout change request will be sent to the window manager. The window manager then reads the event and determines whether to honor the request, modify it, or deny it completely. If it decides to honor the request, it calls the routine that the client called that triggered the event with the same arguments. If it decides to modify the request, it calls the same routine but with modified arguments.</p>
+<p>—  Xlib Programming Manual §16.2</p>
+</blockquote>
+<p>In other words, a window manager must register for substructure redirection on the root window, which causes all creation, destruction, reconfiguration etc. of top level windows - which are direct children of the root window - to be routed to the window manager. This is the magic hook into the X server that window managers rely on to do their job.</p>
+<p>This relationship is shown in the following diagram:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/sTifV_OHk9dsZi6cwbLS7qQ.png" alt="sTifV_OHk9dsZi6cwbLS7qQ" width="600" height="273" layout="responsive"></amp-img></p>
+<p>Finally, the X server only allows one running program to register for substructure redirection on any given window at any given time. An attempt to register for substructure redirection on a window will fail if another X client has already done the same on the same window, and has not unregistered, disconnected from the X server, or crashed. Since all window managers must register for substructure redirection on the root window, this latter acts as a locking mechanism that prevents two or more window managers from running simultaneously on the same screen.</p>
+<h2 id="reparenting">Reparenting</h2>
+<p>In the example dialog box above, we see a title bar with, for example, little buttons for minimizing, maximizing, and closing the window. These UI elements are not created by the application, but by the window manager, via a process known as <em>reparenting</em> or <em>framing</em>:</p>
+<blockquote>
+<p>A window manager can decorate [top level] windows on the screen with titlebars and place little boxes on the titlebar with which the window can be moved or resized. This is only one possibility […].</p>
+<p>To do this, the window manager creates a child of the root somewhat larger than the top level window of the application. Then it calls <a href="http://manpages.ubuntu.com/manpages/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>, specifying the top level window of the application as <code>win</code> and the new parent [window it just created] as <code>parent</code>. <code>win</code> and all its descendants will then be descendants of <code>parent</code>.</p>
+<p>—  Xlib Programming Manual §16.3</p>
+</blockquote>
+<p>In other words, if we were to run an X application without a window manager present, the top level window of the application would be a direct child of the root window. With a window manager running, however, the top level window of the application may be <em>reparented</em> by the window manager; it becomes a child of a frame window which is created by the window manager, and which is itself a direct child of the root window. The window manager can add other UI elements inside this frame window alongside the application’s top level window as it sees fit.</p>
+<p>Therefore, I’ve kind of lied to you several paragraphs ago: the dialog box shown earlier is really a child window within a frame window created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along with other UI elements for window management:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/snfQMUpwYCAfp6q_mmpEVoQ.png" alt="snfQMUpwYCAfp6q_mmpEVoQ" width="412" height="247" layout="responsive"></amp-img></p>
+<p>Reparenting is what allows different window managers to draw different window decorations, and thereby achieve a consistent look-and-feel across windows. However, there are also window managers that do <em>not</em> reparent at all: these are called <em>non-reparenting</em> window managers. There are two reasons why a window manager would not want to reparent:</p>
+<ol>
+<li>
+<p>If a window manager does not draw window decorations around top level windows , it obviously has no need to reparent them. Examples: <a href="http://xmonad.org">xmonad</a>, <a href="http://dwm.suckless.org">dwm</a>.</p>
+</li>
+<li>
+<p>Compositing window managers do not always need to reparent windows; we will discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true for all compositing window managers, however; for example, GNOME’s default window manager, <a href="http://github.com/GNOME/mutter/">Mutter</a>, is a reparenting comopositing window manager.</p>
+</li>
+</ol>
+<p>Let’s now consider substructure redirection in the context of reparenting. When a top level window <em>W</em> is first shown (<em>map</em>'ped in X jargon), the window manager is notified because it has registered for substructure redirection on the root window, and a top level window is a direct child of the root window. It then creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes a child of <em>F</em>, which itself is a child of the root window. But since now <em>W</em> is no longer a direct child of the root window, the window manager will no longer be able to intercept changes to <em>W</em>!</p>
+<p>Therefore, a reparenting window manager must also subsequently register for substructure redirection on each frame window it creates.</p>
+<h2 id="compositing">Compositing</h2>
+<p>Compositing window managers are a relatively new development. Compositing support in X was added in late 2004, a full decade after the last edition of <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>. The first compositing window managers, <a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early 2005.</p>
+<p>So, what exactly does a compositing window manager do?</p>
+<p>In our discussion above on substructure redirection and reparenting, we saw how a window manager can respond to various requests for a top level window - to display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But we didn’t talk about how to deal with what’s <em>inside</em> the top level windows.</p>
+<p>Indeed, from the perspective of the window manager, top level windows are black boxes; they each manage their own descendant windows (UI elements), perhaps through a framework such as <a href="http://www.gtk.org">GTK+</a> or <a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere there. The application that creates a top level window is responsible for rendering and handling events for any descendant windows (UI elements), and does so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p>
+<p>As the computing power of graphics hardware grew, so did people’s expectations from their window managers. With hardware acceleration, it became possible to build much more computationally intensive user interfaces, such as the (in)famous Desktop Cube in <a href="http://www.compiz.org">Compiz</a>:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/wm_compiz.png" alt="wm_compiz" width="640" height="480" layout="responsive"></amp-img></p>
+<p>or the Shift Switcher:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/wm_compiz_2.png" alt="wm_compiz_2" width="640" height="360" layout="responsive"></amp-img></p>
+<p>Let’s take a moment to think about how we can implement an interface such as the Shift Switcher above. When the user triggers this interface, we need to:</p>
+<ol>
+<li>
+<p>Render each top level window and all its descendant windows (UI elements) to an off-screen, in-memory buffer, instead of directly to the hardware.</p>
+</li>
+<li>
+<p>Transform (rotate, contort, etc.) each buffer according to our design.</p>
+</li>
+<li>
+<p>Composite the transformed buffers into a final buffer along with a background and any other floating UI elements else we need to display.</p>
+</li>
+<li>
+<p>Create an <em>overlay</em> window that covers the entire screen and hides all other windows.</p>
+</li>
+<li>
+<p>Render the final buffer into the overlay window.</p>
+</li>
+</ol>
+<p>There are a number of challenges:</p>
+<ul>
+<li>
+<p>We must be able to retrieve the displayed contents of top level windows. However, as we described earlier, top level windows render their contents directly through X, without going through the window manager.</p>
+</li>
+<li>
+<p>We need to update our interface in real time as the contents of the top level windows change. However, top level windows do not notify window managers when their contents change, again because they render their contents directly through X.</p>
+</li>
+<li>
+<p>A top level window <em>A</em> may overlap with another top level window <em>B</em> below, which means a portion of <em>B</em> isn’t currently displayed. Our interface, however, must capture the <em>full</em> rendering of <em>A</em> and <em>B</em>, regardless of overlapping regions.</p>
+</li>
+<li>
+<p>All this complex compositing process is computationally intensive and requires hardware acceleration to function adequately.</p>
+</li>
+</ul>
+<p>It is clear that none of this would be possible without some heavy cooperation from the X server. Enter the <a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">Composite extension</a>:</p>
+<blockquote>
+<p>Many user interface operations would benefit from having pixel contents of window hierarchies available without respect to sibling and antecedent clipping. In addition, placing control over the composition of these pixel contents into a final screen image in an external application will enable a flexible system for dynamic application content presentation.</p>
+<p>—  X Composite Extension</p>
+</blockquote>
+<p>The Composite extension provides a mechanism to request the X server not to render a specific window and its descendants directly to hardware, but to a special buffer maintained by the X server, and do so without the normal clipping and overlap computations. This buffer can then be read and used by the client that made the request.</p>
+<p>That’s exactly what a compositing window manager does: it will ask X to render each top level window to an off-screen, in-memory buffer and composite the results into an overlay window itself. And it needs to do this not just for fancy task switcher interfaces as in our example, but also to achieve effects like translucency, animations, soft shadows, and the like.</p>
+<p>This is illustrated in the following diagram:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/sawR1epQiKxE5bX3Cplms2A.png" alt="sawR1epQiKxE5bX3Cplms2A" width="573" height="508" layout="responsive"></amp-img></p>
+<p>Let’s end this section by considering whether a compositing window manager should reparent top level windows.</p>
+<p>Since a compositing window manager already knows the size and position of all top level windows, it’s easy for it to just draw window decorations during compositing into the overlay window using graphics operations (e.g. OpenGL), without ever creating an actual X frame window and reparenting. Some compositing window managers do operate this way.</p>
+<p>On the other hand, a window manager may need to support both a compositing and a non-compositing mode, for compatibility with older or unsupported graphics hardware. In this case, it needs to implement reparenting and frame windows for non-compositing mode anyway, so additionally implementing drawing window decorations using graphics operations becomes redundant. This is why may other compositing window managers still choose to reparent.</p>
+<h1 id="readyforsomecode">Ready For Some Code?</h1>
+<p>If you’ve read everything up to this point, you’re probably holding back the urge to cry out "<em>Enough talk - show me some code!</em>" I don’t blame you.</p>
+<p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">the next installment</a> in this series, I will walk you through a basic implementation of a reparenting, non-compositing window manager. Impatient? Check out the code <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>!</p>
+<blockquote>
+<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>How X Window Managers Work, And How To Write One (Part II)</strong></a></p>
+<ul>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"><strong>Part I: Basic Concepts</strong></a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a></p>
+</li>
+</ul>
+</blockquote>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

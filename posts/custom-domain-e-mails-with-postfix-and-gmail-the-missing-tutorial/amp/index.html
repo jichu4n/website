@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial" />
+    <meta property="og:description" content="Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as" />
+    <meta property="og:url" content="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" />
+    <meta property="article:published_time" content="2014-11-06T08:01:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T07:05:09.000Z" />
+    <meta property="article:tag" content="Linux" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial" />
+    <meta name="twitter:description" content="Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Linux, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial",
+    "url": "https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/",
+    "datePublished": "2014-11-06T08:01:00.000Z",
+    "dateModified": "2018-10-17T07:05:09.000Z",
+    "keywords": "Linux, Technical Notes",
+    "description": "Custom domain e-mail addresses, like john@johnscompany.com, are cool and\nprofessional-looking. Would you want to e-mail potential clients as \njohn123@gmail.com?\n\nOn the other hand, Gmail has great reliability, speed, spam filtration, and app\nsupport. Wouldn’t it be great if we could send and receive e-mail as \njohn@johnscompany.com, but right from the comfort of our Gmail account?\n\nToday, if we want to use Gmail to send and receive e-mails on a custom domain,\nwe have a couple of options:\n\n * Goo",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2014-11-06">06 Nov 2014</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <p>Custom domain e-mail addresses, like <code>john@johnscompany.com</code>, are cool and professional-looking. Would <em>you</em> want to e-mail potential clients as <code>john123@gmail.com</code>?</p>
+<p>On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as <code>john@johnscompany.com</code>, but right from the comfort of our Gmail account?</p>
+<p>Today, if we want to <strong>use Gmail to send and receive e-mails on a custom domain</strong>, we have a couple of options:</p>
+<ul>
+<li>
+<p><strong><a href="http://www.google.com/work/apps/business/">Google Apps for Work</a></strong> is Google’s own offering. It’s simple to set up and manage, but it’s pretty pricey at $5/mo per user, especially if we don’t need the bundled collaborative features like Google Docs and Calendar.</p>
+</li>
+<li>
+<p><strong>Third-party services</strong> could get the job done at a lower price point; for example, <a href="https://pobox.com/">Pobox</a> offers plans starting at $20/yr. The downside is that we will have to trust another organization with our e-mail.</p>
+</li>
+<li>
+<p><strong>Set up our own e-mail forwarding server</strong>. It’s fairly easy (if we follow this guide :) and if we already have shared / dedicated hosting or a VPS, this is basically free and gives us total control over our e-mail.</p>
+</li>
+</ul>
+<p>If you want to host <strong>custom domain e-mails in Gmail without paying for Google Apps</strong> or a third-party service, this tutorial is for you. It will show you how to quickly set up you own e-mail forwarding / relay server, and how to integrate it seamlessly with Gmail.</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>For this tutorial, we’ll assume we have access to:</p>
+<ul>
+<li>
+<p><strong>VPS or shared / dedicated hosting</strong>, with a dedicated IP address and capable of listening on ports 25 and 587. We will use a Ubuntu server for the examples.</p>
+</li>
+<li>
+<p><strong>DNS records for our domain</strong>. How DNS records are manipulated depends on the DNS hosting provider (or DNS server configuration).</p>
+</li>
+</ul>
+<p>We’ll assume</p>
+<ul>
+<li>
+<p>We have a domain <code>example.com</code>;</p>
+</li>
+<li>
+<p>We have a server <code>myserver.example.com</code>;</p>
+</li>
+<li>
+<p>We want to use the Gmail account <code>john123@gmail.com</code> to manage <code>john@example.com</code>.</p>
+</li>
+</ul>
+<h1 id="step1dnssetup">Step 1: DNS Setup</h1>
+<p>The first step in setting up our e-mail forwarding server is to add MX, PTR and <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework">SPF</a> DNS records for our server. This is really important as many e-mail providers, in order to prevent spam, will refuse to talk to mail servers without proper MX, PTR and SPF records set up. How to update DNS records will depend on the DNS hosting provider.</p>
+<p>The following is what we need:</p>
+<ul>
+<li>
+<p>An <strong>MX</strong> record for <code>example.com</code>, pointing to <code>myserver.example.com</code>.</p>
+<p>This tells the world that e-mails to <code>&lt;whatever&gt;@example.com</code> should be delivered to the server <code>myserver.example.com</code>.</p>
+</li>
+<li>
+<p>An <strong>A</strong> record for <code>myserver.example.com</code>, pointing to the IP address of our server.</p>
+</li>
+<li>
+<p>A <strong>PTR</strong> (reverse DNS) record mapping the IP address of our server to <code>myserver.example.com</code>.</p>
+<p>This allows Gmail to verify the legitimacy of our server via its IP when Gmail receives a forwarded e-mail from it.</p>
+</li>
+<li>
+<p>A <strong>TXT</strong> record, with key <code>example.com</code> and value <code>v=spf1 mx ~all</code>.</p>
+<p>This is an <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework">SPF</a> record; it tells Gmail that the servers specified in the MX records of <code>example.com</code>, in this case only <code>myserver.example.com</code>, are allowed to send e-mails purporting to be from <code>&lt;whatever&gt;@example.com</code>. All other servers attempting to do the same will be rejected. This should be a sane default value, but feel free to custom it as you like.</p>
+</li>
+</ul>
+<p>DNS records will take a while (depending on our provider, up to a day) to propagate. Until they do, e-mails forwarded by our new e-mail server may get marked as spam or rejected outright.</p>
+<h1 id="step2receivingemail">Step 2: Receiving E-mail</h1>
+<p>We’ll first set up an e-mail forwarding server which will let we receive e-mails sent to our domains.</p>
+<p>We will use <a href="http://www.postfix.org">Postfix</a> as the e-mail server. Let’s start by installing the necessary packages. We will assume a Ubuntu server in the examples below; if you’re using a different distribution, please consult your distribution’s documentation for the right commands.</p>
+<pre><code>$ sudo DEBIAN_FRONTEND=noninteractive apt-get install postfix
+</code></pre>
+<p>In the above command, we skip the <code>debconf</code> configuration UI with <code>DEBIAN_FRONTEND=noninteractive</code> as we will edit the configuration files directly.</p>
+<h2 id="etcpostfixmaincf">/etc/postfix/main.cf</h2>
+<p>Open up <code>/etc/postfix/main.cf</code> in your favorite editor. This file will come pre-populated with a bunch of config options and comments. Replace the contents of the file with the following (you can comment out the original contents for reference):</p>
+<pre><code># /etc/postfix/main.cf
+
+# Host and site name.
+myhostname = myserver.example.com
+mydomain = example.com
+myorigin = example.com
+
+# Virtual aliases.
+virtual_alias_domains = example.com
+virtual_alias_maps = hash:/etc/postfix/virtual
+</code></pre>
+<p>The first few lines are pretty straightforward; they tell Postfix how to identify itself to the world. The last two lines tell Postfix to forward e-mails sent to <code>&lt;whatever&gt;@example.com</code> to another e-mail provider (Gmail), and that the forwarding is configured in the database file <code>/etc/postfix/virtual</code>.</p>
+<h2 id="etcpostfixvirtual">/etc/postfix/virtual</h2>
+<p>Let’s now open up <code>/etc/postfix/virtual</code> and fill in our forwarding configuration:</p>
+<pre><code># /etc/postfix/virtual
+
+# Forwarding mapping, one from-to address pair per line. The format is:
+#     &lt;forward-from-addr&gt; &lt;whitespace&gt; &lt;forward-to-addr&gt;
+john@example.com        john123@gmail.com
+</code></pre>
+<p>We can add as many forwarding rules as you want, one on each line. We can use any number of tabs / whitespaces between the forward-from and forward-to addresses.</p>
+<h2 id="updatelookuptable">Update lookup table</h2>
+<p>It turns out that Postfix doesn’t actually read <code>/etc/postfix/virtual</code> (surprise!); instead, what it reads is a lookup table generated from it. So, let’s generate the lookup table from our <code>/etc/postfix/virtual</code>:</p>
+<pre><code>$ sudo postmap /etc/postfix/virtual
+</code></pre>
+<p><strong>Note</strong>: we must re-run this command every time we modify <code>/etc/postfix/virtual</code>!</p>
+<h2 id="restartpostfix">(Re)start Postfix</h2>
+<p>It’s now time to (re)start Postfix with our new configuration:</p>
+<pre><code>$ sudo postfix start
+$ sudo postfix reload
+</code></pre>
+<h2 id="testing">Testing</h2>
+<p>We should test our brand-new Postfix server by sending an e-mail to our forward-from address. You might want to check out <a href="http://articles.slicehost.com/2008/8/6/postfix-using-telnet-to-test-postfix">these</a> <a href="https://workaround.org/ispmail/lenny/test-mail-through-telnet">tutorials</a> for testing directly with the <code>telnet</code> command.</p>
+<p>If you received the e-mail in your Gmail inbox, congratulations! Otherwise, check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for errors. The most likely cause of issues is that DNS records have not propagated yet, in which case we’re likely to see a "rate limited" or "rejected for spam" type error message.</p>
+<p>If we only want to <em>receive</em> but don’t care about <em>sending</em> e-mails as <code>john@example.com</code>, then this is all we need.</p>
+<p>Otherwise, let’s move on to configuring Postfix to support sending e-mails from Gmail.</p>
+<h1 id="step3sendingemail">Step 3: Sending E-mail</h1>
+<p>Gmail requires a relay server (a server that will send e-mails to their destination on behalf it) to speak <a href="http://en.wikipedia.org/wiki/Transport_Layer_Security">TLS</a>, which protects the communication between Gmail and the relay server.</p>
+<p>We will use <a href="http://www.cyrusimap.org/">Cyrus SASL</a> for this task. To install:</p>
+<pre><code>$ sudo apt-get install sasl2-bin libsasl2-modules
+</code></pre>
+<h2 id="usernamepassword">User name &amp; password</h2>
+<p><a href="http://en.wikipedia.org/wiki/Open_mail_relay">Open relays</a> are a terrible idea. We want to protect our e-mail server with a user name and password so that it will let Gmail send e-mails through it, but block spammers and other evil actors.</p>
+<p>Cyrus SASL supports several backends for storing user names and passwords, including MySQL and PAM. However, we will go with the simplest backend — a plain database file.</p>
+<p>Let’s create the user name / password database file in the default location <code>/etc/sasldb2</code>, with a single user named <code>smtp</code> (we can change the user name to anything we want):</p>
+<pre><code>$ sudo saslpasswd2 -c -u example.com smtp
+</code></pre>
+<p>Verify with:</p>
+<pre><code>$ sudo sasldblistusers2
+</code></pre>
+<p>Now, we make sure only Postfix can read this file:</p>
+<pre><code>$ sudo chmod 400 /etc/sasldb2
+$ sudo chown postfix /etc/sasldb2
+</code></pre>
+<p>Lastly, we tell Cyrus SASL to use the file-based database to authenticate. Create the file <code>/etc/postfix/sasl/smtpd.conf</code>:</p>
+<pre><code>pwcheck_method: auxprop
+auxprop_plugin: sasldb
+mech_list: PLAIN LOGIN CRAM-MD5 DIGEST-MD5 NTLM
+log_level: 7
+</code></pre>
+<h2 id="sslcertificate">SSL Certificate</h2>
+<p>We need an SSL certificate to enable TLS. While a proper SSL certificate signed by a Certificate Authority (CA) can be pricey, it turns out that a simple self-signed certificate suffices and works just fine.</p>
+<p>So, let’s generate one.</p>
+<ol>
+<li>
+<p><strong>Generate an RSA private/public key pair.</strong> Note that you MUST supply a password to this command; the password will be removed in step 3.</p>
+<pre><code>$ openssl genrsa -des3 -out example.key 1024
+</code></pre>
+</li>
+<li>
+<p><strong>Generate a Certificate Signing Request (CSR).</strong> Make sure to enter <code>myserver.example.com</code> when prompted for the "Common Name".</p>
+<pre><code>$ openssl req -new -key example.key -out example.csr
+</code></pre>
+</li>
+<li>
+<p><strong>Remove RSA private/public key password.</strong></p>
+<pre><code>$ mv example.key example.key.orig
+$ openssl rsa -in example.key.orig -out example.key
+</code></pre>
+</li>
+<li>
+<p><strong>Generate a self-signed certificate.</strong> In the example, the generated certificate will be valid for 10 years.</p>
+<pre><code>$ openssl x509 -req \
+    -days 3650 -in example.csr -signkey example.key -out example.crt
+</code></pre>
+</li>
+<li>
+<p><strong>Create a PEM file.</strong></p>
+<pre><code>$ cat example.crt example.key &gt; example.pem
+</code></pre>
+</li>
+<li>
+<p><strong>Move and protect the PEM file.</strong></p>
+<pre><code>$ sudo mv example.pem /etc/postfix/example.pem
+$ sudo chmod 400 /etc/postfix/example.pem
+$ sudo chown postfix /etc/postfix/example.pem
+</code></pre>
+</li>
+</ol>
+<p><strong>Note:</strong> Make sure to protect the generated private key and certificate with care!</p>
+<h2 id="relayserver">Relay server</h2>
+<p>The final step is to configure Postfix to enable relaying of e-mail on behalf of Gmail.</p>
+<p>Let’s open up <code>/etc/postfix/master.cf</code>. This file should already contain a bunch of config options, some of which are commented out. Uncomment the lines starting with <code>submission</code> and edit them to match the following:</p>
+<pre><code>submission inet n       -       n       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_security_level=may
+  -o smtpd_tls_cert_file=/etc/postfix/example.pem
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+</code></pre>
+<p>A Postfix restart is due after all these changes:</p>
+<pre><code>$ sudo postfix reload
+</code></pre>
+<p>If all went well, you should see Postfix serving a relay server, protected by our user name and password in <code>/etc/sasldb2</code>, on port 587.</p>
+<h1 id="step4configuregmail">Step 4: Configure Gmail</h1>
+<p>Finally, let’s log in to Gmail and tell it about our brand new server. (Note that the new Inbox UI does not yet support all the settings available in the legacy interface at the time of writing, so these instructions apply to the legacy interface.)</p>
+<p>Let’s go to <em>Settings</em> &gt; <em>Accounts and Import</em> and click <em>Add another email address you own</em>.</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/gmail_1.png" alt="gmail_1" width="905" height="616" layout="responsive"></amp-img></p>
+<p>In the dialog that pops up, fill in our target e-mail address and click <em>Next Step</em>.</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/gmail_2.png" alt="gmail_2" width="542" height="345" layout="responsive"></amp-img></p>
+<p>In the next dialog, enter the address of our e-mail server (<code>myserver.example.com</code>), and the user name and password we set up using <code>saslpasswd2</code> above. Make sure the user name is suffixed with our domain name (so <code>smtp@example.com</code> rather than just <code>smtp</code>). Check that the correct port (587) and the correct security protocol (TLS) are selected, then click <em>Add Account</em>.</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/gmail_3.png" alt="gmail_3" width="542" height="345" layout="responsive"></amp-img></p>
+<p>If all goes well, we should see a dialog like the following:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/gmail_4.png" alt="gmail_4" width="542" height="343" layout="responsive"></amp-img></p>
+<p>And we should receive an e-mail, forwarded by our mail server set up in the first part, to our <code>john123@gmail.com</code> address. Click on the link inside the e-mail and we’re done!</p>
+<p>Now, in any e-mail compose / reply window, you should be able to select <code>john@example.com</code> in the drop-down list next to "From". Congrats!</p>
+<p>If, on the other hand, you see an error like the following:</p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/gmail_5.png" alt="gmail_5" width="569" height="345" layout="responsive"></amp-img></p>
+<p>You should check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for any errors.</p>
+<h1 id="optionalstep5setupdkimandsrs">[Optional] Step 5: Setup DKIM and SRS</h1>
+<p><a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is e-mail validation system for preventing e-mail spoofing. <a href="https://support.google.com/mail/answer/180707?hl=en">Google recommends setting up DKIM</a>; if we don’t, the e-mail messages that we forward to Gmail have a higher probability of getting marked as spam.</p>
+<p><a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a relatively new standard that e-mail forwarding servers are recommended to adopt, and it also helps reduce the likelihood of our forwarded e-mail messages getting marked as spam.</p>
+<p>Thus, while technically optional, it’s a good idea to configure our Postfix server to support both these standards. See my follow-up tutorial on <a href="https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix.html">Setting Up DKIM And SRS In Postfix</a> for a detailed step-by-step guide.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>In this post, we have set up a Postfix e-mail server that accomplishes the following:</p>
+<ul>
+<li>
+<p>E-mails sent to <code>john@example.com</code> is received by Postfix on <code>myserver.example.com</code> port 25, and forwarded to <code>john123@gmail.com</code>;</p>
+</li>
+<li>
+<p>Gmail will let you select <code>john@example.com</code> as a "from" address when composing / replying to an e-mail, and will relay such e-mails through Postfix on <code>myserver.example.com</code> port 587 using a configured user name / password combination.</p>
+</li>
+</ul>
+<p>I hope you found this guide useful, and if you have any thoughts / questions, you’re more than welcome to leave a comment below. Cheers!</p>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

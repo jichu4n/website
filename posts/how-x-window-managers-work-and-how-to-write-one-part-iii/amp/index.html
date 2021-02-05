@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>How X Window Managers Work, And How To Write One (Part III)</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part III)" />
+    <meta property="og:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in" />
+    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
+    <meta property="article:published_time" content="2017-02-03T07:50:00.000Z" />
+    <meta property="article:modified_time" content="2020-02-08T06:07:04.000Z" />
+    <meta property="article:tag" content="Window Manager" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part III)" />
+    <meta name="twitter:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Window Manager, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "How X Window Managers Work, And How To Write One (Part III)",
+    "url": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/",
+    "datePublished": "2017-02-03T07:50:00.000Z",
+    "dateModified": "2020-02-08T06:07:04.000Z",
+    "keywords": "Window Manager, Technical Notes",
+    "description": "In Part II of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html], we\ndiscussed X libraries and implementation choices, and examined the basic\nstructure of a window manager. In Part III, we will start interacting with\nclient windows and the user through events. We will review the fundamentals of\nwindow manager implementation, using the implementation in our example\nnon-compositing reparenting window manager, basic_wm\n[https://github.com/jichu4n/basic_wm], for refere",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">How X Window Managers Work, And How To Write One (Part III)</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2017-02-02">02 Feb 2017</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in our example non-compositing reparenting window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, for reference.</p>
+<h1 id="step4interactionwithapplicationwindows">Step 4: Interaction with Application Windows</h1>
+<p>Following the steps in <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we now have a basic skeleton for our window manager. Our next step is to start talking to clients and the user via events.</p>
+<p>The interaction between clients, X, and the window manager is fairly complex. To facilitate our discussion, I’ve created a diagram that illustrates the flow of events throughout the lifetime of a client window, and how a window manager might respond to each of them. We’ll be referring to this cheat sheet for window manager event handling throughout this series. You can click through for the full-sized diagram.</p>
+<p>[<amp-img src="https://jichu4n.com/content/images/2018/10/sB-bXhvvzFJe2u65_YRwARA.png" alt="sB-bXhvvzFJe2u65sB-bXhvvzFJe2u65_YRwARA" width="1229" height="1115" layout="responsive"></amp-img></p>
+<p>In general, a window manager must handle two kinds of actions: those initiated by client applications (such as creating new windows), and those initiated by users (such as moving or minimizing windows). In this diagram, actions initiated by client applications are shown in the yellow box on the left hand side, and actions initiated by users are shown in blue on the right hand side. A window manager communicates with client applications via events, which are represented as parallelograms in red.</p>
+<p>You may have noticed that some of the events in this diagram have the suffix <em>Request</em>, while others have the suffix <em>Notify</em>. This distinction is crucial to our discussion.</p>
+<p>Recalling <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection">our discussion in Part I</a> on substructure redirection, when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request. Such requests are delivered to a window manager as events with the <em>Request</em> suffix. It is important to understand that when a window manager receives such an event, the action it represents <em>has not actually occurred</em>, and it is the responsibility of the window manager to decide what to do with it. If the window manager does nothing, the request is implicitly denied.</p>
+<p>On the other hand, events with the <em>Notify</em> suffix represent actions that have already been executed by the X server. The window manager can respond to such events, but of course cannot change the fact that they have already happened.</p>
+<p>With that in mind, let’s dive into the implementation by looking at how our example window manager will handle the life cycle of a client window from creation to destruction.</p>
+<h2 id="creatingawindow">Creating a Window</h2>
+<p>When an X client application creates a top-level window (<a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindow.3.html"><code>XCreateWindow()</code></a>), our window manager will receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> event. However, a newly created window is always invisible, so there’s nothing for our window manager to do. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<pre><code>void WindowManager::Run() {
+  ...
+  // 2. Main event loop.
+  for (;;) {
+    // 1. Get next event.
+    ...
+    // 2. Dispatch event.
+    switch (e.type) {
+      ...
+      case CreateNotify:
+        OnCreateNotify(e.xcreatewindow);
+        break;
+      ...
+    }
+  }
+}
+
+void WindowManager::OnCreateNotify(const XCreateWindowEvent&amp; e) {}
+</code></pre>
+<h2 id="configuringanewlycreatedwindow">Configuring a Newly Created Window</h2>
+<p>At this stage, the application can configure the window to set its initial size, position, or other attributes. To do so, the application would invoke <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a>, which would send a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> event to the window manager. However, since the window is still invisible, the window manager doesn’t need to care and can grant such requests without modification by invoking <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> itself with the same parameters.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ConfigureRequest:
+        OnConfigureRequest(e.xconfigurerequest);
+        break;
+      ...
+}
+
+void WindowManager::OnConfigureRequest(const XConfigureRequestEvent&amp; e) {
+  XWindowChanges changes;
+  // Copy fields from e to changes.
+  changes.x = e.x;
+  changes.y = e.y;
+  changes.width = e.width;
+  changes.height = e.height;
+  changes.border_width = e.border_width;
+  changes.sibling = e.above;
+  changes.stack_mode = e.detail;
+  // Grant request by calling XConfigureWindow().
+  XConfigureWindow(display_, e.window, e.value_mask, &amp;changes);
+  LOG(INFO) &lt;&lt; "Resize " &lt;&lt; e.window &lt;&lt; " to " &lt;&lt; Size&lt;int&gt;(e.width, e.height);
+}
+</code></pre>
+<h2 id="mappingawindow">Mapping a Window</h2>
+<p>To make the window finally visible on screen, the client application will call <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a> to <em>map</em> it. This sends a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event to the window manager. As noted earlier, at this point, the window is still not yet visible, as it’s up to the window manager to actually make it so. This is probably the most important event in our discussion, as this is where a window manager would usually start really managing a window.</p>
+<p>A reparenting window manager would typically respond to a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> for a client application window <em>w</em> with the following actions:</p>
+<ol>
+<li>
+<p>Create a frame window <em>f</em>, perhaps with borders and window decoration (e.g. title, minimize / maximize / close buttons).</p>
+</li>
+<li>
+<p>Register for substructure redirect on <em>f</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XSelectInput.3.html"><code>XSelectInput()</code></a>. Recall that substructure redirect only applies to direct child windows, so after reparenting, the substructure redirect previously registered on the root window would no longer apply to <em>w</em>, hence this step.</p>
+</li>
+<li>
+<p>Make <em>w</em> a child of <em>f</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>.</p>
+</li>
+<li>
+<p>Render <em>f</em> and <em>w</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a>.</p>
+</li>
+<li>
+<p>Register for mouse or keyboard shortcuts on <em>w</em> and/or <em>f</em>.</p>
+</li>
+</ol>
+<p>The example implementation in <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> will create a very simple frame window that has the same size as the client window, but with a 3px red border:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case MapRequest:
+        OnMapRequest(e.xmaprequest);
+        break;
+      ...
+}
+
+void WindowManager::OnMapRequest(const XMapRequestEvent&amp; e) {
+  // 1. Frame or re-frame window.
+  Frame(e.window);
+  // 2. Actually map window.
+  XMapWindow(display_, e.window);
+}
+
+void WindowManager::Frame(Window w) {
+  // Visual properties of the frame to create.
+  const unsigned int BORDER_WIDTH = 3;
+  const unsigned long BORDER_COLOR = 0xff0000;
+  const unsigned long BG_COLOR = 0x0000ff;
+
+  // 1. Retrieve attributes of window to frame.
+  XWindowAttributes x_window_attrs;
+  CHECK(XGetWindowAttributes(display_, w, &amp;x_window_attrs));
+
+  // 2. TODO - see Framing Existing Top-Level Windows section below.
+
+  // 3. Create frame.
+  const Window frame = XCreateSimpleWindow(
+      display_,
+      root_,
+      x_window_attrs.x,
+      x_window_attrs.y,
+      x_window_attrs.width,
+      x_window_attrs.height,
+      BORDER_WIDTH,
+      BORDER_COLOR,
+      BG_COLOR);
+  // 3. Select events on frame.
+  XSelectInput(
+      display_,
+      frame,
+      SubstructureRedirectMask | SubstructureNotifyMask);
+  // 4. Add client to save set, so that it will be restored and kept alive if we
+  // crash.
+  XAddToSaveSet(display_, w);
+  // 5. Reparent client window.
+  XReparentWindow(
+      display_,
+      w,
+      frame,
+      0, 0);  // Offset of client window within frame.
+  // 6. Map frame.
+  XMapWindow(display_, frame);
+  // 7. Save frame handle.
+  clients_[w] = frame;
+  // 8. Grab events for window management actions on client window.
+  //   a. Move windows with alt + left button.
+  XGrabButton(...);
+  //   b. Resize windows with alt + right button.
+  XGrabButton(...);
+  //   c. Kill windows with alt + f4.
+  XGrabKey(...);
+  //   d. Switch windows with alt + tab.
+  XGrabKey(...);
+
+  LOG(INFO) &lt;&lt; "Framed window " &lt;&lt; w &lt;&lt; " [" &lt;&lt; frame &lt;&lt; "]";
+}
+</code></pre>
+<p>The outline of the code should be fairly clear following our discussion. A few additional points to note:</p>
+<ul>
+<li>
+<p>Regarding the <em>save-set</em> and <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"><code>XAddToSaveSet()</code></a>:</p>
+<blockquote>
+<p>The save-set is a list of windows, usually maintained by the window manager, but including only windows created by other clients. If the window manager dies, all windows listed in the save-set will be reparented back to their closest living ancestor if they were reparented in the first place and mapped if the window manager has unmapped them so that it could map an icon.</p>
+<p>The save-set is necessary because the window manager might not exit normally. The user might kill it with CTRL-C if it is running in the foreground, or more likely, the user might get the process number and kill it. Actually, the actions of the save-set are performed even if the window manager exits normally, so less code is needed since the save-set does the cleaning up.</p>
+<p>Window managers almost always place in the save-set all the windows they reparent or iconify, using <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"><code>XAddToSaveSet()</code></a>.</p>
+<p>Windows are automatically removed from the save-set when they are destroyed.</p>
+<p>—  Xlib Programming Manual §16.4</p>
+</blockquote>
+</li>
+<li>
+<p>When our window manager creates a frame window (step 2 in the example code), it will also trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> event for the frame window. It will ignore it just like it ignores other <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> events as discussed earlier.</p>
+</li>
+<li>
+<p>When our window manager calls <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a> in step 5 in the example code, it will trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event, which it will ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ReparentNotify:
+        OnReparentNotify(e.xreparent);
+        break;
+      ...
+}
+
+void WindowManager::OnReparentNotify(const XReparentEvent&amp; e) {}
+</code></pre>
+</li>
+<li>
+<p>When our window manager calls <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a> to map the frame window (step 6 in the example code), the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event. Our window manager will later receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"><code>MapNotify</code></a> event, which it can ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case MapNotify:
+        OnMapNotify(e.xmap);
+        break;
+      ...
+}
+
+void WindowManager::OnMapNotify(const XMapEvent&amp; e) {}
+</code></pre>
+</li>
+</ul>
+<h2 id="configuringamappedwindow">Configuring a Mapped Window</h2>
+<p>A client application can configure a window that is currently visible, again with the <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> function. For example, an application may want to resize a window to better accomodate its contents. When a reparenting window manager receives the resulting <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> and decides to grant the request, it additionally needs to resize / reposition the corresponding frame window and any window decorations.</p>
+<pre><code>void WindowManager::OnConfigureRequest(const XConfigureRequestEvent&amp; e) {
+  XWindowChanges changes;
+  // Copy fields from e to changes.
+  ...
+  if (clients_.count(e.window)) {
+    const Window frame = clients_[e.window];
+    XConfigureWindow(display_, frame, e.value_mask, &amp;changes);
+    LOG(INFO) &lt;&lt; "Resize [" &lt;&lt; frame &lt;&lt; "] to " &lt;&lt; Size&lt;int&gt;(e.width, e.height);
+  }
+  // Grant request by calling XConfigureWindow().
+  ...
+}
+</code></pre>
+<p>When our window manager re-configures the frame window with the <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> call above, the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> event. Our window manager will then receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureEvent.3.html"><code>ConfigureNotify</code></a> event, which it will ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ConfigureNotify:
+        OnConfigureNotify(e.xconfigure);
+        break;
+      ...
+}
+
+void WindowManager::OnConfigureNotify(const XConfigureEvent&amp; e) {}
+</code></pre>
+<h2 id="unmappingawindow">Unmapping a Window</h2>
+<p>When a client application <em>unmaps</em> (i.e. hides) a window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"><code>XUnmapWindow()</code></a>, for example in response to the user exiting or minimizing the application, the window manager will receive a <code>UnmapNotify</code> event. Unlike the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event is delivered to the window manager after the fact, and the window manager can only respond to it, not intercept it.</p>
+<p>A reparenting window manager will typically want to reverse the actions it performed in response to <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a>. In other words, it would reparent the client window back to the root window, and destroy the corresponding frame window.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case UnmapNotify:
+        OnUnmapNotify(e.xunmap);
+        break;
+      ...
+}
+
+void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
+  // If the window is a client window we manage, unframe it upon UnmapNotify. We
+  // need the check because we will receive an UnmapNotify event for a frame
+  // window we just destroyed ourselves.
+  if (!clients_.count(e.window)) {
+    LOG(INFO) &lt;&lt; "Ignore UnmapNotify for non-client window " &lt;&lt; e.window;
+    return;
+  }
+
+  Unframe(e.window);
+}
+
+void WindowManager::Unframe(Window w) {
+  // We reverse the steps taken in Frame().
+  const Window frame = clients_[w];
+  // 1. Unmap frame.
+  XUnmapWindow(display_, frame);
+  // 2. Reparent client window back to root window.
+  XReparentWindow(
+      display_,
+      w,
+      root_,
+      0, 0);  // Offset of client window within root.
+  // 3. Remove client window from save set, as it is now unrelated to us.
+  XRemoveFromSaveSet(display_, w);
+  // 4. Destroy frame.
+  XDestroyWindow(display_, frame);
+  // 5. Drop reference to frame handle.
+  clients_.erase(w);
+
+  LOG(INFO) &lt;&lt; "Unframed window " &lt;&lt; w &lt;&lt; " [" &lt;&lt; frame &lt;&lt; "]";
+}
+</code></pre>
+<p>A few additional points to note:</p>
+<ul>
+<li>
+<p>When our window manager unmaps the frame window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"><code>XUnmapWindow()</code></a> in step 1 in the example code above, it will again receive a corresponding <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event. This is the reason why the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event handler needs to check that the unmapped window is an actual client window.</p>
+</li>
+<li>
+<p>When our window manager makes the client window a direct child of the root window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a> in step 2 above, it will receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event. As discussed in the <a href="#mapping-a-window">Mapping a Window</a> section above, this <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event will be ignored.</p>
+</li>
+<li>
+<p>When our window manager destroys the frame window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"><code>XDestroyWindow()</code></a> in step 4, it will trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"><code>DestroyNotify</code></a> event. This event will also be ignored, as shown in the next section.</p>
+</li>
+</ul>
+<p>At this point, the client window has become invisible, but not yet destroyed. It can be displayed again with a call to <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a>, which would take us back to the <a href="#mapping-a-window">Mapping a Window</a> step. It could also be reconfigured in this state, which would take us back to the <a href="#configuring-a-newly-created-window">Configuring a Newly Created Window</a> step.</p>
+<h2 id="destroyingawindow">Destroying a Window</h2>
+<p>When a client application exits or no longer needs a window, it will call <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"><code>XDestroyWindow()</code></a> to dispose of the window. This triggers a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"><code>DestroyNotify</code></a> event. In our case, there’s nothing we need to do in response.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case DestroyNotify:
+        OnDestroyNotify(e.xdestroywindow);
+        break;
+      ...
+}
+
+void WindowManager::OnDestroyNotify(const XDestroyWindowEvent&amp; e) {}
+</code></pre>
+<h2 id="framingexistingtoplevelwindows">Framing Existing Top-Level Windows</h2>
+<p>Now that we’ve walked through the life cycle of a client window, from creation to destruction, let’s turn our attention to the problem of existing top-level windows.</p>
+<p>You may recall from <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I</a> that X applications in general run just fine without a window manager. Depending on how an X session is started (e.g. <code>xinitrc</code>), by the time a window manager starts, any number of windows may have already been created by other applications. Additionally, the user can kill a running window manager and replace it with a different window manager, without affecting windows from other applications.</p>
+<p>Therefore, when our window manager starts up, it needs to handle any existing top-level windows that are already mapped. As a reparenting window manager, it will invoke the same <code>Frame()</code> function on such windows as if these windows are being mapped for the first time:</p>
+<pre><code>void WindowManager::Run() {
+  // 1. Initialization.
+  //   a. Select events on root window. Use a special error handler so we can
+  //   exit gracefully if another window manager is already running.
+  ...
+  //   b. Set error handler.
+  ...
+  //   c. Grab X server to prevent windows from changing under us while we
+  //   frame them.
+  XGrabServer(display_);
+  //   d. Frame existing top-level windows.
+  //     i. Query existing top-level windows.
+  Window returned_root, returned_parent;
+  Window* top_level_windows;
+  unsigned int num_top_level_windows;
+  CHECK(XQueryTree(
+      display_,
+      root_,
+      &amp;returned_root,
+      &amp;returned_parent,
+      &amp;top_level_windows,
+      &amp;num_top_level_windows));
+  CHECK_EQ(returned_root, root_);
+  //     ii. Frame each top-level window.
+  for (unsigned int i = 0; i &lt; num_top_level_windows; ++i) {
+    Frame(top_level_windows[i], true /* was_created_before_window_manager */);
+  }
+  //     iii. Free top-level window array.
+  XFree(top_level_windows);
+  //   e. Ungrab X server.
+  XUngrabServer(display_);
+
+  // 2. Main event loop.
+  ...
+}
+
+void WindowManager::OnMapRequest(const XMapRequestEvent&amp; e) {
+  // 1. Frame or re-frame window.
+  Frame(e.window, false /* was_created_before_window_manager */);
+  ...
+}
+
+void WindowManager::Frame(Window w, bool was_created_before_window_manager) {
+  ...
+  // 1. Retrieve attributes of window to frame.
+  ...
+  // 2. If window was created before window manager started, we should frame
+  // it only if it is visible and doesn't set override_redirect.
+  if (was_created_before_window_manager) {
+    if (x_window_attrs.override_redirect ||
+        x_window_attrs.map_state != IsViewable) {
+      return;
+    }
+  }
+  // 3. Create frame.
+  ...
+}
+
+void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
+  ...
+
+  // Ignore event if it is triggered by reparenting a window that was mapped
+  // before the window manager started.
+  //
+  // Since we receive UnmapNotify events from the SubstructureNotify mask, the
+  // event attribute specifies the parent window of the window that was
+  // unmapped. This means that an UnmapNotify event from a normal client window
+  // should have this attribute set to a frame window we maintain. Only an
+  // UnmapNotify event triggered by reparenting a pre-existing window will have
+  // this attribute set to the root window.
+  if (e.event == root_) {
+    LOG(INFO) &lt;&lt; "Ignore UnmapNotify for reparented pre-existing window "
+              &lt;&lt; e.window;
+    return;
+  }
+
+  Unframe(e.window);
+}
+</code></pre>
+<p>Some additional things to note:</p>
+<ul>
+<li>
+<p>You may notice that the process of framing existing top-level windows is guarded by <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XGrabServer.3.html"><code>XGrabServer()</code></a> and <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUngrabServer.3.html"><code>XUngrabServer()</code></a>. From the <em>Xlib Programming Manual</em>:</p>
+<blockquote>
+<p>These functions can be used to control processing of output on other connections by the window system server. While the server is grabbed, no processing of requests or close downs on any other connection will occur.</p>
+<p>—  Xlib Programming Manual §9.5</p>
+</blockquote>
+<p>By <em>grabbing</em> the X server, our window manager ensures that, between the time when it fetches the list of existing top-level windows and when it finishes framing them, no other application can interfere and mess up our state: no new windows can be created, and no existing windows can be modified or destroyed.</p>
+</li>
+<li>
+<p>The <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"><code>override_redirect</code></a> attribute, if set to true, indicates that a window should not be managed by window managers. From the <em>Xlib Programming Manual</em>:</p>
+<blockquote>
+<p>To control window placement or to add decoration, a window manager often needs to intercept (redirect) any map or configure request. Pop-up windows, however, often need to be mapped without a window manager getting in the way. […]</p>
+<p>The override-redirect flag specifies whether map and configure requests on this window should override a <code>SubstructureRedirectMask</code> on the parent. You can set the override-redirect flag to True or False (default). Window managers use this information to avoid tampering with pop-up windows […].</p>
+<p>—  Xlib Programming Manual §3.2.8</p>
+</blockquote>
+<p>The reason our window manager doesn’t need to check for this attribute except at start up is that the X server knows not to redirect events from such windows:</p>
+<blockquote>
+<p>The window manager […] will normally ignore windows that are mapped with their <code>override_redirect</code> attribute set, since no *Request events will be generated for them.</p>
+<p>—  Xlib Programming Manual §16.3</p>
+</blockquote>
+</li>
+<li>
+<p>The <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"><code>map_state</code></a> attribute indicates whether a window is currently visible (mapped). When <code>Frame()</code> is invoked for pre-existing windows during start up, we want to ignore windows that are currently unmapped. However, when <code>Frame()</code> is invoked during the event loop as part of the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> handler, we know that the client window to be framed is necessarily still unmapped, as our window manager wouldn’t have granted the request yet.</p>
+</li>
+<li>
+<p>You might be wondering why an additional check for <code>e.event == root_</code> is needed in the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> handler. It turns out that reparenting an already mapped window (<a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>) will trigger a pair of <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> and <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"><code>MapNotify</code></a> events in addition to <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a>. Therefore, when we enter into the event loop, we will receive an <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event for every pre-existing top-level window we reparented. We can distinguish these events by their <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute, which in this case represents the parent of the client window. Normally, when a client window we already framed is unmapped, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute would be its frame window. But when a pre-existing window is reparented at start up, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute in the resulting <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event will be its original parent - i.e., the root window.</p>
+</li>
+</ul>
+<h1 id="whatsnext">What’s Next</h1>
+<p>At this point, we have a basic but functional reparenting window manager that will correctly handle the life cycle of windows. If you strip out window decorations, shortcuts and fancy UI, the core structure of every X window manager will quite closely resemble what we have here.</p>
+<p>In our next installment, we will improve the user-facing functionality of our window manager by adding ways to move, resize and close windows. In the meantime, you’re more than welcome to check out the code for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> on GitHub.</p>
+<blockquote>
+<ul>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>Part III: Interaction with Application Windows</strong></a></p>
+</li>
+</ul>
+</blockquote>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

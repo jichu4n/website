@@ -1,0 +1,2166 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Chuan Ji]]></title><description><![CDATA[Chuan Ji]]></description><link>https://jichu4n.com/</link><image><url>https://jichu4n.com/favicon.png</url><title>Chuan Ji</title><link>https://jichu4n.com/</link></image><generator>Ghost 3.41</generator><lastBuildDate>Fri, 05 Feb 2021 06:46:32 GMT</lastBuildDate><atom:link href="https://jichu4n.com/posts/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[How X Window Managers Work, And How To Write One (Part III)]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in</p>]]></description><link>https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/</link><guid isPermaLink="false">5bc6dbd460307a000159bd56</guid><category><![CDATA[Window Manager]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Fri, 03 Feb 2017 07:50:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in our example non-compositing reparenting window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, for reference.</p>
+<h1 id="step4interactionwithapplicationwindows">Step 4: Interaction with Application Windows</h1>
+<p>Following the steps in <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we now have a basic skeleton for our window manager. Our next step is to start talking to clients and the user via events.</p>
+<p>The interaction between clients, X, and the window manager is fairly complex. To facilitate our discussion, I’ve created a diagram that illustrates the flow of events throughout the lifetime of a client window, and how a window manager might respond to each of them. We’ll be referring to this cheat sheet for window manager event handling throughout this series. You can click through for the full-sized diagram.</p>
+<p>[<img src="https://jichu4n.com/content/images/2018/10/sB-bXhvvzFJe2u65_YRwARA.png" alt="sB-bXhvvzFJe2u65sB-bXhvvzFJe2u65_YRwARA"></p>
+<p>In general, a window manager must handle two kinds of actions: those initiated by client applications (such as creating new windows), and those initiated by users (such as moving or minimizing windows). In this diagram, actions initiated by client applications are shown in the yellow box on the left hand side, and actions initiated by users are shown in blue on the right hand side. A window manager communicates with client applications via events, which are represented as parallelograms in red.</p>
+<p>You may have noticed that some of the events in this diagram have the suffix <em>Request</em>, while others have the suffix <em>Notify</em>. This distinction is crucial to our discussion.</p>
+<p>Recalling <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection">our discussion in Part I</a> on substructure redirection, when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request. Such requests are delivered to a window manager as events with the <em>Request</em> suffix. It is important to understand that when a window manager receives such an event, the action it represents <em>has not actually occurred</em>, and it is the responsibility of the window manager to decide what to do with it. If the window manager does nothing, the request is implicitly denied.</p>
+<p>On the other hand, events with the <em>Notify</em> suffix represent actions that have already been executed by the X server. The window manager can respond to such events, but of course cannot change the fact that they have already happened.</p>
+<p>With that in mind, let’s dive into the implementation by looking at how our example window manager will handle the life cycle of a client window from creation to destruction.</p>
+<h2 id="creatingawindow">Creating a Window</h2>
+<p>When an X client application creates a top-level window (<a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindow.3.html"><code>XCreateWindow()</code></a>), our window manager will receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> event. However, a newly created window is always invisible, so there’s nothing for our window manager to do. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<pre><code>void WindowManager::Run() {
+  ...
+  // 2. Main event loop.
+  for (;;) {
+    // 1. Get next event.
+    ...
+    // 2. Dispatch event.
+    switch (e.type) {
+      ...
+      case CreateNotify:
+        OnCreateNotify(e.xcreatewindow);
+        break;
+      ...
+    }
+  }
+}
+
+void WindowManager::OnCreateNotify(const XCreateWindowEvent&amp; e) {}
+</code></pre>
+<h2 id="configuringanewlycreatedwindow">Configuring a Newly Created Window</h2>
+<p>At this stage, the application can configure the window to set its initial size, position, or other attributes. To do so, the application would invoke <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a>, which would send a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> event to the window manager. However, since the window is still invisible, the window manager doesn’t need to care and can grant such requests without modification by invoking <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> itself with the same parameters.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ConfigureRequest:
+        OnConfigureRequest(e.xconfigurerequest);
+        break;
+      ...
+}
+
+void WindowManager::OnConfigureRequest(const XConfigureRequestEvent&amp; e) {
+  XWindowChanges changes;
+  // Copy fields from e to changes.
+  changes.x = e.x;
+  changes.y = e.y;
+  changes.width = e.width;
+  changes.height = e.height;
+  changes.border_width = e.border_width;
+  changes.sibling = e.above;
+  changes.stack_mode = e.detail;
+  // Grant request by calling XConfigureWindow().
+  XConfigureWindow(display_, e.window, e.value_mask, &amp;changes);
+  LOG(INFO) &lt;&lt; &quot;Resize &quot; &lt;&lt; e.window &lt;&lt; &quot; to &quot; &lt;&lt; Size&lt;int&gt;(e.width, e.height);
+}
+</code></pre>
+<h2 id="mappingawindow">Mapping a Window</h2>
+<p>To make the window finally visible on screen, the client application will call <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a> to <em>map</em> it. This sends a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event to the window manager. As noted earlier, at this point, the window is still not yet visible, as it’s up to the window manager to actually make it so. This is probably the most important event in our discussion, as this is where a window manager would usually start really managing a window.</p>
+<p>A reparenting window manager would typically respond to a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> for a client application window <em>w</em> with the following actions:</p>
+<ol>
+<li>
+<p>Create a frame window <em>f</em>, perhaps with borders and window decoration (e.g. title, minimize / maximize / close buttons).</p>
+</li>
+<li>
+<p>Register for substructure redirect on <em>f</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XSelectInput.3.html"><code>XSelectInput()</code></a>. Recall that substructure redirect only applies to direct child windows, so after reparenting, the substructure redirect previously registered on the root window would no longer apply to <em>w</em>, hence this step.</p>
+</li>
+<li>
+<p>Make <em>w</em> a child of <em>f</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>.</p>
+</li>
+<li>
+<p>Render <em>f</em> and <em>w</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a>.</p>
+</li>
+<li>
+<p>Register for mouse or keyboard shortcuts on <em>w</em> and/or <em>f</em>.</p>
+</li>
+</ol>
+<p>The example implementation in <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> will create a very simple frame window that has the same size as the client window, but with a 3px red border:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case MapRequest:
+        OnMapRequest(e.xmaprequest);
+        break;
+      ...
+}
+
+void WindowManager::OnMapRequest(const XMapRequestEvent&amp; e) {
+  // 1. Frame or re-frame window.
+  Frame(e.window);
+  // 2. Actually map window.
+  XMapWindow(display_, e.window);
+}
+
+void WindowManager::Frame(Window w) {
+  // Visual properties of the frame to create.
+  const unsigned int BORDER_WIDTH = 3;
+  const unsigned long BORDER_COLOR = 0xff0000;
+  const unsigned long BG_COLOR = 0x0000ff;
+
+  // 1. Retrieve attributes of window to frame.
+  XWindowAttributes x_window_attrs;
+  CHECK(XGetWindowAttributes(display_, w, &amp;x_window_attrs));
+
+  // 2. TODO - see Framing Existing Top-Level Windows section below.
+
+  // 3. Create frame.
+  const Window frame = XCreateSimpleWindow(
+      display_,
+      root_,
+      x_window_attrs.x,
+      x_window_attrs.y,
+      x_window_attrs.width,
+      x_window_attrs.height,
+      BORDER_WIDTH,
+      BORDER_COLOR,
+      BG_COLOR);
+  // 3. Select events on frame.
+  XSelectInput(
+      display_,
+      frame,
+      SubstructureRedirectMask | SubstructureNotifyMask);
+  // 4. Add client to save set, so that it will be restored and kept alive if we
+  // crash.
+  XAddToSaveSet(display_, w);
+  // 5. Reparent client window.
+  XReparentWindow(
+      display_,
+      w,
+      frame,
+      0, 0);  // Offset of client window within frame.
+  // 6. Map frame.
+  XMapWindow(display_, frame);
+  // 7. Save frame handle.
+  clients_[w] = frame;
+  // 8. Grab events for window management actions on client window.
+  //   a. Move windows with alt + left button.
+  XGrabButton(...);
+  //   b. Resize windows with alt + right button.
+  XGrabButton(...);
+  //   c. Kill windows with alt + f4.
+  XGrabKey(...);
+  //   d. Switch windows with alt + tab.
+  XGrabKey(...);
+
+  LOG(INFO) &lt;&lt; &quot;Framed window &quot; &lt;&lt; w &lt;&lt; &quot; [&quot; &lt;&lt; frame &lt;&lt; &quot;]&quot;;
+}
+</code></pre>
+<p>The outline of the code should be fairly clear following our discussion. A few additional points to note:</p>
+<ul>
+<li>
+<p>Regarding the <em>save-set</em> and <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"><code>XAddToSaveSet()</code></a>:</p>
+<blockquote>
+<p>The save-set is a list of windows, usually maintained by the window manager, but including only windows created by other clients. If the window manager dies, all windows listed in the save-set will be reparented back to their closest living ancestor if they were reparented in the first place and mapped if the window manager has unmapped them so that it could map an icon.</p>
+<p>The save-set is necessary because the window manager might not exit normally. The user might kill it with CTRL-C if it is running in the foreground, or more likely, the user might get the process number and kill it. Actually, the actions of the save-set are performed even if the window manager exits normally, so less code is needed since the save-set does the cleaning up.</p>
+<p>Window managers almost always place in the save-set all the windows they reparent or iconify, using <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"><code>XAddToSaveSet()</code></a>.</p>
+<p>Windows are automatically removed from the save-set when they are destroyed.</p>
+<p>—  Xlib Programming Manual §16.4</p>
+</blockquote>
+</li>
+<li>
+<p>When our window manager creates a frame window (step 2 in the example code), it will also trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> event for the frame window. It will ignore it just like it ignores other <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> events as discussed earlier.</p>
+</li>
+<li>
+<p>When our window manager calls <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a> in step 5 in the example code, it will trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event, which it will ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ReparentNotify:
+        OnReparentNotify(e.xreparent);
+        break;
+      ...
+}
+
+void WindowManager::OnReparentNotify(const XReparentEvent&amp; e) {}
+</code></pre>
+</li>
+<li>
+<p>When our window manager calls <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a> to map the frame window (step 6 in the example code), the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event. Our window manager will later receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"><code>MapNotify</code></a> event, which it can ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case MapNotify:
+        OnMapNotify(e.xmap);
+        break;
+      ...
+}
+
+void WindowManager::OnMapNotify(const XMapEvent&amp; e) {}
+</code></pre>
+</li>
+</ul>
+<h2 id="configuringamappedwindow">Configuring a Mapped Window</h2>
+<p>A client application can configure a window that is currently visible, again with the <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> function. For example, an application may want to resize a window to better accomodate its contents. When a reparenting window manager receives the resulting <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> and decides to grant the request, it additionally needs to resize / reposition the corresponding frame window and any window decorations.</p>
+<pre><code>void WindowManager::OnConfigureRequest(const XConfigureRequestEvent&amp; e) {
+  XWindowChanges changes;
+  // Copy fields from e to changes.
+  ...
+  if (clients_.count(e.window)) {
+    const Window frame = clients_[e.window];
+    XConfigureWindow(display_, frame, e.value_mask, &amp;changes);
+    LOG(INFO) &lt;&lt; &quot;Resize [&quot; &lt;&lt; frame &lt;&lt; &quot;] to &quot; &lt;&lt; Size&lt;int&gt;(e.width, e.height);
+  }
+  // Grant request by calling XConfigureWindow().
+  ...
+}
+</code></pre>
+<p>When our window manager re-configures the frame window with the <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> call above, the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> event. Our window manager will then receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureEvent.3.html"><code>ConfigureNotify</code></a> event, which it will ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ConfigureNotify:
+        OnConfigureNotify(e.xconfigure);
+        break;
+      ...
+}
+
+void WindowManager::OnConfigureNotify(const XConfigureEvent&amp; e) {}
+</code></pre>
+<h2 id="unmappingawindow">Unmapping a Window</h2>
+<p>When a client application <em>unmaps</em> (i.e. hides) a window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"><code>XUnmapWindow()</code></a>, for example in response to the user exiting or minimizing the application, the window manager will receive a <code>UnmapNotify</code> event. Unlike the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event is delivered to the window manager after the fact, and the window manager can only respond to it, not intercept it.</p>
+<p>A reparenting window manager will typically want to reverse the actions it performed in response to <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a>. In other words, it would reparent the client window back to the root window, and destroy the corresponding frame window.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case UnmapNotify:
+        OnUnmapNotify(e.xunmap);
+        break;
+      ...
+}
+
+void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
+  // If the window is a client window we manage, unframe it upon UnmapNotify. We
+  // need the check because we will receive an UnmapNotify event for a frame
+  // window we just destroyed ourselves.
+  if (!clients_.count(e.window)) {
+    LOG(INFO) &lt;&lt; &quot;Ignore UnmapNotify for non-client window &quot; &lt;&lt; e.window;
+    return;
+  }
+
+  Unframe(e.window);
+}
+
+void WindowManager::Unframe(Window w) {
+  // We reverse the steps taken in Frame().
+  const Window frame = clients_[w];
+  // 1. Unmap frame.
+  XUnmapWindow(display_, frame);
+  // 2. Reparent client window back to root window.
+  XReparentWindow(
+      display_,
+      w,
+      root_,
+      0, 0);  // Offset of client window within root.
+  // 3. Remove client window from save set, as it is now unrelated to us.
+  XRemoveFromSaveSet(display_, w);
+  // 4. Destroy frame.
+  XDestroyWindow(display_, frame);
+  // 5. Drop reference to frame handle.
+  clients_.erase(w);
+
+  LOG(INFO) &lt;&lt; &quot;Unframed window &quot; &lt;&lt; w &lt;&lt; &quot; [&quot; &lt;&lt; frame &lt;&lt; &quot;]&quot;;
+}
+</code></pre>
+<p>A few additional points to note:</p>
+<ul>
+<li>
+<p>When our window manager unmaps the frame window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"><code>XUnmapWindow()</code></a> in step 1 in the example code above, it will again receive a corresponding <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event. This is the reason why the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event handler needs to check that the unmapped window is an actual client window.</p>
+</li>
+<li>
+<p>When our window manager makes the client window a direct child of the root window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a> in step 2 above, it will receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event. As discussed in the <a href="#mapping-a-window">Mapping a Window</a> section above, this <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event will be ignored.</p>
+</li>
+<li>
+<p>When our window manager destroys the frame window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"><code>XDestroyWindow()</code></a> in step 4, it will trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"><code>DestroyNotify</code></a> event. This event will also be ignored, as shown in the next section.</p>
+</li>
+</ul>
+<p>At this point, the client window has become invisible, but not yet destroyed. It can be displayed again with a call to <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a>, which would take us back to the <a href="#mapping-a-window">Mapping a Window</a> step. It could also be reconfigured in this state, which would take us back to the <a href="#configuring-a-newly-created-window">Configuring a Newly Created Window</a> step.</p>
+<h2 id="destroyingawindow">Destroying a Window</h2>
+<p>When a client application exits or no longer needs a window, it will call <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"><code>XDestroyWindow()</code></a> to dispose of the window. This triggers a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"><code>DestroyNotify</code></a> event. In our case, there’s nothing we need to do in response.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case DestroyNotify:
+        OnDestroyNotify(e.xdestroywindow);
+        break;
+      ...
+}
+
+void WindowManager::OnDestroyNotify(const XDestroyWindowEvent&amp; e) {}
+</code></pre>
+<h2 id="framingexistingtoplevelwindows">Framing Existing Top-Level Windows</h2>
+<p>Now that we’ve walked through the life cycle of a client window, from creation to destruction, let’s turn our attention to the problem of existing top-level windows.</p>
+<p>You may recall from <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I</a> that X applications in general run just fine without a window manager. Depending on how an X session is started (e.g. <code>xinitrc</code>), by the time a window manager starts, any number of windows may have already been created by other applications. Additionally, the user can kill a running window manager and replace it with a different window manager, without affecting windows from other applications.</p>
+<p>Therefore, when our window manager starts up, it needs to handle any existing top-level windows that are already mapped. As a reparenting window manager, it will invoke the same <code>Frame()</code> function on such windows as if these windows are being mapped for the first time:</p>
+<pre><code>void WindowManager::Run() {
+  // 1. Initialization.
+  //   a. Select events on root window. Use a special error handler so we can
+  //   exit gracefully if another window manager is already running.
+  ...
+  //   b. Set error handler.
+  ...
+  //   c. Grab X server to prevent windows from changing under us while we
+  //   frame them.
+  XGrabServer(display_);
+  //   d. Frame existing top-level windows.
+  //     i. Query existing top-level windows.
+  Window returned_root, returned_parent;
+  Window* top_level_windows;
+  unsigned int num_top_level_windows;
+  CHECK(XQueryTree(
+      display_,
+      root_,
+      &amp;returned_root,
+      &amp;returned_parent,
+      &amp;top_level_windows,
+      &amp;num_top_level_windows));
+  CHECK_EQ(returned_root, root_);
+  //     ii. Frame each top-level window.
+  for (unsigned int i = 0; i &lt; num_top_level_windows; ++i) {
+    Frame(top_level_windows[i], true /* was_created_before_window_manager */);
+  }
+  //     iii. Free top-level window array.
+  XFree(top_level_windows);
+  //   e. Ungrab X server.
+  XUngrabServer(display_);
+
+  // 2. Main event loop.
+  ...
+}
+
+void WindowManager::OnMapRequest(const XMapRequestEvent&amp; e) {
+  // 1. Frame or re-frame window.
+  Frame(e.window, false /* was_created_before_window_manager */);
+  ...
+}
+
+void WindowManager::Frame(Window w, bool was_created_before_window_manager) {
+  ...
+  // 1. Retrieve attributes of window to frame.
+  ...
+  // 2. If window was created before window manager started, we should frame
+  // it only if it is visible and doesn't set override_redirect.
+  if (was_created_before_window_manager) {
+    if (x_window_attrs.override_redirect ||
+        x_window_attrs.map_state != IsViewable) {
+      return;
+    }
+  }
+  // 3. Create frame.
+  ...
+}
+
+void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
+  ...
+
+  // Ignore event if it is triggered by reparenting a window that was mapped
+  // before the window manager started.
+  //
+  // Since we receive UnmapNotify events from the SubstructureNotify mask, the
+  // event attribute specifies the parent window of the window that was
+  // unmapped. This means that an UnmapNotify event from a normal client window
+  // should have this attribute set to a frame window we maintain. Only an
+  // UnmapNotify event triggered by reparenting a pre-existing window will have
+  // this attribute set to the root window.
+  if (e.event == root_) {
+    LOG(INFO) &lt;&lt; &quot;Ignore UnmapNotify for reparented pre-existing window &quot;
+              &lt;&lt; e.window;
+    return;
+  }
+
+  Unframe(e.window);
+}
+</code></pre>
+<p>Some additional things to note:</p>
+<ul>
+<li>
+<p>You may notice that the process of framing existing top-level windows is guarded by <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XGrabServer.3.html"><code>XGrabServer()</code></a> and <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUngrabServer.3.html"><code>XUngrabServer()</code></a>. From the <em>Xlib Programming Manual</em>:</p>
+<blockquote>
+<p>These functions can be used to control processing of output on other connections by the window system server. While the server is grabbed, no processing of requests or close downs on any other connection will occur.</p>
+<p>—  Xlib Programming Manual §9.5</p>
+</blockquote>
+<p>By <em>grabbing</em> the X server, our window manager ensures that, between the time when it fetches the list of existing top-level windows and when it finishes framing them, no other application can interfere and mess up our state: no new windows can be created, and no existing windows can be modified or destroyed.</p>
+</li>
+<li>
+<p>The <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"><code>override_redirect</code></a> attribute, if set to true, indicates that a window should not be managed by window managers. From the <em>Xlib Programming Manual</em>:</p>
+<blockquote>
+<p>To control window placement or to add decoration, a window manager often needs to intercept (redirect) any map or configure request. Pop-up windows, however, often need to be mapped without a window manager getting in the way. […]</p>
+<p>The override-redirect flag specifies whether map and configure requests on this window should override a <code>SubstructureRedirectMask</code> on the parent. You can set the override-redirect flag to True or False (default). Window managers use this information to avoid tampering with pop-up windows […].</p>
+<p>—  Xlib Programming Manual §3.2.8</p>
+</blockquote>
+<p>The reason our window manager doesn’t need to check for this attribute except at start up is that the X server knows not to redirect events from such windows:</p>
+<blockquote>
+<p>The window manager […] will normally ignore windows that are mapped with their <code>override_redirect</code> attribute set, since no *Request events will be generated for them.</p>
+<p>—  Xlib Programming Manual §16.3</p>
+</blockquote>
+</li>
+<li>
+<p>The <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"><code>map_state</code></a> attribute indicates whether a window is currently visible (mapped). When <code>Frame()</code> is invoked for pre-existing windows during start up, we want to ignore windows that are currently unmapped. However, when <code>Frame()</code> is invoked during the event loop as part of the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> handler, we know that the client window to be framed is necessarily still unmapped, as our window manager wouldn’t have granted the request yet.</p>
+</li>
+<li>
+<p>You might be wondering why an additional check for <code>e.event == root_</code> is needed in the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> handler. It turns out that reparenting an already mapped window (<a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>) will trigger a pair of <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> and <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"><code>MapNotify</code></a> events in addition to <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a>. Therefore, when we enter into the event loop, we will receive an <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event for every pre-existing top-level window we reparented. We can distinguish these events by their <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute, which in this case represents the parent of the client window. Normally, when a client window we already framed is unmapped, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute would be its frame window. But when a pre-existing window is reparented at start up, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute in the resulting <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event will be its original parent - i.e., the root window.</p>
+</li>
+</ul>
+<h1 id="whatsnext">What’s Next</h1>
+<p>At this point, we have a basic but functional reparenting window manager that will correctly handle the life cycle of windows. If you strip out window decorations, shortcuts and fancy UI, the core structure of every X window manager will quite closely resemble what we have here.</p>
+<p>In our next installment, we will improve the user-facing functionality of our window manager by adding ways to move, resize and close windows. In the meantime, you’re more than welcome to check out the code for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> on GitHub.</p>
+<blockquote>
+<ul>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>Part III: Interaction with Application Windows</strong></a></p>
+</li>
+</ul>
+</blockquote>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Flashing a Sprint Nexus S 4G to Verizon]]></title><description><![CDATA[<!--kg-card-begin: markdown--><blockquote>
+<p>I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided</p></blockquote>]]></description><link>https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/</link><guid isPermaLink="false">5bc6e46460307a000159bd9f</guid><category><![CDATA[Android]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Wed, 11 Nov 2015 08:27:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><blockquote>
+<p>I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided to publish it for what it’s worth.</p>
+<p>If you’re interested in the high-level view of how CDMA phones are programmed, check out my previous article <a href="https://jichu4n.com/posts/carrier-programming-on-cdma-android-phones.html">Carrier Programming on CDMA Android Phones</a>.</p>
+</blockquote>
+<h1 id="introduction">Introduction</h1>
+<p>This is a guide for flashing a Sprint Samsung Nexus S 4G to a standard Verizon monthly plan, and voice, texting and 3G data will all be fully functional. This method will likely also work on many other phones, especially Samsung ones, and should theoretically work just file on any ROM as well.</p>
+<p>Note that this procedure entails ESN cloning, which may be illegal in your region. Please make sure you have an understanding of all applicable laws before proceeding. The author of this guide cannot be held responsible for any legal infractions that may ensue. Finally, you are solely responsible for any consequences of your actions as a result of following this guide. While I believe it to be quite safe, I cannot guarantee you that this process will not brick your devices or start a zombie apocalypse.</p>
+<h1 id="requirementsandsetup">Requirements and Setup</h1>
+<p>We will need the following before starting:</p>
+<ul>
+<li>
+<p>A currently active Verizon Wireless Android phone and plan. Please beware that not all phones will work; many phones do not allow us to extract all the information we need for this process. For instance, my Motorola Droid 3 did not work, and I had to purchase and activate an HTC Incredible for this. This phone will be our donor phone.</p>
+</li>
+<li>
+<p>A rooted Samsung Nexus 4G.</p>
+</li>
+<li>
+<p>A computer running a recent version of Windows, with at least 2 USB ports.</p>
+</li>
+<li>
+<p>2 MicroUSB cables.</p>
+</li>
+</ul>
+<p>In addition, we need the following software:</p>
+<ul>
+<li>
+<p>USB diagnostic drivers for your donor phone. These vary by manufacturer and their configuration may be quite complex; search online for how to set up yours. For HTC phones, download and install HTC Sync from HTC’s website (archived <a href="http://www.mediafire.com/?65l9idwgbzq5avb">here</a>).</p>
+</li>
+<li>
+<p>USB diagnostic drivers for the Nexus S 4G. The easiest way is to download and install PdaNet (archived <a href="http://www.mediafire.com/?jjdv8g7ie82kxdx">here</a>). We don’t actually need the functionality of PdaNet, but it happens to bundle the drivers we need. Select Samsung when prompted for the manufacturer of our phone.</p>
+</li>
+<li>
+<p>QPST and QXDM (archived <a href="http://www.mediafire.com/?ojco4qzf4r688k6">here</a>). These are internal Qualcomm tools; we will use them to clone the MEID of the donor phone.</p>
+</li>
+<li>
+<p>DFS (archived <a href="http://www.mediafire.com/?wp7hc8ny854pqrz">here</a>). This is a third-party tool for working with CDMA phones. The demo version will suffice.</p>
+</li>
+</ul>
+<h1 id="step1preparation">Step 1: Preparation</h1>
+<p>First, make sure the donor phone is fully activated and that calls, text and data are all fully functional.</p>
+<p>Now, find the HEX MEID of the donor phone. On the HTC Incredible, this can be found under <em>Settings → About Phone → Phone Identity</em>. On most Android phones, this is under <em>Settings → About Phone → Status</em>. It is also usually printed on a label underneath the phone battery. This should be 14 digits and usually begins with <code>A00000</code>.</p>
+<p>Now put the donor phone in airplane mode.</p>
+<p>We will next connect both phones to the computer in diagnostic mode.</p>
+<ul>
+<li>
+<p>On the Nexus S 4G, dial <code>*#*#8778#*#*</code>, then select <em>MODEM</em> under <em>USB</em>. Connect the Nexus S 4G to the computer. If drivers were installed correctly, you should now see a <em>SAMSUNG Mobile Modem Diagnostic Serial Port (WDM)</em> under <em>Ports (COM &amp; LPT)</em> in Windows’s Device Manager. Note down the port number of the Nexus S 4G; we will assume COM4 for convenience.</p>
+</li>
+<li>
+<p>On the HTC Incredible, dial <code>##3424#</code>, hit <em>Call</em>, connect it to the computer, then follow the instructions in <a href="http://forum.xda-developers.com/showthread.php?t=1619314">this thread</a> with Device Manager. If everything goes well you should now see a <em>HTC Diagnostic Interface</em> under <em>Ports (COM &amp; LPT)</em> in Device Manager. Note down the port number of the HTC Incredible; we will assume COM11 for convenience.</p>
+</li>
+</ul>
+<p>After confirming that both phones show up under <em>Ports (COM &amp; LPT)</em>, run QPST Configuration and hit <em>Add New Port…</em>. You should see both phones on the left. Select one and hit OK. Then repeat for the other phone.</p>
+<h1 id="step2cloning">Step 2: Cloning</h1>
+<p>We will now clone the MEID of the donor phone onto the target phone. Open QXDM Professional. Select <em>Options → Communications…</em>. For <em>Target Port</em>, select the port corresponding to the Nexus S 4G, say COM4, and hit <em>OK</em>. Then in the text box labeled <em>Command</em>, type the following:</p>
+<pre><code>Password 01F2030F5F678FF9
+</code></pre>
+<p>Hit <em>Enter</em>. You should see <code>Password Result = Correct</code> at the bottom of the <em>Command Output</em> window.</p>
+<p>Now in the <em>Command</em> text box, type the following, replacing <code>&lt;MEID&gt;</code> by the hex MEID of the <strong>donor</strong> phone:</p>
+<pre><code>RequestNVItemWrite meid 0x&lt;MEID&gt;
+</code></pre>
+<p>Hit <em>Enter</em>. You should see it repeat back the MEID to you. Type <code>RequestNVItemRead meid</code> followed by <em>Enter</em> to make sure the write happened.</p>
+<p>Close QXDM Professional and reboot the Nexus S 4G. Rebooting the target phone after writing a new MEID is essential! If prompted, do NOT go through the activation process on the Nexus S 4G. Just select <em>Skip</em> when possible.</p>
+<h1 id="step3resetspc">Step 3: Reset SPC</h1>
+<p>In order to program the Nexus S 4G, we need to obtain or reset the SPC code (also known as the MSL) of the phones. If you already know the SPC code for your phones and would rather not reset the SPC code, you can skip this step.</p>
+<p>Open QXDM Professional again. Go through <em>Options → Communications</em> and make sure the <em>Target Port</em> is still COM4. Hit <em>OK</em>. In the command text box, type the following two lines, each followed by an <em>Enter</em>:</p>
+<pre><code>Password 01F2030F5F678FF9
+RequestNVItemWrite sec_code 000000
+</code></pre>
+<p>If this is successful, the SPC on the Nexus S 4G will have been reset to <code>000000</code>. Repeat for the donor phone (in our example, on COM11).</p>
+<p>Close QXDM Professional after done. All QPST / QXDM programs must be closed before proceeding, or DFS will complain.</p>
+<h1 id="step4programmingcdmachipset">Step 4: Programming CDMA Chipset</h1>
+<p>Launch DFS. Click <em>Ports</em> on the top left. In the dialog box, double-click on each port representing our phones, in our case, COM4 and COM11, and close the dialog box. Now make sure the <em>SPC</em> text box above reads <code>000000</code> (or if you chose not to reset the SPC, whatever your SPC is). Type <code>01F2030F5F678FF9</code> into the <em>Pwd</em> text box.</p>
+<h2 id="step4abasiccdmasettings">Step 4.a: Basic CDMA settings</h2>
+<p>Let’s now copy basic CDMA settings from the donor phone to the target phone. In the drop-down menu next to <em>Ports</em>, select the donor phone (COM11). Switch to the <em>Programming</em> tab and the <em>NAM</em> tab under it. Click the <em>SPC</em> and <em>Pwd</em> buttons to send the SPC and NV password to the phone to unlock it. Then hit <em>Read</em> beneath <em>Network identification</em>. The text fields below should be populated by information from the donor phone. Now select COM4 in the drop-down menu next to <em>Ports</em>, click <em>SPC</em> and <em>Pwd</em>, then click <em>Write</em> beneath <em>Network identification</em>.</p>
+<h2 id="step4bprl">Step 4.b: PRL</h2>
+<p>Now, let’s copy over the PRL (or <em>Preferred Roaming List</em> - essentially a database of tower locations). Again, select COM11 under <em>Ports</em> and click <em>Read</em> under <em>PRL</em> towards the right. Then select COM4 under <em>Ports</em> and click <em>Write</em> under <em>PRL</em>.</p>
+<h2 id="step4c2gdatasettings">Step 4.c: 2G Data settings</h2>
+<p>Now go to the next tab, <em>Data</em>. Select COM11 and hit <em>Read</em>. Switch to COM4 and hit <em>Write</em>. If you observe errors in the log window in the bottom, and / or no information shows up in the <em>Pwd</em> boxes under <em>PPP</em> and <em>HDR AN Long</em>, your donor phone doesn’t support the extraction of some data passwords, and you will have to try a different donor phone.</p>
+<h2 id="step4c3gdatasettings">Step 4.c: 3G Data settings</h2>
+<p>We do the same with <em>Mobile IP</em>. Select COM11 and hit <em>Read</em>. Switch to COM4 and hit <em>Write</em>. Then hit <em>Write current profile settings</em>. Again, if you encounter errors, or no information shows up under <em>AAA Shared secret</em> and <em>HA Shared Secret</em>, you will have to try a different donor phone.</p>
+<p>Finally, we need to copy over a file containing a secret key used to establish a 3G connection. Go to the <em>EFS</em> tab towards the top. Select COM11 and hit <em>Read EFS</em>. Click the &quot;<em>+</em>&quot; sign of the root folder on the left and then the &quot;<em>+</em>&quot; sign next to the <code>DMU</code> folder and you should see a file called <code>10.key</code>. Right-click on this file and hit <em>Save…</em>. Save this file somewhere on your hard drive. Now switch to COM4 and hit <em>Read EFS</em> again. Select the root folder on the left, type <code>/DMU</code> under <em>Path (57 max)</em> on the right and hit <em>Add Item</em> to create a folder named <code>DMU</code> on the Nexus S 4G. Then select <code>DMU</code> on the left, click on the check box named <em>I want to add file from PC</em>, and select the <code>10.key</code> file we just saved. Then hit <em>Add Item</em> to upload the <code>10.key</code> file to <code>/DMU/10.key</code>.</p>
+<p>The programming is now done. Close DFS, select <em>OK</em> and <em>OK</em> again when prompted whether to send a <em>mode reset</em> to the phone. The Nexus S 4G will now reboot.</p>
+<h1 id="step5programmingandroid">Step 5: Programming Android</h1>
+<p>We will now modify some Android system files to Verizon settings. This step will need to be repeated whenever you flash a new ROM on the Nexus S 4G in the future.</p>
+<h2 id="1clickprogrammingapp">1-click programming app</h2>
+<p>I have built a 1-click Android application that automates this step; you can find it <a href="http://www.mediafire.com/?m796blddz3g8ifd">here</a>. It requires root as it will need to modify system files. Install the application and click the button in the middle. When the process finishes, you will be prompted to reboot. Simply reboot your phone and you’re all set; you may uninstall the app, or you could keep it around for when you update to a new ROM.</p>
+<p>If the 1-click app does not work for you, or if you want more control over what it does, follow the steps below. You do not need to do any of the following if you already used the app above.</p>
+<h2 id="step5afixvoicecalling">Step 5.a: Fix voice calling</h2>
+<p>This is required to enable calls on Verizon. On the Nexus S 4G, connect to WiFi and install ES File Explorer from the Play Store. Then go to <em>Menu → Settings</em> and check <em>Up to Root</em>, <em>Root Explorer</em>, and <em>Mount File System</em>. Allow it to use superuser privileges if asked. Then navigate to <code>/system</code> and open <code>build.prop</code> with <em>ES Note Editor</em>. Find the following two lines:</p>
+<pre><code>ro.cdma.home.operator.numeric=310120
+ro.cdma.home.operator.alpha=Sprint
+</code></pre>
+<p>Change them to read:</p>
+<pre><code>ro.cdma.home.operator.numeric=310004
+ro.cdma.home.operator.alpha=Verizon
+</code></pre>
+<p>Then add a line below (or anywhere in the file) that says:</p>
+<pre><code>ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83
+</code></pre>
+<p>Hit <em>Menu → Save</em> and then <em>Back</em> to exit.</p>
+<h2 id="step5bfixroaming">Step 5.b: Fix roaming</h2>
+<p>This step tells Android to treat the Verizon network as the home network. It sets the roaming status to &quot;Not roaming&quot;, removes the triangular roaming indicator in the status bar and changes the displayed name of the current network to &quot;Verizon Wireless&quot;.</p>
+<p>Now navigate to <code>/system/framework</code> and copy <code>framework-res.apk</code> onto your computer - you can use adb or email it to yourself or whatever (you have to copy it to the internal SD card before you can email it though). Once on the computer, rename it <code>framework-res.zip</code> (yes, an APK is just a zip archive) and use your favorite program to replace the file <code>res/xml/eri.xml</code> inside it with the one at <a href="http://www.mediafire.com/?jdsigtxi4gvp6ks">this link</a>. Now rename it back to <code>framework-res.apk</code>, copy it back onto the Nexus S 4G (using adb or whatever) and use ES File Explorer to overwrite the existing <code>/system/framework/framework-res.apk</code> with it.</p>
+<h2 id="step5caddverizonapns">Step 5.c: Add Verizon APNs</h2>
+<p>This last step sets up Verizon APNs that enable web and MMS. Use ES File Explorer or any other tool to replace <code>/system/etc/apns-conf.xml</code> with the one at <a href="http://www.mediafire.com/?g0vd7nfs47ksujz">this link</a>.</p>
+<h1 id="step6rebootprofit">Step 6: Reboot &amp; PROFIT</h1>
+<p>The Nexus S 4G should now be a fully functional Verizon Wireless phone. If you are curious about what each of the steps means, you’re welcome to check out my previous article <a href="https://jichu4n.com/posts/carrier-programming-on-cdma-android-phones.html">Carrier Programming on CDMA Android Phones</a> for a high-level view of how CDMA phones are programmed.</p>
+<p>While your mileage may vary, I hope the above information have been of help. Since I no longer use Verizon Wireless and no longer own any of the phones mentioned above, please take all this information with a grain of salt.</p>
+<p>Good luck, and happy hacking!</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Setting Up DKIM And SRS In Postfix]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>In my previous post <a href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial.html"><em>Custom Domain E-mails With Postfix And Gmail: The Missing Tutorial</em></a>, we set up a Postfix mail server on a custom domain that integrates seamlessly with Gmail.</p>
+<p>However, the tutorial skipped two important security standards that will help prevent e-mails routed through our server from being marked</p>]]></description><link>https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/</link><guid isPermaLink="false">5bc6df7260307a000159bd7f</guid><category><![CDATA[Linux]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Tue, 09 Dec 2014 08:06:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>In my previous post <a href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial.html"><em>Custom Domain E-mails With Postfix And Gmail: The Missing Tutorial</em></a>, we set up a Postfix mail server on a custom domain that integrates seamlessly with Gmail.</p>
+<p>However, the tutorial skipped two important security standards that will help prevent e-mails routed through our server from being marked as spam: <a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a> and <a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>. This article will show you how to add support for DKIM and SRS to a Postfix server.</p>
+<p>Similar to the <a href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial.html">previous tutorial</a>, we will assume a Ubuntu server in our examples.</p>
+<h1 id="step1dkim">Step 1: DKIM</h1>
+<p><a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is a mechanism for</p>
+<ol>
+<li>
+<p>A sender e-mail program to sign an outgoing e-mail message, and</p>
+</li>
+<li>
+<p>A recipient e-mail program to verify said signature.</p>
+</li>
+</ol>
+<p>More concretely, let’s say Gmail receives an e-mail message from <code>myserver.example.com</code>. DKIM allows Gmail to verify that the e-mail was indeed sent by the designated e-mail server program on <code>myserver.example.com</code>, and not by, say, a virus running on <code>myserver.example.com</code> or a malicious user who happens to have access to <code>myserver.example.com</code>.</p>
+<p>We will use <a href="http://www.opendkim.org/">OpenDKIM</a> for this tutorial. To install OpenDKIM on Ubuntu:</p>
+<pre><code>$ sudo apt-get install opendkim opendkim-tools
+</code></pre>
+<h2 id="etcopendkimconf"><code>/etc/opendkim.conf</code></h2>
+<p>Edit <code>/etc/opendkim.conf</code> to match the following:</p>
+<pre><code># OpenDKIM config.
+
+# Log to syslog
+Syslog                  yes
+SyslogSuccess           yes
+LogWhy                  yes
+# Required to use local socket with MTAs that access the socket as a non-
+# privileged user (e.g. Postfix)
+UMask                   002
+
+Mode                    sv
+PidFile                 /var/run/opendkim/opendkim.pid
+UserID                  opendkim:opendkim
+Socket                  inet:12301@localhost
+
+Canonicalization        relaxed/simple
+SignatureAlgorithm      rsa-sha256
+
+# Sign for example.com with key in /etc/opendkim.d/mail.private using
+# selector 'mail' (e.g. mail._domainkey.example.com)
+Domain                  example.com
+KeyFile                 /etc/opendkim.d/mail.private
+Selector                mail
+
+ExternalIgnoreList      refile:/etc/opendkim.d/TrustedHosts
+InternalHosts           refile:/etc/opendkim.d/TrustedHosts
+</code></pre>
+<p>You can check out a detailed explanation for the meaning of each option with <code>man opendkim.conf</code>.</p>
+<h2 id="etcopendkimdtrustedhosts"><code>/etc/opendkim.d/TrustedHosts</code></h2>
+<p>Create the directory <code>/etc/opendkim.d</code> and put the following in <code>/etc/opendkim.d/TrustedHosts</code>. This instructs the OpenDKIM server to sign e-mails delivered by any server matching these expressions (such as <code>myserver_2.example.com</code>).</p>
+<pre><code>127.0.0.1
+::1
+localhost
+192.168.0.1/24
+
+*.example.com
+</code></pre>
+<h2 id="dkimkeys">DKIM keys</h2>
+<p>Now, let’s generate our DKIM signing keys:</p>
+<pre><code>$ cd /etc/opendkim.d
+$ sudo opendkim-genkey -s mail -d example.com
+</code></pre>
+<p>This will produce two files in <code>/etc/opendkim.d</code>: our private key, <code>mail.private</code>, and our public key, <code>mail.txt</code>.</p>
+<p>We should make sure only OpenDKIM can read the private key, so that a malicious program or user on the same server won’t be able to forge our signature:</p>
+<pre><code>$ chmod 600 mail.private
+$ chown opendkim:opendkim mail.private
+</code></pre>
+<h2 id="dkimpublickeydnsrecord">DKIM public key DNS record</h2>
+<p>The next step is to publish our public key through DNS, so that any recipient e-mail program can verify our signature. If we look at our public key <code>mail.txt</code> generated in the previous step, it should look like something like this:</p>
+<pre><code>mail._domainkey IN      TXT     ( &quot;v=DKIM1; k=rsa; &quot;
+          &quot;p=&lt;alphabetical soup&gt;&quot; )  ; ----- DKIM key mail for example.com
+</code></pre>
+<p>Create the following <strong>TXT</strong> DNS record for <code>example.com</code> (how to update DNS records will depend on the DNS hosting provider):</p>
+<ul>
+<li>
+<p>Name: <code>mail._domainkey.example.com</code></p>
+</li>
+<li>
+<p>Value: <code>v=DKIM1; k=rsa; p=&lt;alphabetical soup&gt;</code></p>
+</li>
+</ul>
+<p>where <code>&lt;alphabetical soup&gt;</code> is the public key found in <code>mail.txt</code> after <code>p=</code>. Note that DNS records will take a while (depending on our provider, up to a day) to propagate.</p>
+<h2 id="opendkimserver">OpenDKIM server</h2>
+<p>We can now start the OpenDKIM server with</p>
+<pre><code>$ sudo /etc/init.d/opendkim start
+</code></pre>
+<h2 id="postfix">Postfix</h2>
+<p>The last step is to tell Postfix to use OpenDKIM to sign outgoing e-mail messages. Add the following to <code>/etc/postfix/main.cf</code>:</p>
+<pre><code># Milter settings.
+milter_protocol = 2
+milter_default_action = accept
+# OpenDKIM runs on port 12301.
+smtpd_milters = inet:localhost:12301
+non_smtpd_milters = inet:localhost:12301
+</code></pre>
+<p>If you already have other milters configured (such as <a href="http://spamassassin.apache.org/">SpamAssassin</a>), simply add <code>inet:localhost:12301</code> to your existing <code>smtpd_milters</code> and <code>non_smtpd_milters</code> lines, prefixed by a comma.</p>
+<p>Let’s now restart Postfix with the new configuration:</p>
+<pre><code>$ sudo postfix reload
+</code></pre>
+<p>…and we’re done!</p>
+<h1 id="step2srs">Step 2: SRS</h1>
+<p><a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a standard for including forwarding / relay information in a forwarded / relayed e-mail message.</p>
+<p>For example, suppose <code>alice@hotmail.com</code> sends an e-mail to <code>john@example.com</code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code>john123@gmail.com</code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
+<p>We will use <a href="https://github.com/roehling/postsrsd">PostSRSd</a> to implement SRS in our Postfix server. It works out of the box with Postfix and is a breeze to set up, but unfortunately is not included in the official Ubuntu / Debian package repositories.</p>
+<h2 id="opensrsd">OpenSRSd</h2>
+<p>Let’s build and install OpenSRSd from source:</p>
+<pre><code># Dependencies.
+$ sudo apt-get install unzip cmake
+
+# Download and extract source code from GitHub.
+$ cd /tmp
+$ curl -L -o postsrsd.zip \
+    https://github.com/roehling/postsrsd/archive/master.zip
+$ unzip postsrsd.zip
+
+# Build and install.
+$ cd postsrsd-master
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_INSTALL_PREFIX=/usr ../
+$ make
+$ sudo make install
+</code></pre>
+<p>The default config provided by PostSRSd (<code>/etc/default/postsrsd</code>) will pretty much work out of the box for our case.</p>
+<p>The install script will also conveniently install an Upstart script for PostSRSd. Let’s start it now:</p>
+<pre><code>$ sudo service postsrsd start
+</code></pre>
+<h2 id="postfix">Postfix</h2>
+<p>Finally, we configure Postfix to use PostSRSd. Add the following to <code>/etc/postfix/main.cf</code>:</p>
+<pre><code># PostSRSd settings.
+sender_canonical_maps = tcp:localhost:10001
+sender_canonical_classes = envelope_sender
+recipient_canonical_maps = tcp:localhost:10002
+recipient_canonical_classes= envelope_recipient,header_recipient
+</code></pre>
+<p>And restart Postfix with the new configuration:</p>
+<pre><code>$ sudo postfix reload
+</code></pre>
+<p>That’s it!</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Custom domain e-mail addresses, like <code>john@johnscompany.com</code>, are cool and professional-looking. Would <em>you</em> want to e-mail potential clients as <code>john123@gmail.com</code>?</p>
+<p>On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as</p>]]></description><link>https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/</link><guid isPermaLink="false">5bc6de6560307a000159bd6f</guid><category><![CDATA[Linux]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Thu, 06 Nov 2014 08:01:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Custom domain e-mail addresses, like <code>john@johnscompany.com</code>, are cool and professional-looking. Would <em>you</em> want to e-mail potential clients as <code>john123@gmail.com</code>?</p>
+<p>On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as <code>john@johnscompany.com</code>, but right from the comfort of our Gmail account?</p>
+<p>Today, if we want to <strong>use Gmail to send and receive e-mails on a custom domain</strong>, we have a couple of options:</p>
+<ul>
+<li>
+<p><strong><a href="http://www.google.com/work/apps/business/">Google Apps for Work</a></strong> is Google’s own offering. It’s simple to set up and manage, but it’s pretty pricey at $5/mo per user, especially if we don’t need the bundled collaborative features like Google Docs and Calendar.</p>
+</li>
+<li>
+<p><strong>Third-party services</strong> could get the job done at a lower price point; for example, <a href="https://pobox.com/">Pobox</a> offers plans starting at $20/yr. The downside is that we will have to trust another organization with our e-mail.</p>
+</li>
+<li>
+<p><strong>Set up our own e-mail forwarding server</strong>. It’s fairly easy (if we follow this guide :) and if we already have shared / dedicated hosting or a VPS, this is basically free and gives us total control over our e-mail.</p>
+</li>
+</ul>
+<p>If you want to host <strong>custom domain e-mails in Gmail without paying for Google Apps</strong> or a third-party service, this tutorial is for you. It will show you how to quickly set up you own e-mail forwarding / relay server, and how to integrate it seamlessly with Gmail.</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>For this tutorial, we’ll assume we have access to:</p>
+<ul>
+<li>
+<p><strong>VPS or shared / dedicated hosting</strong>, with a dedicated IP address and capable of listening on ports 25 and 587. We will use a Ubuntu server for the examples.</p>
+</li>
+<li>
+<p><strong>DNS records for our domain</strong>. How DNS records are manipulated depends on the DNS hosting provider (or DNS server configuration).</p>
+</li>
+</ul>
+<p>We’ll assume</p>
+<ul>
+<li>
+<p>We have a domain <code>example.com</code>;</p>
+</li>
+<li>
+<p>We have a server <code>myserver.example.com</code>;</p>
+</li>
+<li>
+<p>We want to use the Gmail account <code>john123@gmail.com</code> to manage <code>john@example.com</code>.</p>
+</li>
+</ul>
+<h1 id="step1dnssetup">Step 1: DNS Setup</h1>
+<p>The first step in setting up our e-mail forwarding server is to add MX, PTR and <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework">SPF</a> DNS records for our server. This is really important as many e-mail providers, in order to prevent spam, will refuse to talk to mail servers without proper MX, PTR and SPF records set up. How to update DNS records will depend on the DNS hosting provider.</p>
+<p>The following is what we need:</p>
+<ul>
+<li>
+<p>An <strong>MX</strong> record for <code>example.com</code>, pointing to <code>myserver.example.com</code>.</p>
+<p>This tells the world that e-mails to <code>&lt;whatever&gt;@example.com</code> should be delivered to the server <code>myserver.example.com</code>.</p>
+</li>
+<li>
+<p>An <strong>A</strong> record for <code>myserver.example.com</code>, pointing to the IP address of our server.</p>
+</li>
+<li>
+<p>A <strong>PTR</strong> (reverse DNS) record mapping the IP address of our server to <code>myserver.example.com</code>.</p>
+<p>This allows Gmail to verify the legitimacy of our server via its IP when Gmail receives a forwarded e-mail from it.</p>
+</li>
+<li>
+<p>A <strong>TXT</strong> record, with key <code>example.com</code> and value <code>v=spf1 mx ~all</code>.</p>
+<p>This is an <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework">SPF</a> record; it tells Gmail that the servers specified in the MX records of <code>example.com</code>, in this case only <code>myserver.example.com</code>, are allowed to send e-mails purporting to be from <code>&lt;whatever&gt;@example.com</code>. All other servers attempting to do the same will be rejected. This should be a sane default value, but feel free to custom it as you like.</p>
+</li>
+</ul>
+<p>DNS records will take a while (depending on our provider, up to a day) to propagate. Until they do, e-mails forwarded by our new e-mail server may get marked as spam or rejected outright.</p>
+<h1 id="step2receivingemail">Step 2: Receiving E-mail</h1>
+<p>We’ll first set up an e-mail forwarding server which will let we receive e-mails sent to our domains.</p>
+<p>We will use <a href="http://www.postfix.org">Postfix</a> as the e-mail server. Let’s start by installing the necessary packages. We will assume a Ubuntu server in the examples below; if you’re using a different distribution, please consult your distribution’s documentation for the right commands.</p>
+<pre><code>$ sudo DEBIAN_FRONTEND=noninteractive apt-get install postfix
+</code></pre>
+<p>In the above command, we skip the <code>debconf</code> configuration UI with <code>DEBIAN_FRONTEND=noninteractive</code> as we will edit the configuration files directly.</p>
+<h2 id="etcpostfixmaincf">/etc/postfix/main.cf</h2>
+<p>Open up <code>/etc/postfix/main.cf</code> in your favorite editor. This file will come pre-populated with a bunch of config options and comments. Replace the contents of the file with the following (you can comment out the original contents for reference):</p>
+<pre><code># /etc/postfix/main.cf
+
+# Host and site name.
+myhostname = myserver.example.com
+mydomain = example.com
+myorigin = example.com
+
+# Virtual aliases.
+virtual_alias_domains = example.com
+virtual_alias_maps = hash:/etc/postfix/virtual
+</code></pre>
+<p>The first few lines are pretty straightforward; they tell Postfix how to identify itself to the world. The last two lines tell Postfix to forward e-mails sent to <code>&lt;whatever&gt;@example.com</code> to another e-mail provider (Gmail), and that the forwarding is configured in the database file <code>/etc/postfix/virtual</code>.</p>
+<h2 id="etcpostfixvirtual">/etc/postfix/virtual</h2>
+<p>Let’s now open up <code>/etc/postfix/virtual</code> and fill in our forwarding configuration:</p>
+<pre><code># /etc/postfix/virtual
+
+# Forwarding mapping, one from-to address pair per line. The format is:
+#     &lt;forward-from-addr&gt; &lt;whitespace&gt; &lt;forward-to-addr&gt;
+john@example.com        john123@gmail.com
+</code></pre>
+<p>We can add as many forwarding rules as you want, one on each line. We can use any number of tabs / whitespaces between the forward-from and forward-to addresses.</p>
+<h2 id="updatelookuptable">Update lookup table</h2>
+<p>It turns out that Postfix doesn’t actually read <code>/etc/postfix/virtual</code> (surprise!); instead, what it reads is a lookup table generated from it. So, let’s generate the lookup table from our <code>/etc/postfix/virtual</code>:</p>
+<pre><code>$ sudo postmap /etc/postfix/virtual
+</code></pre>
+<p><strong>Note</strong>: we must re-run this command every time we modify <code>/etc/postfix/virtual</code>!</p>
+<h2 id="restartpostfix">(Re)start Postfix</h2>
+<p>It’s now time to (re)start Postfix with our new configuration:</p>
+<pre><code>$ sudo postfix start
+$ sudo postfix reload
+</code></pre>
+<h2 id="testing">Testing</h2>
+<p>We should test our brand-new Postfix server by sending an e-mail to our forward-from address. You might want to check out <a href="http://articles.slicehost.com/2008/8/6/postfix-using-telnet-to-test-postfix">these</a> <a href="https://workaround.org/ispmail/lenny/test-mail-through-telnet">tutorials</a> for testing directly with the <code>telnet</code> command.</p>
+<p>If you received the e-mail in your Gmail inbox, congratulations! Otherwise, check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for errors. The most likely cause of issues is that DNS records have not propagated yet, in which case we’re likely to see a &quot;rate limited&quot; or &quot;rejected for spam&quot; type error message.</p>
+<p>If we only want to <em>receive</em> but don’t care about <em>sending</em> e-mails as <code>john@example.com</code>, then this is all we need.</p>
+<p>Otherwise, let’s move on to configuring Postfix to support sending e-mails from Gmail.</p>
+<h1 id="step3sendingemail">Step 3: Sending E-mail</h1>
+<p>Gmail requires a relay server (a server that will send e-mails to their destination on behalf it) to speak <a href="http://en.wikipedia.org/wiki/Transport_Layer_Security">TLS</a>, which protects the communication between Gmail and the relay server.</p>
+<p>We will use <a href="http://www.cyrusimap.org/">Cyrus SASL</a> for this task. To install:</p>
+<pre><code>$ sudo apt-get install sasl2-bin libsasl2-modules
+</code></pre>
+<h2 id="usernamepassword">User name &amp; password</h2>
+<p><a href="http://en.wikipedia.org/wiki/Open_mail_relay">Open relays</a> are a terrible idea. We want to protect our e-mail server with a user name and password so that it will let Gmail send e-mails through it, but block spammers and other evil actors.</p>
+<p>Cyrus SASL supports several backends for storing user names and passwords, including MySQL and PAM. However, we will go with the simplest backend — a plain database file.</p>
+<p>Let’s create the user name / password database file in the default location <code>/etc/sasldb2</code>, with a single user named <code>smtp</code> (we can change the user name to anything we want):</p>
+<pre><code>$ sudo saslpasswd2 -c -u example.com smtp
+</code></pre>
+<p>Verify with:</p>
+<pre><code>$ sudo sasldblistusers2
+</code></pre>
+<p>Now, we make sure only Postfix can read this file:</p>
+<pre><code>$ sudo chmod 400 /etc/sasldb2
+$ sudo chown postfix /etc/sasldb2
+</code></pre>
+<p>Lastly, we tell Cyrus SASL to use the file-based database to authenticate. Create the file <code>/etc/postfix/sasl/smtpd.conf</code>:</p>
+<pre><code>pwcheck_method: auxprop
+auxprop_plugin: sasldb
+mech_list: PLAIN LOGIN CRAM-MD5 DIGEST-MD5 NTLM
+log_level: 7
+</code></pre>
+<h2 id="sslcertificate">SSL Certificate</h2>
+<p>We need an SSL certificate to enable TLS. While a proper SSL certificate signed by a Certificate Authority (CA) can be pricey, it turns out that a simple self-signed certificate suffices and works just fine.</p>
+<p>So, let’s generate one.</p>
+<ol>
+<li>
+<p><strong>Generate an RSA private/public key pair.</strong> Note that you MUST supply a password to this command; the password will be removed in step 3.</p>
+<pre><code>$ openssl genrsa -des3 -out example.key 1024
+</code></pre>
+</li>
+<li>
+<p><strong>Generate a Certificate Signing Request (CSR).</strong> Make sure to enter <code>myserver.example.com</code> when prompted for the &quot;Common Name&quot;.</p>
+<pre><code>$ openssl req -new -key example.key -out example.csr
+</code></pre>
+</li>
+<li>
+<p><strong>Remove RSA private/public key password.</strong></p>
+<pre><code>$ mv example.key example.key.orig
+$ openssl rsa -in example.key.orig -out example.key
+</code></pre>
+</li>
+<li>
+<p><strong>Generate a self-signed certificate.</strong> In the example, the generated certificate will be valid for 10 years.</p>
+<pre><code>$ openssl x509 -req \
+    -days 3650 -in example.csr -signkey example.key -out example.crt
+</code></pre>
+</li>
+<li>
+<p><strong>Create a PEM file.</strong></p>
+<pre><code>$ cat example.crt example.key &gt; example.pem
+</code></pre>
+</li>
+<li>
+<p><strong>Move and protect the PEM file.</strong></p>
+<pre><code>$ sudo mv example.pem /etc/postfix/example.pem
+$ sudo chmod 400 /etc/postfix/example.pem
+$ sudo chown postfix /etc/postfix/example.pem
+</code></pre>
+</li>
+</ol>
+<p><strong>Note:</strong> Make sure to protect the generated private key and certificate with care!</p>
+<h2 id="relayserver">Relay server</h2>
+<p>The final step is to configure Postfix to enable relaying of e-mail on behalf of Gmail.</p>
+<p>Let’s open up <code>/etc/postfix/master.cf</code>. This file should already contain a bunch of config options, some of which are commented out. Uncomment the lines starting with <code>submission</code> and edit them to match the following:</p>
+<pre><code>submission inet n       -       n       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_security_level=may
+  -o smtpd_tls_cert_file=/etc/postfix/example.pem
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+</code></pre>
+<p>A Postfix restart is due after all these changes:</p>
+<pre><code>$ sudo postfix reload
+</code></pre>
+<p>If all went well, you should see Postfix serving a relay server, protected by our user name and password in <code>/etc/sasldb2</code>, on port 587.</p>
+<h1 id="step4configuregmail">Step 4: Configure Gmail</h1>
+<p>Finally, let’s log in to Gmail and tell it about our brand new server. (Note that the new Inbox UI does not yet support all the settings available in the legacy interface at the time of writing, so these instructions apply to the legacy interface.)</p>
+<p>Let’s go to <em>Settings</em> &gt; <em>Accounts and Import</em> and click <em>Add another email address you own</em>.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_1.png" alt="gmail_1"></p>
+<p>In the dialog that pops up, fill in our target e-mail address and click <em>Next Step</em>.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_2.png" alt="gmail_2"></p>
+<p>In the next dialog, enter the address of our e-mail server (<code>myserver.example.com</code>), and the user name and password we set up using <code>saslpasswd2</code> above. Make sure the user name is suffixed with our domain name (so <code>smtp@example.com</code> rather than just <code>smtp</code>). Check that the correct port (587) and the correct security protocol (TLS) are selected, then click <em>Add Account</em>.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_3.png" alt="gmail_3"></p>
+<p>If all goes well, we should see a dialog like the following:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_4.png" alt="gmail_4"></p>
+<p>And we should receive an e-mail, forwarded by our mail server set up in the first part, to our <code>john123@gmail.com</code> address. Click on the link inside the e-mail and we’re done!</p>
+<p>Now, in any e-mail compose / reply window, you should be able to select <code>john@example.com</code> in the drop-down list next to &quot;From&quot;. Congrats!</p>
+<p>If, on the other hand, you see an error like the following:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_5.png" alt="gmail_5"></p>
+<p>You should check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for any errors.</p>
+<h1 id="optionalstep5setupdkimandsrs">[Optional] Step 5: Setup DKIM and SRS</h1>
+<p><a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is e-mail validation system for preventing e-mail spoofing. <a href="https://support.google.com/mail/answer/180707?hl=en">Google recommends setting up DKIM</a>; if we don’t, the e-mail messages that we forward to Gmail have a higher probability of getting marked as spam.</p>
+<p><a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a relatively new standard that e-mail forwarding servers are recommended to adopt, and it also helps reduce the likelihood of our forwarded e-mail messages getting marked as spam.</p>
+<p>Thus, while technically optional, it’s a good idea to configure our Postfix server to support both these standards. See my follow-up tutorial on <a href="https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix.html">Setting Up DKIM And SRS In Postfix</a> for a detailed step-by-step guide.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>In this post, we have set up a Postfix e-mail server that accomplishes the following:</p>
+<ul>
+<li>
+<p>E-mails sent to <code>john@example.com</code> is received by Postfix on <code>myserver.example.com</code> port 25, and forwarded to <code>john123@gmail.com</code>;</p>
+</li>
+<li>
+<p>Gmail will let you select <code>john@example.com</code> as a &quot;from&quot; address when composing / replying to an e-mail, and will relay such e-mails through Postfix on <code>myserver.example.com</code> port 587 using a configured user name / password combination.</p>
+</li>
+</ul>
+<p>I hope you found this guide useful, and if you have any thoughts / questions, you’re more than welcome to leave a comment below. Cheers!</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[How To Add Custom Build Steps and Commands To setup.py]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>A <code>setup.py</code> script using <a href="https://docs.python.org/2/distutils/introduction.html"><code>distutils</code></a> / <a href="https://pythonhosted.org/setuptools/setuptools.html"><code>setuptools</code></a> is the standard way to package Python code. Often, however, we need to perform custom actions for code generation, running tests, profiling, or building documentation, etc., and we’d like to integrate these actions into setup.py. In other words, we’d like</p>]]></description><link>https://jichu4n.com/posts/how-to-add-custom-build-steps-and-commands-to-setuppy/</link><guid isPermaLink="false">5bc6d8e460307a000159bd41</guid><category><![CDATA[Python]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Wed, 08 Oct 2014 06:38:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>A <code>setup.py</code> script using <a href="https://docs.python.org/2/distutils/introduction.html"><code>distutils</code></a> / <a href="https://pythonhosted.org/setuptools/setuptools.html"><code>setuptools</code></a> is the standard way to package Python code. Often, however, we need to perform custom actions for code generation, running tests, profiling, or building documentation, etc., and we’d like to integrate these actions into setup.py. In other words, we’d like to add custom steps to <code>setup.py build</code> or <code>setup.py install</code>, or add a new command altogether to <code>setup.py</code>.</p>
+<p>Let’s see how this is done.</p>
+<h1 id="addingcustomsetuppycommandsandoptions">Adding Custom <code>setup.py</code> Commands and Options</h1>
+<p>Let’s implement a custom command that runs <a href="http://www.pylint.org/">Pylint</a> on all Python files in our project. The high level idea is:</p>
+<ol>
+<li>
+<p>Implement command as a subclass of <code>distutils.cmd.Command</code>;</p>
+</li>
+<li>
+<p>Add the newly defined command class to the <code>cmdclass</code> argument to <code>setup()</code>.</p>
+</li>
+</ol>
+<p>To see this in action, let’s add the following to our <code>setup.py</code>:</p>
+<pre><code>import distutils.cmd
+import distutils.log
+import setuptools
+import subprocess
+
+
+class PylintCommand(distutils.cmd.Command):
+  &quot;&quot;&quot;A custom command to run Pylint on all Python source files.&quot;&quot;&quot;
+
+  description = 'run Pylint on Python source files'
+  user_options = [
+      # The format is (long option, short option, description).
+      ('pylint-rcfile=', None, 'path to Pylint config file'),
+  ]
+
+  def initialize_options(self):
+    &quot;&quot;&quot;Set default values for options.&quot;&quot;&quot;
+    # Each user option must be listed here with their default value.
+    self.pylint_rcfile = ''
+
+  def finalize_options(self):
+    &quot;&quot;&quot;Post-process options.&quot;&quot;&quot;
+    if self.pylint_rcfile:
+      assert os.path.exists(self.pylint_rcfile), (
+          'Pylint config file %s does not exist.' % self.pylint_rcfile)
+
+  def run(self):
+    &quot;&quot;&quot;Run command.&quot;&quot;&quot;
+    command = ['/usr/bin/pylint']
+    if self.pylint_rcfile:
+      command.append('--rcfile=%s' % self.pylint_rcfile)
+    command.append(os.getcwd())
+    self.announce(
+        'Running command: %s' % str(command),
+        level=distutils.log.INFO)
+    subprocess.check_call(command)
+
+
+setuptools.setup(
+    cmdclass={
+        'pylint': PylintCommand,
+    },
+    # Usual setup() args.
+    # ...
+)
+</code></pre>
+<p>Now, running <code>python setup.py --help-commands</code> will show:</p>
+<pre><code>Standard commands:
+  ...
+Extra commands:
+  pylint: run Pylint on Python source files
+  ...
+</code></pre>
+<p>We can now run the command we just defined with:</p>
+<pre><code>$ python setup.py pylint
+</code></pre>
+<p>…or with a custom option:</p>
+<pre><code>$ python setup.py pylint --pylint-rcfile=.pylintrc
+</code></pre>
+<p>To learn more, you can check out documentation on <a href="https://docs.python.org/2/distutils/apiref.html#creating-a-new-distutils-command">inheriting from <code>distutils.cmd.Command</code></a> as well as the source code of some built-in commands, such as <a href="https://bitbucket.org/pypa/setuptools/src/312a67d000cb05d15b854957466c4751cf5e1c08/setuptools/command/build_py.py?at=default"><code>build_py</code></a>.</p>
+<h1 id="addingcustomstepstosetuppybuild">Adding Custom Steps to <code>setup.py build</code></h1>
+<p>Let’s say we are really paranoid about code style and we’d like to run Pylint as part of <code>setup.py build</code>. We can do this in the following manner:</p>
+<ol>
+<li>
+<p>Create a subclass of <code>setuptools.command.build_py.build_py</code> (or <code>distutils.command.build_py.build_py</code> if using <code>distutils</code>) that invokes our new Pylint command;</p>
+</li>
+<li>
+<p>Add the newly defined command class to the <code>cmdclass</code> argument to <code>setup()</code>.</p>
+</li>
+</ol>
+<p>For example, we can implement the following in our <code>setup.py</code>:</p>
+<pre><code>import setuptools.command.build_py
+
+
+class BuildPyCommand(setuptools.command.build_py.build_py):
+  &quot;&quot;&quot;Custom build command.&quot;&quot;&quot;
+
+  def run(self):
+    self.run_command('pylint')
+    setuptools.command.build_py.build_py.run(self)
+
+
+setuptools.setup(
+    cmdclass={
+        'pylint': PylintCommand,
+        'build_py': BuildPyCommand,
+    },
+    # Usual setup() args.
+    # ...
+)
+</code></pre>
+<p>For more examples, I encourage you to check out the <a href="https://bitbucket.org/pypa/setuptools/src/312a67d000cb05d15b854957466c4751cf5e1c08/setuptools/command/?at=default"><code>setuptools</code> source code</a>.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[How X Window Managers Work, And How To Write One (Part II)]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I of this series</a>, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting</p>]]></description><link>https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/</link><guid isPermaLink="false">5bc6d9a160307a000159bd47</guid><category><![CDATA[Window Manager]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Mon, 09 Jun 2014 06:41:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I of this series</a>, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting non-compositing window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>.</p>
+<h1 id="introduction">Introduction</h1>
+<p>Before we start with the code, let’s go over a couple of basic implementation choices such as language and API.</p>
+<h2 id="language">Language</h2>
+<p>You can write a window manager in <a href="http://xmonad.org">Haskell</a>, <a href="http://qtile.org">Python</a>, <a href="http://www.nongnu.org/stumpwm/">Lisp</a>, <a href="https://github.com/BurntSushi/wingo">Go</a>, <a href="http://escher.sourceforge.net/">Java</a>, or any other language that has X bindings, i.e. a library for communicating with X servers.</p>
+<p>I chose C++ for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, our example window manager, mainly because the C libraries for X11 are the best documented. In addition to books such as the <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>, documentation can be found in the form of widely available <a href="http://www.xfree86.org/current/manindex3.html">man pages</a> (e.g., try <code>man XOpenDisplay</code> at a terminal). Example usage and common patterns abound in the source code of many great window managers written in the past three decades.</p>
+<p>We will use C++11 and C++14 features where convenient, so you will need a compatible compiler (GCC 4.9 or higher, or Clang 3.4 or higher) if you want to play with the example source code.</p>
+<h2 id="ataleoftwoxlibraries">A Tale of Two X Libraries</h2>
+<p>There are two official C libraries for X: <a href="http://en.wikipedia.org/wiki/Xlib">Xlib</a> and <a href="http://en.wikipedia.org/wiki/Xcb">XCB</a>. Xlib, hailing from 1985, was the original X client library, and was the only official X client library until the introduction of XCB in 2001. The two libraries have very different philosophies: whereas Xlib tries to hide the X protocol behind a friendly C API with lots of bells and whistles, XCB directly exposes the plumbing beneath.</p>
+<p>In practice, this different manifests itself most prominently in how the two libraries handle the fundamental asynchronous nature of X’s client-server architecture. Xlib attempts to hide the asynchronous X protocol behind a mixed synchronous and asynchronous API, whereas XCB exposes a fully asynchronous API.</p>
+<p>For example, to lookup the attributes (e.g., size and position) of a window, you would write the following code using Xlib:</p>
+<pre><code>XWindowAttributes attrs;
+XGetWindowAttributes(display, window, &amp;attrs);
+// Do stuff.
+</code></pre>
+<p>Under the hood, <a href="http://manpages.ubuntu.com/manpages/en/man3/XGetWindowAttributes.3.html"><code>XGetWindowAttributes</code>()</a> sends a request to the X server and blocks until it receives a response; in other words, it is <em>synchronous</em>. On the other hand, using XCB, you would write this instead:</p>
+<pre><code>xcb_get_window_attributes_cookie_t cookie =
+    xcb_get_window_attributes(
+        connection, window);
+// Do other stuff while waiting for reply.
+xcb_get_window_attributes_reply_t* reply =
+    xcb_get_window_attributes_reply(
+        connection, cookie, nullptr);
+// Do stuff.
+free(reply);
+</code></pre>
+<p>The function <code>xcb_get_window_attributes</code> merely sends the request to the X server, and returns immediately without waiting for the reply; in other words, it is <em>asynchronous</em>. The client program must subsequently call <code>xcb_get_window_attributes_reply</code> to block on the response.</p>
+<p>The advantage of the asynchronous approach is obvious if we consider an example where we need to retrieve the attributes of, say, 5 windows at once. Using XCB, we can immediately fire off all 5 requests to the X server, and then wait for all of them to return. With Xlib, we have send one request at a time and wait for its response to come back before we can send the next request. Therefore, we’d expect to only block for the duration of one round-trip to the X server using XCB, compared to 5 with Xlib.</p>
+<p>The downside of XCB’s fully asynchronous approach is verbosity and a less programmer-friendly interface. The Xlib code above looks like your average C library call; the XCB code above is significantly more involved.</p>
+<p>However, it is important to note that Xlib isn’t fully synchronous. Rather, <strong>Xlib has a mixture of synchronous and asynchronous APIs</strong>. In general, functions that do not return values (e.g., <a href="http://manpages.ubuntu.com/manpages/en/man3/XConfigureWindow.3.html">XResizeWindow</a>, which changes the size of a window) are asynchronous, while functions that return values (e.g., <a href="http://manpages.ubuntu.com/manpages/en/man3/XGetWindowAttributes.3.html">XGetGeometry</a>, which return the size and position of a window) are synchronous:</p>
+<blockquote>
+<p>Xlib saves up requests instead of sending them to the server immediately, so that the client program can continue running instead of waiting to gain access to the network after every Xlib call. This is possible because most Xlib calls do not require immediate action by the server. This grouping of requests by the client before sending them over the network also increases the performance of most networks, because it makes the network transactions longer and less numerous, reducing the total overhead involved.</p>
+<p>Xlib sends the buffer full of requests to the server under three conditions.</p>
+<p>The most common is when an application calls an Xlib routine to wait for an event but no matching event is currently available on Xlib’s queue. Since, in this case, the application must wait for an appropriate event anyway, it makes sense to flush the request buffer.</p>
+<p>Second, Xlib calls that get information from the server require a reply before the program can continue, and therefore, the request buffer is sent and all the requests acted on before the information is returned.</p>
+<p>Third, the client would like to be able to flush the request buffer manually in situations where no user events and no calls to query the server are expected. One good example of this third case is an animated game, where the display changes even when there is no user input.</p>
+<p>—  Xlib Programming Manual §2.1.2</p>
+</blockquote>
+<p>This is <em>the</em> most confusing aspect of Xlib, and a source of endless frustration for those new to X programming. One of the major motivations for the creation of XCB was to eliminate this complexity.</p>
+<p>Many popular window managers have already been ported to XCB from Xlib for the performance benefits. If you are interested, you can read up on how the <a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf">Awesome</a> and <a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/">KWin</a> window managers were ported to XCB.</p>
+<p>I chose to use Xlib for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, however, because as a pedagogical example, readability and simplicity is much more important than performance. In fact, I would recommend starting with Xlib first for any project and worry about porting to XCB later, as Xlib is much easier to learn and prototype with.</p>
+<p>While an in-depth discussion of the merits of Xlib and XCB is beyond the scope of this discussion, I do recommend you check out <a href="http://www.x.org/wiki/guide/xlib-and-xcb/">the official article on Xlib vs. XCB</a> as it presents a fascinating case study of API design.</p>
+<h2 id="dependenciesandbuilding">Dependencies and Building</h2>
+<p>Firstly, you will need Xlib development headers in order to compile against Xlib. They are available on Debian/Ubuntu as <code>libx11-dev</code>, on Fedora as <code>libX11-devel</code>, and on Arch Linux as part of <code>libx11</code>.</p>
+<p>The only additional library used by the example <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> code is <a href="https://code.google.com/p/google-glog/">google-glog</a>, Google’s open source C++ logging library. It is available on Debian/Ubuntu as <code>libgoogle-glog-dev</code>, on Fedora as <code>glog-devel</code>, and on Arch Linux as <code>google-glog</code>.</p>
+<p>The recommended way to build the source code is with <a href="https://www.gnu.org/software/make/manual/html_node/Running.html">GNU Make</a>: just run <code>make</code> in the source directory. Alternatively, <code>g++ *.cpp</code> will also do the trick if you supply all the libraries correctly.</p>
+<p>To test the window manager, you will likely need <a href="http://www.freedesktop.org/wiki/Software/Xephyr/">Xephyr</a> along with a couple of simple X programs such as <code>xeyes</code> or <code>xterm</code>.</p>
+<h1 id="step1setupandteardown">Step 1: Setup and Teardown</h1>
+<p>Let’s start off with a skeleton implementation of the <code>WindowManager</code> class, which will encapsulate all the window management logic in our example. All it will do for now is set up a connection to the X server on construction, and close that connection on destruction.</p>
+<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p>
+<pre><code>extern &quot;C&quot; {
+#include &lt;X11/Xlib.h&gt;
+}
+#include &lt;memory&gt;
+
+class WindowManager {
+ public:
+  // Factory method for establishing a connection to an X server and creating a
+  // WindowManager instance.
+  static ::std::unique_ptr&lt;WindowManager&gt; Create();
+  // Disconnects from the X server.
+  ~WindowManager();
+  // The entry point to this class. Enters the main event loop.
+  void Run();
+
+ private:
+  // Invoked internally by Create().
+  WindowManager(Display* display);
+
+  // Handle to the underlying Xlib Display struct.
+  Display* display_;
+  // Handle to root window.
+  const Window root_;
+};
+</code></pre>
+<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<pre><code>#include &quot;window_manager.hpp&quot;
+#include &lt;glog/logging.h&gt;
+
+using ::std::unique_ptr;
+
+unique_ptr&lt;WindowManager&gt; WindowManager::Create() {
+  // 1. Open X display.
+  Display* display = XOpenDisplay(nullptr);
+  if (display == nullptr) {
+    LOG(ERROR) &lt;&lt; &quot;Failed to open X display &quot; &lt;&lt; XDisplayName(nullptr);
+    return nullptr;
+  }
+  // 2. Construct WindowManager instance.
+  return unique_ptr&lt;WindowManager&gt;(new WindowManager(display));
+}
+
+WindowManager::WindowManager(Display* display)
+    : display_(CHECK_NOTNULL(display)),
+      root_(DefaultRootWindow(display_)) {
+}
+
+WindowManager::~WindowManager() {
+  XCloseDisplay(display_);
+}
+
+void WindowManager::Run() { /* TODO */ }
+</code></pre>
+<p>The <code>main</code> function in <a href="https://github.com/jichu4n/basic_wm/blob/master/main.cpp"><code>main.cpp</code></a>:</p>
+<pre><code>#include &lt;cstdlib&gt;
+#include &lt;glog/logging.h&gt;
+#include &quot;window_manager.hpp&quot;
+
+using ::std::unique_ptr;
+
+int main(int argc, char** argv) {
+  ::google::InitGoogleLogging(argv[0]);
+
+  unique_ptr&lt;WindowManager&gt; window_manager(WindowManager::Create());
+  if (!window_manager) {
+    LOG(ERROR) &lt;&lt; &quot;Failed to initialize window manager.&quot;;
+    return EXIT_FAILURE;
+  }
+
+  window_manager-&gt;Run();
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+<p>Even if you have never programmed Xlib before, this should not be hard to understand. <code>WindowManager::Create()</code> is a <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Doing_Work_in_Constructors">static factory method</a> that sets up a connection to an X server via <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html"><code>XOpenDisplay()</code></a>; we will let <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html"><code>XOpenDisplay()</code></a> figure out which X server to connect to from the <code>DISPLAY</code> environment variable. The connection is represented by the opaque <code>Display</code> structure. We call <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html"><code>XCloseDisplay()</code></a> on the saved <code>Display*</code> in the destructor to close the connection.</p>
+<p>The other function of note is <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/AllPlanes.3.html"><code>DefaultRootWindow()</code></a>, which returns the default root window for a given X server. Technically, an X server may have several root windows in some rare multihead setups, but let’s not worry about that here.</p>
+<p>If you run this program now, it should connect to the X server, close the connection, and exit. Hooray!</p>
+<h1 id="step2initialization">Step 2: Initialization</h1>
+<p>Now, let’s dig into the mysterious <code>Run()</code> function above. We’ll start with the initialization steps required after opening an X server connection. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p>
+<pre><code>class WindowManager {
+  ...
+  // Xlib error handler. It must be static as its address is passed to Xlib.
+  static int OnXError(Display* display, XErrorEvent* e);
+  // Xlib error handler used to determine whether another window manager is
+  // running. It is set as the error handler right before selecting substructure
+  // redirection mask on the root window, so it is invoked if and only if
+  // another window manager is running. It must be static as its address is
+  // passed to Xlib.
+  static int OnWMDetected(Display* display, XErrorEvent* e);
+  // Whether an existing window manager has been detected. Set by OnWMDetected,
+  // and hence must be static.
+  static bool wm_detected_;
+};
+</code></pre>
+<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<pre><code>void WindowManager::Run() {
+  // 1. Initialization.
+  //   a. Select events on root window. Use a special error handler so we can
+  //   exit gracefully if another window manager is already running.
+  wm_detected_ = false;
+  XSetErrorHandler(&amp;WindowManager::OnWMDetected);
+  XSelectInput(
+      display_,
+      root_,
+      SubstructureRedirectMask | SubstructureNotifyMask);
+  XSync(display_, false);
+  if (wm_detected_) {
+    LOG(ERROR) &lt;&lt; &quot;Detected another window manager on display &quot;
+               &lt;&lt; XDisplayString(display_);
+    return;
+  }
+  //   b. Set error handler.
+  XSetErrorHandler(&amp;WindowManager::OnXError);
+
+  // 2. Main event loop.
+  ...
+}
+
+int WindowManager::OnWMDetected(Display* display, XErrorEvent* e) {
+  // In the case of an already running window manager, the error code from
+  // XSelectInput is BadAccess. We don't expect this handler to receive any
+  // other errors.
+  CHECK_EQ(static_cast&lt;int&gt;(e-&gt;error_code), BadAccess);
+  // Set flag.
+  wm_detected_ = true;
+  // The return value is ignored.
+  return 0;
+}
+
+int WindowManager::OnXError(Display* display, XErrorEvent* e) { /* Print e */ }
+</code></pre>
+<p>We first select substructure redirection and substructure notify events on the root window. This is discussed in more detail in the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection">Substructure Redirection</a> section in Part I; to recap, this allows the window manager to intercept requests from top level windows, and subscribe to events concerning the same. Only one X client can select substructure redirection on the root window at any given time; the second client to attempt to do so will get a <code>BadAccess</code> error.</p>
+<p>Catching this error is somewhat tricky, however. <a href="http://manpages.ubuntu.com/manpages/en/man3/XSelectInput.3.html"><code>XSelectInput</code></a>, like all asynchronous Xlib functions, does not actually send a request to the X server, but instead only <em>queues</em> the request and returns. Hence, we have to explicitly flush the request queue with <a href="http://manpages.ubuntu.com/manpages/en/man3/XSync.3.html"><code>XSync</code></a> (see our discussion above in <a href="#a-tale-of-two-x-libraries">A Tale of Two X Libraries</a>). We set up a temporary error handler, <code>OnWMDetected</code>, to catch errors during this <code>XSync</code> invocation.</p>
+<p>Next, we set up our regular error handler which will be invoked for any future errors. Our implementation, which logs the error and continues, will be an important debugging aid as we implement and test our window manager. I will not show it here for the sake of brevity; for reference, check it out in <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>.</p>
+<h1 id="step3theeventloop">Step 3: The Event Loop</h1>
+<p>Now let’s add to <code>Run()</code> method above the signature construct of every modern GUI program - the event loop. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<pre><code>void WindowManager::Run() {
+  // 1. Initialization.
+  ...
+
+  // 2. Main event loop.
+  for (;;) {
+    // 1. Get next event.
+    XEvent e;
+    XNextEvent(display_, &amp;e);
+    LOG(INFO) &lt;&lt; &quot;Received event: &quot; &lt;&lt; ToString(e);
+
+    // 2. Dispatch event.
+    switch (e.type) {
+      case CreateNotify:
+        OnCreateNotify(e.xcreatewindow);
+        break;
+      case DestroyNotify:
+        OnDestroyNotify(e.xdestroywindow);
+        break;
+      case ReparentNotify:
+        OnReparentNotify(e.xreparent);
+        break;
+      ...
+      // etc. etc.
+      ...
+      default:
+        LOG(WARNING) &lt;&lt; &quot;Ignored event&quot;;
+    }
+  }
+}
+</code></pre>
+<p>If you have done low-level GUI programming before, this should look very familiar. We sit in an event loop and repeatedly fetch the next event with <a href="http://manpages.ubuntu.com/manpages/en/man3/XNextEvent.3.html"><code>XNextEvent()</code></a> and dispatch it to the appropriate handlers.</p>
+<p>The structure of the <code>XEvent</code> type is typical of a polymorphic C structure. Each type of event carries different attributes and corresponds to an event <code>struct</code>, such as <code>XKeyEvent</code>, <code>XButtonEvent</code>, and <code>XConfigureEvent</code>. The first field of each <code>struct</code> is always <code>int type</code>. The <code>XEvent</code> type is a C <code>union</code> of all the event <code>structs</code> plus <code>int type</code>:</p>
+<pre><code>typedef struct _XKeyEvent {
+  int type;
+  // Fields specific to XKeyEvent.
+  ...
+} XKeyEvent;
+
+typedef struct _XButtonEvent {
+  int type;
+  // Fields specific to XButtonEvent.
+  ...
+} XButtonEvent;
+
+// etc.
+...
+
+typedef union _XEvent {
+  int type;
+  XKeyEvent xkey;
+  XButtonEvent xbutton;
+  // etc.
+  ...
+} XEvent;
+</code></pre>
+<p>This way, the type is always available regardless of the type of event and requires no additional storage. The same pattern can be observed in <a href="http://en.wikipedia.org/wiki/GObject">GTK+/GLib</a>, <a href="https://docs.python.org/3/c-api/structures.html">Python’s C API</a>, and many other object-oriented C APIs.</p>
+<p>In <code>basic_wm</code>, the event handlers follow the naming convention of <code>OnFoo()</code>, where <code>Foo</code> is the type of the event, so it should be straightforward to figure out who does what.</p>
+<h1 id="whatsnext">What’s Next</h1>
+<p>We now have a basic skeleton for our window manager, and we can start filling in the meat - the event handlers. The million-dollar question is, what events does a window manager handle, and what should it do with them?</p>
+<p>In the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">next installment</a> in this series, we’ll answer that question by diving into the complex ways window managers, clients and the user interact with each other via X events. In the meantime, you’re more than welcome to check out the code for <code>basic_wm</code> <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>.</p>
+<blockquote>
+<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>How X Window Managers Work, And How To Write One (Part III)</strong></a></p>
+<ul>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</strong></a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a></p>
+</li>
+</ul>
+</blockquote>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[DEBUG trap and PROMPT_COMMAND in Bash]]></title><description><![CDATA[<!--kg-card-begin: markdown--><blockquote>
+<p><strong>Update 03/08/2016</strong>: A <a href="https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html">patch</a> by Dan Stromberg adds a <code>PS0</code> variable to Bash that greatly simplifies what’s described in this article. This patch will likely be merged into Bash 4.4. Please refer to <a href="http://stromberg.dnsalias.org/~strombrg/PS0-prompt/">his post</a> for details.</p>
+</blockquote>
+<h1 id="thedebugtrap">The DEBUG trap</h1>
+<p>The DEBUG trap is an extremely</p>]]></description><link>https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/</link><guid isPermaLink="false">5bc6e11f60307a000159bd91</guid><category><![CDATA[Linux]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Sun, 08 Jun 2014 07:13:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><blockquote>
+<p><strong>Update 03/08/2016</strong>: A <a href="https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html">patch</a> by Dan Stromberg adds a <code>PS0</code> variable to Bash that greatly simplifies what’s described in this article. This patch will likely be merged into Bash 4.4. Please refer to <a href="http://stromberg.dnsalias.org/~strombrg/PS0-prompt/">his post</a> for details.</p>
+</blockquote>
+<h1 id="thedebugtrap">The DEBUG trap</h1>
+<p>The DEBUG trap is an extremely handy feature of Bash. The idea is pretty straightforward: if you run</p>
+<pre><code>trap &quot;echo Hello&quot; DEBUG
+</code></pre>
+<p>then Bash will run <code>echo Hello</code> before it executes each subsequent command. For example:</p>
+<pre><code>~/Scratch $ ls
+Hello
+file1 file2
+~/Scratch $ echo Bye
+Hello
+Bye
+</code></pre>
+<p>A caveat, however, is that the DEBUG trap is triggered once per <em>simple</em> command; if you have command lists or control structures, the trap will be triggered multiple times. For example, using the setup above:</p>
+<pre><code>~/Scratch $ echo 1 &amp;&amp; echo 2; echo 3
+Hello
+1
+Hello
+2
+Hello
+3
+~/Scratch $ if [ -e /etc/passwd ]; then echo &quot;/etc/passwd exists&quot;; fi
+Hello
+Hello
+/etc/passwd exists
+</code></pre>
+<p>What if we only want to run a command once per composite command, like the <a href="http://zsh.sourceforge.net/Doc/Release/Functions.html"><code>preexec</code></a> hook in <a href="http://en.wikipedia.org/wiki/Z_shell">zsh</a>?</p>
+<p>Enter <code>PROMPT_COMMAND</code>.</p>
+<h1 id="prompt_command">PROMPT_COMMAND</h1>
+<p>The idea behind <code>PROMPT_COMMAND</code> is also very simple: if you run</p>
+<pre><code>PROMPT_COMMAND=&quot;echo Bye&quot;
+</code></pre>
+<p>then Bash will execute <code>echo Bye</code> before it prints each subsequent prompt (i.e., after it has finished executing the previous command line). For example, using the setup above:</p>
+<pre><code>~/Scratch $ echo 1; echo 2
+Hello
+1
+Hello
+2
+Hello
+Bye
+</code></pre>
+<p>Note that the DEBUG trap is triggered again for <code>PROMPT_COMMAND</code>, in addition to the user-supplied commands.</p>
+<h1 id="combiningthedebugtrapandprompt_command">Combining the DEBUG trap and <code>PROMPT_COMMAND</code></h1>
+<p>By combining the DEBUG trap and <code>PROMPT_COMMAND</code>, we can now hack Bash to run some code right before and right after executing a full command. For example, try adding this to your <code>~/.bashrc</code>:</p>
+<pre><code># This will run before any command is executed.
+function PreCommand() {
+  if [ -z &quot;$AT_PROMPT&quot; ]; then
+    return
+  fi
+  unset AT_PROMPT
+
+  # Do stuff.
+  echo &quot;Running PreCommand&quot;
+}
+trap &quot;PreCommand&quot; DEBUG
+
+# This will run after the execution of the previous full command line.  We don't
+# want it PostCommand to execute when first starting a bash session (i.e., at
+# the first prompt).
+FIRST_PROMPT=1
+function PostCommand() {
+  AT_PROMPT=1
+
+  if [ -n &quot;$FIRST_PROMPT&quot; ]; then
+    unset FIRST_PROMPT
+    return
+  fi
+
+  # Do stuff.
+  echo &quot;Running PostCommand&quot;
+}
+PROMPT_COMMAND=&quot;PostCommand&quot;
+</code></pre>
+<p>The result:</p>
+<pre><code>~/Scratch $ echo 1; echo 2 &amp;&amp; echo 3
+Running PreCommand
+1
+2
+3
+Running PostCommand
+</code></pre>
+<p>This gives rise to some neat applications, such as <a href="https://github.com/jichuan89/bash-command-timer">a command timer script</a> I wrote that prints out the execution time of each command:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/bash_command_timer_screenshot-1.gif" alt="bash_command_timer_screenshot-1"></p>
+<p>Please feel free to <a href="https://github.com/jichuan89/bash-command-timer">check it out on GitHub</a> :)</p>
+<p>Happy Bash hacking!</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[How X Window Managers Work, And How To Write One (Part I)]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves.</p>]]></description><link>https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/</link><guid isPermaLink="false">5bc6cde4f21e630001a84ab4</guid><category><![CDATA[Window Manager]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Fri, 11 Apr 2014 05:54:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves. Hence, almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager">the first X window manager</a>, we still argue over the merits of different window managers, and new window managers continue to reinvent how we interact with our digital world.</p>
+<p>In this series of posts, I hope to demystify how window managers work, and how you might go about writing one yourself.</p>
+<p>I will be quoting quite heavily from the seminal <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O’Reilly. Despite its age, it remains amazingly relevant and is the best available introductory text to the internals of X, which has not changed over the past two decades as much as you’d think. Since you could buy the book plus shipping for less than the price of a cup of coffee, I strongly recommend it to anyone interested in learning more about X. In addition, its chapter 16 also covers the basics of window management.</p>
+<h1 id="theroleofanxwindowmanager">The Role of an X Window Manager</h1>
+<p>Let’s start with an examination of the role of the window manager in a modern Linux/BSD desktop environment.</p>
+<h2 id="therightsofxwindowmanagers">The Rights of X Window Managers</h2>
+<p>Unlike other windowing systems such as Microsoft Windows or Mac OS X, X does not dictate a window manager or how a window manager should behave. This decision is to thank for the wild diversity of X window managers we see today.</p>
+<blockquote>
+<p>X is somewhat unusual in that it does not mandate a particular type of window manager. Its developers have tried to make X itself as free of window management or user interface policy as possible.</p>
+<p>—  Xlib Programming Manual §1.2.3</p>
+</blockquote>
+<p>In fact, it does not even require a window manager to be present at all:</p>
+<blockquote>
+<p>Unlike citizens, the window manager has rights but not responsibilities. Programs must be prepared to cooperate with any type of window manager or with none at all […].</p>
+<p>—  Xlib Programming Manual §1.2.3</p>
+</blockquote>
+<p>This is in stark contrast to the integrative approach of other GUI systems. On Mac OS X and <a href="https://unity.ubuntu.com/">Unity</a>, for example, an application could not possibly function without the window manager, as the latter is responsible for rendering a part of the application’s interface (e.g., menus).</p>
+<h2 id="theresponsibilitiesofxwindowmanagers">The Responsibilities of X Window Managers</h2>
+<p>As you probably already know, X operates in a server-client model. An X <em>server</em> controls one or more physical display devices as well as input devices (mouse, keyboard, etc.). An application that wants to interact with these devices assumes the role of an X <em>client</em>. An X server and its clients may run on the same computer, in which case they communicate via <a href="http://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different computers, in which case they communicate through TCP/IP.</p>
+<p><strong>A window manager is a regular X client.</strong> It doesn’t have any superuser privileges or keys to kernel backdoors; it is a normal user process that is allowed by the X server to call a set of special APIs. X ensures that no more than one window manager is running at any given point by denying a client access to these APIs if another client currently has access. The first client to attempt to access these APIs always succeeds.</p>
+<p>A window manager communicates with the windows it manages through two X mechanisms: properties and events. We will discuss these in detail in later sections, but the takeaway is that the communication happens through the X server, not directly between the window manager and other applications.</p>
+<p>This is illustrated by the following diagram:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/so1jXbe2d2Vvx917pbA5Cjw.png" alt="so1jXbe2d2Vvx917pbA5Cjw"></p>
+<h1 id="howanxwindowmanagermanageswindows">How an X Window Manager Manages Windows</h1>
+<p>Let’s now dive into the details of how a window manager does its job.</p>
+<h2 id="thewindowhierarchy">The Window Hierarchy</h2>
+<p>When we think about modern GUIs, we usually use the term <em>widgets</em> or <em>controls</em> to refer to UI elements such as buttons, scrollbars, or text boxes, and the term <em>windows</em> to refer to a container for such widgets that has its own name and can be independently moved around, closed, resized, etc..</p>
+<p>X, however, was designed to be as low-level as possible. The fundamental UI model that X provides, upon which UI frameworks such as <a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an <em>hierarchy of rectangles</em>. In X terminology, all top level windows and all UI elements within are <em>windows</em>. In other words, a <em>window</em>, is any rectangular area that is an unit of user interaction and/or graphic display.</p>
+<p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the <em>root window</em>, a virtual, invisible window that has the same size as the screen, and is always present. Top level windows are direct children of the root window. UI elements within a top level window are descendants of that window.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/wm_sample_dialog.png" alt="wm_sample_dialog"></p>
+<p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a> desktop environment. The entire dialog is an X <em>window</em>. All UI elements in the dialog box - the magnifying glass icon, the text box, the green down arrow, the Close and Launch buttons, and the icons inside those buttons - are also X _window_s.</p>
+<p>The whole dialog window is a child of the root window. The magnifying glass icon, the text box, and the Close and Launch buttons are children of the dialog window. The green down arrow is a child of the text box window, and the icons in the Close and Launch buttons are children of those buttons respectively.</p>
+<p>An important thing to note about X windows is that a child window is clipped to the boundaries of its parent:</p>
+<blockquote>
+<p>A child may be positioned partially or completely outside its parent window, but output to the child is displayed and input received only in the area where the child overlaps with the parent.</p>
+<p>—  Xlib Programming Manual §2.2.2</p>
+</blockquote>
+<p>For example, if we increase the width of the text box in the dialog above by 2x without changing the size of the dialog box, the portion of the text box that extends outside of the dialog box will become invisible, and clicking on it will not send an event to the text box.</p>
+<p>A window manager manages top level windows - that is, direct children of the root window.</p>
+<h2 id="substructureredirection">Substructure Redirection</h2>
+<p>In the absence of a window manager, when an application wants to do something with a window - move it, resize it, show/hide it, etc. - its request is directly processed by the X server, and that’s the end of that. A window manager, however, needs to intercept these requests. For example, a window manager may need to know that a new top level window has been created and displayed, in order to draw window decorations (e.g. minimize / maximize / close buttons) around it. It may also need to know that an existing top level window has been resized, in order to redraw the window decorations to reflect the change.</p>
+<p>The mechanism that allows a window manager to intercept such requests is called <em>substructure redirection</em>.</p>
+<p>This is how substructure redirection works. Suppose we have a window <em>W</em>. If a program <em>M</em> registers for substructure redirection on <em>W</em>, a matching request to modify any direct child window of <em>W</em> will <em>not</em> be executed by the X server. Instead, the X server redirects this request to the program <em>M</em>, which can do whatever it wants with the request, including denying the request outright or granting the request with modifications. More formally,</p>
+<blockquote>
+<p>The <em>structure</em>, as the term is used here, is the location, size, stacking order, border width, and mapping status of a window. The <em>substructure</em> is all these statistics about the children of a particular window. This is the complete set of information about screen layout that the window manager might need in order to implement its policy. <em>Redirection</em> means that an event is sent to the client selecting redirection (usually the window manager), and the original structure−changing request is not executed.</p>
+<p>—  Xlib Programming Manual §16.2</p>
+</blockquote>
+<p>Note that only direct children of a window <em>W</em> is affected by substructure redirection on <em>W</em>, not any windows further down the hierarchy.</p>
+<p>This gets interesting when we consider substructure redirection on the root window:</p>
+<blockquote>
+<p>When the window manager selects <code>SubstructureRedirectMask</code> on the root window, an attempt by any other client to change the configuration of any child of the root window will fail. Instead an event describing the layout change request will be sent to the window manager. The window manager then reads the event and determines whether to honor the request, modify it, or deny it completely. If it decides to honor the request, it calls the routine that the client called that triggered the event with the same arguments. If it decides to modify the request, it calls the same routine but with modified arguments.</p>
+<p>—  Xlib Programming Manual §16.2</p>
+</blockquote>
+<p>In other words, a window manager must register for substructure redirection on the root window, which causes all creation, destruction, reconfiguration etc. of top level windows - which are direct children of the root window - to be routed to the window manager. This is the magic hook into the X server that window managers rely on to do their job.</p>
+<p>This relationship is shown in the following diagram:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/sTifV_OHk9dsZi6cwbLS7qQ.png" alt="sTifV_OHk9dsZi6cwbLS7qQ"></p>
+<p>Finally, the X server only allows one running program to register for substructure redirection on any given window at any given time. An attempt to register for substructure redirection on a window will fail if another X client has already done the same on the same window, and has not unregistered, disconnected from the X server, or crashed. Since all window managers must register for substructure redirection on the root window, this latter acts as a locking mechanism that prevents two or more window managers from running simultaneously on the same screen.</p>
+<h2 id="reparenting">Reparenting</h2>
+<p>In the example dialog box above, we see a title bar with, for example, little buttons for minimizing, maximizing, and closing the window. These UI elements are not created by the application, but by the window manager, via a process known as <em>reparenting</em> or <em>framing</em>:</p>
+<blockquote>
+<p>A window manager can decorate [top level] windows on the screen with titlebars and place little boxes on the titlebar with which the window can be moved or resized. This is only one possibility […].</p>
+<p>To do this, the window manager creates a child of the root somewhat larger than the top level window of the application. Then it calls <a href="http://manpages.ubuntu.com/manpages/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>, specifying the top level window of the application as <code>win</code> and the new parent [window it just created] as <code>parent</code>. <code>win</code> and all its descendants will then be descendants of <code>parent</code>.</p>
+<p>—  Xlib Programming Manual §16.3</p>
+</blockquote>
+<p>In other words, if we were to run an X application without a window manager present, the top level window of the application would be a direct child of the root window. With a window manager running, however, the top level window of the application may be <em>reparented</em> by the window manager; it becomes a child of a frame window which is created by the window manager, and which is itself a direct child of the root window. The window manager can add other UI elements inside this frame window alongside the application’s top level window as it sees fit.</p>
+<p>Therefore, I’ve kind of lied to you several paragraphs ago: the dialog box shown earlier is really a child window within a frame window created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along with other UI elements for window management:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/snfQMUpwYCAfp6q_mmpEVoQ.png" alt="snfQMUpwYCAfp6q_mmpEVoQ"></p>
+<p>Reparenting is what allows different window managers to draw different window decorations, and thereby achieve a consistent look-and-feel across windows. However, there are also window managers that do <em>not</em> reparent at all: these are called <em>non-reparenting</em> window managers. There are two reasons why a window manager would not want to reparent:</p>
+<ol>
+<li>
+<p>If a window manager does not draw window decorations around top level windows , it obviously has no need to reparent them. Examples: <a href="http://xmonad.org">xmonad</a>, <a href="http://dwm.suckless.org">dwm</a>.</p>
+</li>
+<li>
+<p>Compositing window managers do not always need to reparent windows; we will discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true for all compositing window managers, however; for example, GNOME’s default window manager, <a href="http://github.com/GNOME/mutter/">Mutter</a>, is a reparenting comopositing window manager.</p>
+</li>
+</ol>
+<p>Let’s now consider substructure redirection in the context of reparenting. When a top level window <em>W</em> is first shown (<em>map</em>'ped in X jargon), the window manager is notified because it has registered for substructure redirection on the root window, and a top level window is a direct child of the root window. It then creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes a child of <em>F</em>, which itself is a child of the root window. But since now <em>W</em> is no longer a direct child of the root window, the window manager will no longer be able to intercept changes to <em>W</em>!</p>
+<p>Therefore, a reparenting window manager must also subsequently register for substructure redirection on each frame window it creates.</p>
+<h2 id="compositing">Compositing</h2>
+<p>Compositing window managers are a relatively new development. Compositing support in X was added in late 2004, a full decade after the last edition of <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>. The first compositing window managers, <a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early 2005.</p>
+<p>So, what exactly does a compositing window manager do?</p>
+<p>In our discussion above on substructure redirection and reparenting, we saw how a window manager can respond to various requests for a top level window - to display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But we didn’t talk about how to deal with what’s <em>inside</em> the top level windows.</p>
+<p>Indeed, from the perspective of the window manager, top level windows are black boxes; they each manage their own descendant windows (UI elements), perhaps through a framework such as <a href="http://www.gtk.org">GTK+</a> or <a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere there. The application that creates a top level window is responsible for rendering and handling events for any descendant windows (UI elements), and does so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p>
+<p>As the computing power of graphics hardware grew, so did people’s expectations from their window managers. With hardware acceleration, it became possible to build much more computationally intensive user interfaces, such as the (in)famous Desktop Cube in <a href="http://www.compiz.org">Compiz</a>:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/wm_compiz.png" alt="wm_compiz"></p>
+<p>or the Shift Switcher:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/wm_compiz_2.png" alt="wm_compiz_2"></p>
+<p>Let’s take a moment to think about how we can implement an interface such as the Shift Switcher above. When the user triggers this interface, we need to:</p>
+<ol>
+<li>
+<p>Render each top level window and all its descendant windows (UI elements) to an off-screen, in-memory buffer, instead of directly to the hardware.</p>
+</li>
+<li>
+<p>Transform (rotate, contort, etc.) each buffer according to our design.</p>
+</li>
+<li>
+<p>Composite the transformed buffers into a final buffer along with a background and any other floating UI elements else we need to display.</p>
+</li>
+<li>
+<p>Create an <em>overlay</em> window that covers the entire screen and hides all other windows.</p>
+</li>
+<li>
+<p>Render the final buffer into the overlay window.</p>
+</li>
+</ol>
+<p>There are a number of challenges:</p>
+<ul>
+<li>
+<p>We must be able to retrieve the displayed contents of top level windows. However, as we described earlier, top level windows render their contents directly through X, without going through the window manager.</p>
+</li>
+<li>
+<p>We need to update our interface in real time as the contents of the top level windows change. However, top level windows do not notify window managers when their contents change, again because they render their contents directly through X.</p>
+</li>
+<li>
+<p>A top level window <em>A</em> may overlap with another top level window <em>B</em> below, which means a portion of <em>B</em> isn’t currently displayed. Our interface, however, must capture the <em>full</em> rendering of <em>A</em> and <em>B</em>, regardless of overlapping regions.</p>
+</li>
+<li>
+<p>All this complex compositing process is computationally intensive and requires hardware acceleration to function adequately.</p>
+</li>
+</ul>
+<p>It is clear that none of this would be possible without some heavy cooperation from the X server. Enter the <a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">Composite extension</a>:</p>
+<blockquote>
+<p>Many user interface operations would benefit from having pixel contents of window hierarchies available without respect to sibling and antecedent clipping. In addition, placing control over the composition of these pixel contents into a final screen image in an external application will enable a flexible system for dynamic application content presentation.</p>
+<p>—  X Composite Extension</p>
+</blockquote>
+<p>The Composite extension provides a mechanism to request the X server not to render a specific window and its descendants directly to hardware, but to a special buffer maintained by the X server, and do so without the normal clipping and overlap computations. This buffer can then be read and used by the client that made the request.</p>
+<p>That’s exactly what a compositing window manager does: it will ask X to render each top level window to an off-screen, in-memory buffer and composite the results into an overlay window itself. And it needs to do this not just for fancy task switcher interfaces as in our example, but also to achieve effects like translucency, animations, soft shadows, and the like.</p>
+<p>This is illustrated in the following diagram:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/sawR1epQiKxE5bX3Cplms2A.png" alt="sawR1epQiKxE5bX3Cplms2A"></p>
+<p>Let’s end this section by considering whether a compositing window manager should reparent top level windows.</p>
+<p>Since a compositing window manager already knows the size and position of all top level windows, it’s easy for it to just draw window decorations during compositing into the overlay window using graphics operations (e.g. OpenGL), without ever creating an actual X frame window and reparenting. Some compositing window managers do operate this way.</p>
+<p>On the other hand, a window manager may need to support both a compositing and a non-compositing mode, for compatibility with older or unsupported graphics hardware. In this case, it needs to implement reparenting and frame windows for non-compositing mode anyway, so additionally implementing drawing window decorations using graphics operations becomes redundant. This is why may other compositing window managers still choose to reparent.</p>
+<h1 id="readyforsomecode">Ready For Some Code?</h1>
+<p>If you’ve read everything up to this point, you’re probably holding back the urge to cry out &quot;<em>Enough talk - show me some code!</em>&quot; I don’t blame you.</p>
+<p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">the next installment</a> in this series, I will walk you through a basic implementation of a reparenting, non-compositing window manager. Impatient? Check out the code <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>!</p>
+<blockquote>
+<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>How X Window Managers Work, And How To Write One (Part II)</strong></a></p>
+<ul>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"><strong>Part I: Basic Concepts</strong></a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a></p>
+</li>
+</ul>
+</blockquote>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[The Most Popular Fonts On The Web: A Study]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>If you’ve ever worked on a web site, you already know that choosing the right fonts is one of the most important aesthetic decisions in the design of a site. But, like all aesthetic decisions, it is a highly subjective.</p>
+<p>I decided to try to bring a little bit</p>]]></description><link>https://jichu4n.com/posts/the-most-popular-fonts-on-the-web-a-study/</link><guid isPermaLink="false">5bc6e6bb60307a000159bdbc</guid><category><![CDATA[Web]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Fri, 04 Apr 2014 07:37:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>If you’ve ever worked on a web site, you already know that choosing the right fonts is one of the most important aesthetic decisions in the design of a site. But, like all aesthetic decisions, it is a highly subjective.</p>
+<p>I decided to try to bring a little bit of objectivity into the equation by finding out, empirically, what fonts the most popular sites on the web are using today.</p>
+<h1 id="methodology">Methodology</h1>
+<p>I wrote a Python program that crawls the front page of the 100,000 most popular web sites according to <a href="http://www.alexa.com/topsites">Alexa’s top sites list</a>. It parses the HTML using <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>, and parses all in-line and linked CSS stylesheets using <a href="http://cthedot.de/cssutils/">cssutils</a>. It then looks for <code>font</code> and <code>font-family</code> rules in the CSS rules, and stores the normalized form of each font in those rules in order. The result is kept in a <a href="https://sqlite.org">SQLite</a> database for analysis.</p>
+<p>This all sounds pretty straightforward, but in fact it took me two weeks to build a crawler that doesn’t choke on all the crazy crap people throw at browsers. I will write up some of the more interesting cases in a separate post.</p>
+<p>The final crawl success rate was about 96%. The size of all HTML and stylesheets downloaded was about 30GB.</p>
+<h1 id="themostpopularfirstchoicefonts">The Most Popular First-Choice Fonts</h1>
+<p>First, let’s take a look at the first-choice/most preferred fonts, i.e., the ones that appear first in <code>font-family</code> rules. These fonts most closely represent the intention of the web site designers without compatibility compromises.</p>
+<p>For each font, we calculate the number of distinct web sites that have at least one CSS <code>font</code> or <code>font-family</code> rule that lists the font as the first choice. This means that if a site has two rules, one listing Arial and another listing Times, it will count towards both. Thus, the numbers add up to much higher than the total number of sites.</p>
+<p>Without further ado, here’s the breakdown of the top fonts on the web:</p>
+<div align="center"><iframe height="620" style="max-width: 610px; width: 100%" src="//docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=65057078" seamless frameborder="0" scrolling="yes"></iframe></div>
+<p>(The chart is interactive - hover/click to see actual numbers.)</p>
+<p>A couple of observations:</p>
+<ul>
+<li>
+<p><strong>Sans-serif fonts dominate the web.</strong> The top 25 fonts list only includes 4 serif fonts, compared to 16 sans-serif fonts. The most popular serif-font, Georgia, ranks #4 on the list with about 20% of sites.</p>
+</li>
+<li>
+<p><strong>Monospace fonts get no love.</strong> Most sites don’t bother specifying a custom monospace font; the most common monospace font specification just uses the browser default (12%). The most popular monospace font, Monaco, is featured on 7.2% of sites. Both of these are quite high, in fact, considering that we only crawl the front page of these sites.</p>
+</li>
+<li>
+<p><strong>The most popular fonts of each family:</strong></p>
+<ul>
+<li>
+<p><strong>Sans-serif:</strong> Arial (#1, 62%)</p>
+</li>
+<li>
+<p><strong>Serif:</strong> Georgia (#4, 20%)</p>
+</li>
+<li>
+<p><strong>Monospace:</strong> Monaco (#11, 7.2%)</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Old Microsoft fonts still reign over the web.</strong> The top non-Microsoft font, Helvetica Neue, ranks #6 with an impressive 18% of top web sites.</p>
+</li>
+<li>
+<p><strong><a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a> is awesome</strong>. About 4.6% of the top 100K sites already use it for universal icons.</p>
+</li>
+<li>
+<p><strong>The Chinese web is on the rise.</strong> 3 out of the top 25 fonts are Chinese fonts, compared to 21 Latin fonts (and 1 symbol font). No other scripts made their way into the list.</p>
+</li>
+</ul>
+<h2 id="whatifweconsidered">What If We Considered…</h2>
+<ul>
+<li>
+<p><strong>Fonts in all positions</strong>: (<a href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=940843634">graph</a>) not much difference.</p>
+</li>
+<li>
+<p><strong>The top 1,000 web sites only</strong>: (<a href="https://docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=1208179553">graph</a>) even more Arial (#1, 74%).</p>
+</li>
+</ul>
+<h1 id="themostpopularheadingfonts">The Most Popular Heading Fonts</h1>
+<p>Next, let’s look at first-choice fonts used in headings or titles.</p>
+<p>I used a really crude metric to determine whether a CSS rule matches a heading: whether the CSS selector is for an <code>H1</code>…<code>H6</code> tag or contains the strings &quot;heading&quot; or &quot;title&quot;. While this finds only a subset of actual headings, it is not a bad approximation as it matches rules on about 58% of the top 100,000 web sites.</p>
+<p>Let’s start with the graph:</p>
+<div align="center"><iframe height="620" style="max-width: 610px; width: 100%" src="//docs.google.com/spreadsheets/d/1LxHdYqTqK7b9Subq2F23IHRrhEYoYm7xdVPQMZexaNc/gviz/chartiframe?oid=1659247262" seamless frameborder="0" scrolling="yes"></iframe></div>
+<p>Observations:</p>
+<ul>
+<li>
+<p><strong>Header fonts are more diverse.</strong> While Microsoft fonts still reign supreme, a number or more exotic fonts are also on the list. In terms of distribution, there’s a much longer tail. It may be a sign that designers pay a lot more attention to fonts used in headings.</p>
+</li>
+<li>
+<p><strong>Serif fonts are more popular in headings than elsewhere.</strong> While Arial still claims to top spot with 27.31% of sites, the top serif font, Georgia, rises to 2nd place with 9% of sites.</p>
+</li>
+<li>
+<p><strong>No monospace fonts in headings.</strong> Not surprising.</p>
+</li>
+<li>
+<p>Among Chinese fonts, <strong>宋体 is more commonly used for body text, while 雅黑 (or Yahei) is more commonly used for heading text.</strong></p>
+</li>
+</ul>
+<h1 id="concludingthoughts">Concluding Thoughts</h1>
+<p>Arial and friends are the <a href="http://screenfont.ca/fonts/today/interim/">most</a> <a href="http://pxlnv.com/blog/guaahhhhhhh-come-on/">hated</a> <a href="http://www.prepressure.com/fonts/interesting/most-hated">fonts</a> <a href="http://enjoytherandom.com/hipster-hitler-hates-arial/">ever</a>. Quoting <a href="http://www.marksimonson.com/notebook/view/the-scourge-of-arial">The Scourge of Arial</a>:</p>
+<blockquote>
+<p>Despite its pervasiveness, a professional designer would rarely - at least for the moment - specify Arial.</p>
+</blockquote>
+<p>And yet, Arial is still the default font on the vast majority of sites on the web, followed closely by its friends. Why?</p>
+<p>Quoting <a href="http://www.64notes.com/design/stop-helvetica-arial/">Stop Using Arial &amp; Helvetica</a>:</p>
+<blockquote>
+<p>Some people actually have a reason to use them but most use it mindlessly - just because everyone else does. Often, no thought is given to design of the site, let alone typography.</p>
+</blockquote>
+<p>This is pretty sad. Paraphrasing <a href="http://www.dtelepathy.com/blog/graveyard/stop-using-lame-fonts">Stop Using Lame Fonts</a>, a good font stack has the potential to really make a site design shine, and it’s a shame web designers aren’t exploiting this opportunity.</p>
+<h1 id="caveats">Caveats</h1>
+<p>There are a couple of caveats with this dataset.</p>
+<p>First, I am only surveying the landing page of each site. For many sites, notably those whose main interface is hidden behind a login (Facebook, Evernote, etc.), we may not be finding the styles that matter most to users. However, I figured since it would be pretty poor design to build a landing page that is aesthetically inconsistent with the rest of the site, it is not very likely that the font selection on the landing page would be too different from the fonts used elsewhere on the site. Of course, without creating fake accounts on these sites, we have no way to verify.</p>
+<p>The numbers are not weighted by prominence on the web pages. One could argue that the font of the main body text on a page should carry more weight than that of the tiny disclaimer text at the bottom which no one reads. It would be tricky to determine what the right weight function is though.</p>
+<p>The numbers are not weighted by the prominence of the web sites. For example, we could make it so that Google’s use of Arial would get more weight than some random obscure site’s use of Arial, as Google’s choice impacts many more users and was probably the result of deliberation by a team of expert designers. Again, it’s not entirely obvious how the weights should be assigned.</p>
+<p>I am only looking at CSS rules in <code>&lt;style&gt;</code> tags or linked stylesheets. That means I am ignoring <code>style=&quot;…&quot;</code> attributes in tags, <code>&lt;font&gt;</code> elements, or dynamically assigned fonts (i.e., through JavaScript). I would be surprised if this turns out to be a big loss though.</p>
+<h1 id="nextsteps">Next Steps</h1>
+<p>I can think of quite a few other useful questions one might find the answer to from this dataset:</p>
+<ul>
+<li>
+<p>What are the most common font pairings?</p>
+</li>
+<li>
+<p>What are the popular choices for heading fonts, given that I’ve chosen font X as my body text font?</p>
+</li>
+<li>
+<p>What are the most common fonts on news sites/forums/productivity web apps/social media sites?</p>
+</li>
+<li>
+<p>Is there any correlation between font choice and site popularity?</p>
+</li>
+</ul>
+<p>What do you think?</p>
+<p>Please feel free to <a href="https://www.mediafire.com/?xqrk731716v078l">download</a> the top 100 first-choice fonts as a CSV file.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Python: Multiprocessing and Exceptions]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Python’s <a href="http://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a> module provides an interface for spawning and managing child processes that is familiar to users of the <a href="http://docs.python.org/3/library/threading.html"><code>threading</code></a> module. One problem with the <code>multiprocessing</code> module, however, is that <strong>exceptions in spawned child processes don’t print stack traces</strong>:</p>
+<p>Consider the following snippet:</p>
+<pre><code>import multiprocessing
+import somelib
+
+def</code></pre>]]></description><link>https://jichu4n.com/posts/python-multiprocessing-and-exceptions/</link><guid isPermaLink="false">5bc6da5a60307a000159bd4f</guid><category><![CDATA[Python]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Tue, 11 Mar 2014 06:44:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Python’s <a href="http://docs.python.org/3/library/multiprocessing.html"><code>multiprocessing</code></a> module provides an interface for spawning and managing child processes that is familiar to users of the <a href="http://docs.python.org/3/library/threading.html"><code>threading</code></a> module. One problem with the <code>multiprocessing</code> module, however, is that <strong>exceptions in spawned child processes don’t print stack traces</strong>:</p>
+<p>Consider the following snippet:</p>
+<pre><code>import multiprocessing
+import somelib
+
+def f(x):
+  return 1 / somelib.somefunc(x)
+
+if __name__ == '__main__':
+  with multiprocessing.Pool(5) as pool:
+    print(pool.map(f, range(5)))
+</code></pre>
+<p>and the following error message:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;test.py&quot;, line 9, in &lt;module&gt;
+    print(pool.map(f, range(5)))
+  File &quot;/usr/lib/python3.3/multiprocessing/pool.py&quot;, line 228, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File &quot;/usr/lib/python3.3/multiprocessing/pool.py&quot;, line 564, in get
+    raise self._value
+ZeroDivisionError: division by zero
+</code></pre>
+<p>What triggered the <code>ZeroDivisionError</code>? Did <code>somelib.somefunc(x)</code> return 0, or did some other computation in <code>somelib.somefunc()</code> cause the exception? You will notice that we only see the stack trace of the main process, whereas the stack trace of the code that actually triggered the exception in the worker processes is not shown at all.</p>
+<p>Luckily, Python provides a handy <a href="http://docs.python.org/3/library/traceback.html"><code>traceback</code></a> module for working with exceptions and stack traces. All we have to do is catch the exception inside the worker process, and print it. Let’s change the code above to read:</p>
+<pre><code>import multiprocessing
+import traceback
+import somelib
+
+def f(x):
+  try:
+    return 1 / somelib.somefunc(x)
+  except Exception as e:
+    print('Caught exception in worker thread (x = %d):' % x)
+
+    # This prints the type, value, and stack trace of the
+    # current exception being handled.
+    traceback.print_exc()
+
+    print()
+    raise e
+
+if __name__ == '__main__':
+  with multiprocessing.Pool(5) as pool:
+    print(pool.map(f, range(5)))
+</code></pre>
+<p>Now, if you run the same code again, you will see something like this:</p>
+<pre><code>Caught exception in worker thread (x = 0):
+Traceback (most recent call last):
+  File &quot;test.py&quot;, line 7, in f
+    return 1 / somelib.somefunc(x)
+  File &quot;/path/to/somelib.py&quot;, line 2, in somefunc
+    return 1 / x
+ZeroDivisionError: division by zero
+
+Traceback (most recent call last):
+  File &quot;test.py&quot;, line 16, in &lt;module&gt;
+    print(pool.map(f, range(5)))
+  File &quot;/usr/lib/python3.3/multiprocessing/pool.py&quot;, line 228, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File &quot;/usr/lib/python3.3/multiprocessing/pool.py&quot;, line 564, in get
+    raise self._value
+ZeroDivisionError: division by zero
+</code></pre>
+<p>The printed traceback reveals <code>somelib.somefunc()</code> to be the actual culprit.</p>
+<p>In practice, you may want to save the exception and the stack trace somewhere. For that, you can use the <a href="http://docs.python.org/3/library/traceback.html#traceback.print_exc"><code>file</code></a> argument of <a href="http://docs.python.org/3/library/traceback.html#traceback.print_exc"><code>print_exc</code></a> in combination with <a href="http://docs.python.org/3/library/io.html?highlight=stringio#io.StringIO"><code>StringIO</code></a>. For example:</p>
+<pre><code>import logging
+import io  # Import StringIO in Python 2
+...
+
+def Work(...):
+  try:
+    ...
+  except Exception as e:
+    exc_buffer = io.StringIO()
+    traceback.print_exc(file=exc_buffer)
+    logging.error(
+        'Uncaught exception in worker process:\n%s',
+        exc_buffer.getvalue())
+    raise e</code></pre>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[C++: Access Specifiers and Overriding]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>Consider the following C++ code:</p>
+<pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class A {
+ public:
+  virtual void f() = 0;
+};
+
+class B: public A {
+ private:
+  virtual void f() {
+    cout &lt;&lt; &quot;B::f()&quot; &lt;&lt; endl;
+  }
+};
+
+class C: public B {
+ protected:
+  virtual void f() {
+   cout &lt;&lt; &quot;C:</code></pre>]]></description><link>https://jichu4n.com/posts/c-access-specifiers-and-overriding/</link><guid isPermaLink="false">5bc6e5ea60307a000159bdb1</guid><category><![CDATA[C++]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Sat, 01 Mar 2014 08:33:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>Consider the following C++ code:</p>
+<pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class A {
+ public:
+  virtual void f() = 0;
+};
+
+class B: public A {
+ private:
+  virtual void f() {
+    cout &lt;&lt; &quot;B::f()&quot; &lt;&lt; endl;
+  }
+};
+
+class C: public B {
+ protected:
+  virtual void f() {
+   cout &lt;&lt; &quot;C::f()&quot; &lt;&lt; endl;
+  }
+};
+
+int main() {
+  B *b = new B();
+  // This is NOT legal:
+  //   b-&gt;f();
+  C *c = new C();
+  // Nor is this:
+  //   c-&gt;f();
+
+  // Why is this legal?
+  A *a1 = b;
+  a1-&gt;f();  // Prints &quot;B::f()&quot;
+  A *a2 = c;
+  a2-&gt;f();  // Prints &quot;C::f()&quot;
+
+  return 0;
+}
+</code></pre>
+<p>My first reaction, and perhaps yours too, is that this code shouldn’t be legal. The base class <code>A</code> defines a public pure virtual method <code>f()</code> that must be overridden in derived classes. But the <code>f()</code> implementations in both derived classes are non-public; <code>B</code> and <code>C</code> actually <em>don’t</em> conform to the interface of the base class (unless casted to the base class), as shown in the first block in <code>main</code>.</p>
+<p>It turns out, however, that in C++ a method in a derived class overrides a method in a base class <strong>regardless of the access specifiers of the two methods</strong>. In other words, it does not matter whether the method is declared in the base class as <code>public</code>, <code>protected</code>, or <code>private</code>, nor does it matter how the method is declared in the derived class; as long as they have the same signature, the method in the inherit class always overrides the method in the base class:</p>
+<blockquote>
+<p>If a virtual member function <code>vf</code> is declared in a class <code>Base</code> and in a class <code>Derived</code>, derived directly or indirectly from <code>Base</code>, a member function <code>vf</code> with <strong>the same name</strong>, <strong>parameter-type-list</strong> (8.3.5), <strong>cv-qualification</strong>, and <strong>ref- qualifier</strong> (or absence of same) as <code>Base::vf</code> is declared, then <code>Derived::vf</code> is also virtual (whether or not it is so declared) and <strong>it <em>overrides</em> <code>Base::vf</code></strong>.</p>
+<p>—  C++ standard §10.3.2</p>
+</blockquote>
+<p>(Emphasis mine.)</p>
+<p>You will notice that access specifiers — <code>public</code>, <code>private</code>, etc. — are specifically omitted from the list of criteria for determining an override relationship. Thus, the above code works exactly as if both <code>B::f()</code> and <code>C::f()</code> had been declared <code>public</code>.</p>
+<p>Another consequence of this rather bizarre omission is that the language actually allows you to <code>public</code>-ly inherit from a base class, and yet <em>not</em> conform to its public interface unless casted to the base class, as illustrated in the first block in <code>main</code> above. Or, from the derived class’s perspective, the language allows clients to legally access methods explicitly marked <code>private</code> or <code>protected</code> through a cast to the base class.</p>
+<p>So, accidental omission or well thought-out design decision? Any ideas?</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[How To Set Default Fonts and Font Aliases on Linux]]></title><description><![CDATA[<!--kg-card-begin: markdown--><h1 id="fontwoes">Font Woes</h1>
+<p>It’s fairly straightforward to set the default font used in native apps on a modern Linux desktop, or the default fonts used to render web pages in your browser of choice.</p>
+<p>But if you’re reading this, you probably know that that’s far from the end</p>]]></description><link>https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/</link><guid isPermaLink="false">5bc6b58fa2b173000150bc2c</guid><category><![CDATA[Linux]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Sun, 23 Feb 2014 05:07:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><h1 id="fontwoes">Font Woes</h1>
+<p>It’s fairly straightforward to set the default font used in native apps on a modern Linux desktop, or the default fonts used to render web pages in your browser of choice.</p>
+<p>But if you’re reading this, you probably know that that’s far from the end of the story. You might have noticed that Firefox and Chrome rudely ignore your font settings for many websites. This is because many (if not most) popular sites, including <a href="http://www.google.com">Google</a>, <a href="http://www.yahoo.com">Yahoo</a>, <a href="http://www.facebook.com">Facebook</a> or <a href="http://github.com">GitHub</a>, specify preferred fonts for text:</p>
+<ul>
+<li>Google: <code>arial, sans-serif</code></li>
+<li>Yahoo: <code>Helvetica Neue, Helvetica, Arial</code></li>
+<li>Facebook: <code>lucida grande, tahoma, verdana, arial, sans-serif</code></li>
+<li>GitHub: <code>Helvetica, arial, freesans, clean, sans-serif</code></li>
+</ul>
+<p>(Retrieved on 02/21/2014)</p>
+<p>You might immediately notice that the most commonly used fonts on these sites, Arial and Helvetica, are fonts that come bundled with Microsoft Windows, and are most likely <em>not</em> installed on your Linux system. In this case, what font is <em>actually</em> used is anyone’s guess. If they <em>are</em> installed (e.g., via a package like <a href="https://aur.archlinux.org/packages/ttf-ms-fonts/">ttf-ms-fonts</a> or directly copied from a Windows machine), well, you still probably want to display your favorite font instead :)</p>
+<p>So, let’s find out what your default fonts and aliases are with <code>fc-match</code>:</p>
+<pre><code>for family in serif sans-serif monospace Arial Helvetica Verdana &quot;Times New Roman&quot; &quot;Courier New&quot;; do
+  echo -n &quot;$family: &quot;
+  fc-match &quot;$family&quot;
+done
+</code></pre>
+<p>This is what I get on my machine by default:</p>
+<pre><code>serif: DejaVuSerif.ttf: &quot;DejaVu Serif&quot; &quot;Book&quot;
+sans-serif: DejaVuSans.ttf: &quot;DejaVu Sans&quot; &quot;Book&quot;
+monospace: DejaVuSansMono.ttf: &quot;DejaVu Sans Mono&quot; &quot;Book&quot;
+Arial: DejaVuSans.ttf: &quot;DejaVu Sans&quot; &quot;Book&quot;
+Helvetica: n019003l.pfb: &quot;Nimbus Sans L&quot; &quot;Regular&quot;
+Verdana: DejaVuSans.ttf: &quot;DejaVu Sans&quot; &quot;Book&quot;
+Times New Roman: DejaVuSerif.ttf: &quot;DejaVu Serif&quot; &quot;Book&quot;
+Courier New: DejaVuSansMono.ttf: &quot;DejaVu Sans Mono&quot; &quot;Book&quot;
+</code></pre>
+<h1 id="fontconfigurationfiles">Font Configuration Files</h1>
+<p>So, assuming you’ve installed your fonts of choice (via a package, copying to <code>/usr/share/fonts</code> or <code>~/.fonts</code> - please verify with the <code>fc-list</code> command), how do you set them as default in all apps and web sites?</p>
+<p>Well, there are two places where fonts are configured: system-wide configuration resides in <code>/etc/fonts/</code>, and per-user configs are stored in <code>~/.config/fontconfig/fonts.conf</code> (note that this used to be <code>~/.fonts.conf</code> before <code>fontconfig</code> 2.10.1). For simplicity’s sake, we’ll do it in <code>~/.config/fontconfig/fonts.conf</code>.</p>
+<p>Let’s open up <code>~/.config/fontconfig/fonts.conf</code>, or create it if it doesn’t already exist. Put the following skeleton structure in there:</p>
+<pre><code>&lt;?xml version='1.0'?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM 'fonts.dtd'&gt;
+&lt;fontconfig&gt;
+&lt;/fontconfig&gt;
+</code></pre>
+<p>We will put all of our custom configuration between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>.</p>
+<h1 id="settingdefaultfonts">Setting Default Fonts</h1>
+<p>First, let’s set the default serif, sans serif, and monospace fonts. I’ll use the beautiful <a href="http://en.wikipedia.org/wiki/Croscore_fonts">Chrome OS fonts</a> as an example (<a href="https://aur.archlinux.org/packages/ttf-chromeos-fonts/"><code>ttf-chromeos-fonts</code></a> if you’re running <a href="http://www.archlinux.org">Arch Linux</a>). Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>:</p>
+<pre><code>  &lt;!-- Set preferred serif, sans serif, and monospace fonts. --&gt;
+  &lt;alias&gt;
+    &lt;family&gt;serif&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Tinos&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+  &lt;alias&gt;
+    &lt;family&gt;sans-serif&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Arimo&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+  &lt;alias&gt;
+    &lt;family&gt;sans&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Arimo&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+  &lt;alias&gt;
+    &lt;family&gt;monospace&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Cousine&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+</code></pre>
+<h1 id="aliasingmicrosoftfonts">Aliasing Microsoft Fonts</h1>
+<p>Now, we will create aliases for commonly used fonts like Arial and Helvetica, so that our favorite fonts will always be used instead of these fonts, e.g. when requested by a web site.</p>
+<p>Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>, after the previous snippet:</p>
+<pre><code>  &lt;!-- Aliases for commonly used MS fonts. --&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Arial&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Helvetica&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Verdana&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Tahoma&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;!-- Insert joke here --&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Comic Sans MS&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Times New Roman&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Tinos&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Times&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Tinos&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name=&quot;family&quot;&gt;&lt;string&gt;Courier New&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name=&quot;family&quot; mode=&quot;assign&quot; binding=&quot;strong&quot;&gt;
+      &lt;string&gt;Cousine&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+</code></pre>
+<p>Note that the Microsoft fonts are aliased directly to the our preferred substitute fonts. Aliasing to generic families (serif, sans-serif etc.) may or may not work depending on your configuration in <code>/etc/fonts</code> (they didn’t work for me), so it’s safer this way.</p>
+<p>This list is of course by no means definitive; add/remove aliases as you like.</p>
+<h1 id="theresult">The Result</h1>
+<p>You’ll need to log out and back in for all applications to update. You should see the difference immediately:</p>
+<p><strong>Google search results, before (Arial):</strong></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/font_config_before.png" alt="font_config_before"></p>
+<p><strong>Google search results, after (Arimo):</strong></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/font_config_after.png" alt="font_config_after"></p>
+<p>You can verify that the aliases have been set up correctly with <code>fc-match</code>:</p>
+<pre><code>for family in serif sans-serif monospace Arial Helvetica Verdana &quot;Times New Roman&quot; &quot;Courier New&quot;; do
+  echo -n &quot;$family: &quot;
+  fc-match &quot;$family&quot;
+done
+</code></pre>
+<p>which should now give you something like:</p>
+<pre><code>serif: Tinos-Regular.ttf: &quot;Tinos&quot; &quot;Regular&quot;
+sans-serif: Arimo-Regular.ttf: &quot;Arimo&quot; &quot;Regular&quot;
+monospace: Cousine-Regular.ttf: &quot;Cousine&quot; &quot;Regular&quot;
+Arial: Arimo-Regular.ttf: &quot;Arimo&quot; &quot;Regular&quot;
+Helvetica: Arimo-Regular.ttf: &quot;Arimo&quot; &quot;Regular&quot;
+Verdana: Arimo-Regular.ttf: &quot;Arimo&quot; &quot;Regular&quot;
+Times New Roman: Tinos-Regular.ttf: &quot;Tinos&quot; &quot;Regular&quot;
+Courier New: Cousine-Regular.ttf: &quot;Cousine&quot; &quot;Regular&quot;
+</code></pre>
+<h1 id="othernotes">Other Notes</h1>
+<p>Some existing examples you may find online show the following syntax:</p>
+<pre><code>&lt;!-- Deprecated syntax --&gt;
+&lt;match target=&quot;pattern&quot; name=&quot;family&quot;&gt;
+  &lt;test name=&quot;family&quot; qual=&quot;any&quot;&gt;&lt;string&gt;Arial&lt;/string&gt;&lt;/test&gt;
+  ...
+&lt;/match&gt;
+</code></pre>
+<p>This will produce an error message like</p>
+<pre><code>Fontconfig error: &quot;/home/username/.config/fontconfig/fonts.conf&quot;, line 38: invalid attribute 'name'
+</code></pre>
+<p>The fix is to change <code>&lt;match target=&quot;pattern&quot; name=&quot;family&quot;&gt;</code> to just <code>&lt;match&gt;</code>, as shown above.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Unicode I/O and Locales in Python]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>I recently ran into a weird error when running some Python code in a chroot jail.</p>
+<pre><code>s = '你好'
+with open('/tmp/asdf', 'w') as f:
+  f.write(s)
+</code></pre>
+<p>gave me</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;</code></pre>]]></description><link>https://jichu4n.com/posts/unicode-io-and-locales-in-python/</link><guid isPermaLink="false">5bc6e65560307a000159bdb7</guid><category><![CDATA[Python]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Thu, 20 Feb 2014 08:35:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>I recently ran into a weird error when running some Python code in a chroot jail.</p>
+<pre><code>s = '你好'
+with open('/tmp/asdf', 'w') as f:
+  f.write(s)
+</code></pre>
+<p>gave me</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe4 in position 0: ordinal not in range(128)
+</code></pre>
+<p>The same happened with interprocess I/O:</p>
+<pre><code>with subprocess.Popen(
+    '/usr/bin/cat',
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    universal_newlines=True) as proc:
+  (cmd_stdout, cmd_stderr) = proc.communicate('你好')
+</code></pre>
+<p>gave me</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.3/subprocess.py&quot;, line 578, in check_output
+    output, unused_err = process.communicate(timeout=timeout)
+  File &quot;/usr/lib/python3.3/subprocess.py&quot;, line 908, in communicate
+    stdout = _eintr_retry_call(self.stdout.read)
+  File &quot;/usr/lib/python3.3/subprocess.py&quot;, line 479, in _eintr_retry_call
+    return func(*args)
+  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe4 in position 0: ordinal not in range(128)
+</code></pre>
+<p>It turns out that Python <code>str</code>'s are encoded to/decoded from raw bytes during I/O (<code>print</code>, file I/O, IPC, etc) using the <em>default</em> system locale encoding. The advantage is that, if your system locale is set up correctly, everything just works - there’s no explicit encoding/decoding between strings and bytes. The downside is that your Python code that runs fine on one machine can fail mysteriously on a different machine.</p>
+<p>In my case, the chroot jail yielded:</p>
+<pre><code>$ locale
+LANG=C
+LC_CTYPE=&quot;C&quot;
+LC_NUMERIC=&quot;C&quot;
+LC_TIME=&quot;C&quot;
+LC_COLLATE=&quot;C&quot;
+LC_MONETARY=&quot;C&quot;
+LC_MESSAGES=&quot;C&quot;
+LC_PAPER=&quot;C&quot;
+LC_NAME=&quot;C&quot;
+LC_ADDRESS=&quot;C&quot;
+LC_TELEPHONE=&quot;C&quot;
+LC_MEASUREMENT=&quot;C&quot;
+LC_IDENTIFICATION=&quot;C&quot;
+LC_ALL=
+</code></pre>
+<h1 id="solutiona">Solution A</h1>
+<p>The simplest solution is to set the system locale, either just for the Python program or for your shell. For example,</p>
+<pre><code># Run ./my_program.py with a custom LANG value.
+LANG=en_US.utf-8 ./my_program.py
+</code></pre>
+<p>or</p>
+<pre><code># Set locale for current shell session.
+export LANG=en_US.utf-8
+./my_program.py
+</code></pre>
+<p>In fact, it’s probably a good idea to add the <code>export</code> line to your <code>~/.bashrc</code>, or follow however your Linux distro decides locales should be set.</p>
+<h1 id="solutionb">Solution B</h1>
+<p>On the other hand, you can explicitly set the encoding used during I/O in your Python code.</p>
+<p>For file I/O, in Python 3.x, you can set the <code>encoding</code> argument of <a href="http://docs.python.org/3.3/library/functions.html#open"><code>open</code></a>:</p>
+<pre><code># Python 3.x
+with open('/tmp/asdf', 'w', encoding='utf-8') as f:
+  f.write('你好')
+</code></pre>
+<p>In Python 2.x, you can use <a href="http://docs.python.org/2/library/codecs.html#codecs.open"><code>codecs.open</code></a>:</p>
+<pre><code># Python 2.x
+import codecs
+with codecs.open('/tmp/asdf', 'w', encoding='utf-8') as f:
+  f.write('你好')
+</code></pre>
+<p>Alternatively, you can use raw mode for file I/O:</p>
+<pre><code>with open('/tmp/asdf', 'wb') as f:
+  f.write('你好'.encode('utf-8'))
+</code></pre>
+<p>For IPC with <code>subprocess</code>, you must <strong>not</strong> use <code>universal_newlines=True</code>, as that will always attempt to encode/decode using the system locale. Instead:</p>
+<pre><code>with subprocess.Popen(
+    '/usr/bin/cat',
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE) as proc:
+  (cmd_stdout_bytes, cmd_stderr_bytes) = proc.communicate('你好'.encode('utf-8'))
+  (cmd_stdout, cmd_stderr) = (
+      cmd_stdout_bytes.decode('utf-8'), cmd_stderr_bytes.decode('utf-8'))</code></pre>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Disabling Screen-Off Animation In Android]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>I am impressed by the amazing progress Android’s UI has made since its inception. With each iteration, likewise in software as in hardware, its usability and aesthetics have steadily improved to the point where I can now confidently buy one for my mom to replace the iPhone I recommended</p>]]></description><link>https://jichu4n.com/posts/disabling-screen-off-animation-in-android/</link><guid isPermaLink="false">5bc6e82f60307a000159bdc8</guid><category><![CDATA[Android]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Sat, 02 Feb 2013 08:43:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>I am impressed by the amazing progress Android’s UI has made since its inception. With each iteration, likewise in software as in hardware, its usability and aesthetics have steadily improved to the point where I can now confidently buy one for my mom to replace the iPhone I recommended to her only last year.</p>
+<p>On the other hand, one particular &quot;feature&quot; I intensely dislike is the screen-off animation that emulates the brief white flash you see when an old CRT TV monitor is powering off. Introduced in Gingerbread (2.3), it seems not to bother most people as much as it bothers me, and even seems to be quite popular (e.g., <a href="http://forum.xda-developers.com/showthread.php?t=1890526">this thread</a>).</p>
+<p>I was glad to learn though that a number of people find it as annoying as I do, for example in <a href="http://forum.cyanogenmod.org/topic/64185-any-way-to-disable-the-screen-off-animation-in-101/">this thread</a> and <a href="http://code.google.com/p/cyanogenmod/issues/detail?id=6519">this bug</a>.</p>
+<p>As a CyanogenMod fan, I was quite happy with the straightforward checkbox in the Settings app in CyanogenMod 9 that toggled whether to play this animation. In CM10, this option was removed, but there was an easy hack involving changing window animation scale in the developer settings, as explained in the <a href="http://code.google.com/p/cyanogenmod/issues/detail?id=6519">second link above</a>.</p>
+<p>So when I updated to CM10.1 M1, I was very unpleasantly surprised to find that this hack does not work any more either. I tried to immediately downgrade to CM10, but then discovered that doing so requires a full data wipe (of course…). A quick search pulled up <a href="http://forum.xda-developers.com/showthread.php?t=1989397">this thread</a> which proposes a simple prop edit, but the following posts in the thread suggest mixed results.</p>
+<p>So, stuck with CM10.1, and really disgusted at this turn of events, I finally decided to put on my hax0r gloves and get this annoying &quot;feature&quot; out of my face once and for all.</p>
+<p><strong>Poking Around</strong></p>
+<p>I went to <a href="http://androidxref.com/">androidxref.com</a> and started searching the Android source code for &quot;screen off animation&quot;. (OK, I actually started out with <em>grep</em>, but it didn’t take me long to realize <a href="http://androidxref.com/">androidxref.com</a> was about sixty million times faster - it’s really pretty cool.)</p>
+<p>I quickly found why changing the window animation scale in <strong>Jelly Bean 4.1 (and CM10)</strong> disables the screen-off animation. The two snippets of of code implementing this behavior are at <a href="http://androidxref.com/4.0.4/xref/frameworks/base/services/java/com/android/server/PowerManagerService.java#470">line 470</a> and <a href="http://androidxref.com/4.0.4/xref/frameworks/base/services/java/com/android/server/PowerManagerService.java#2228">line 2228</a> of <code>PowerManagerService.java</code>.</p>
+<p>In <strong>Jelly Bean 4.2 (and CM10.1)</strong>, however, these parts of the code have been completely refactored. The snippet of code that launches the screen-off animation is now found at <a href="http://androidxref.com/4.2_r1/xref/frameworks/base/services/java/com/android/server/power/DisplayPowerController.java#704">line 704</a> of <code>DisplayPowerController.java</code>. Note that this new <code>DisplayPowerController</code> class has been factored out of the old <code>PowerManagerService</code> class, and both have moved into a separate <code>power</code> sub-directory.</p>
+<p><strong>The Hacking</strong></p>
+<p><em>Disclaimer: I am <strong>NOT</strong> responsible for anything that happens to your phone or you or your house or your relationship with your wife if you follow the instructions down here. If you don’t know what you’re doing and are scared of bricking your phone, just give up and go watch Superbowl. Please.</em></p>
+<p>What did <em>not</em> change, I found, is that this code gets packaged into <code>/system/framework/services.jar</code> on the Android system. So, let’s take a look at this file as found in the CM10.1 image on my phone:</p>
+<pre><code># Copy services.jar from phone to current directory.
+adb pull /system/framework/services.jar
+# Disassemble.
+apktool d services.jar
+</code></pre>
+<p>(<code>apktool</code> is a tool that extracts and disassembles Android APK/JAR files, and is available for Linux, Windows and OS X.) This produces a directory, <code>services.jar.out</code>, which contains the disassembled code of <code>services.jar</code> we just pulled from a connected phone. I dived into the <code>DisplayPowerController</code> code and edited the <em>else</em> clause at <a href="http://androidxref.com/4.2_r1/xref/frameworks/base/services/java/com/android/server/power/DisplayPowerController.java#704">line 704</a> to essentially just say <code>setScreenOn(false);</code> directly instead of running the animation first. If you look at the dissassembled code, you’d realize Dalvik bytecode is really quite readable and easy to hack, especially since the line number hints allow you to directly map a line in the Java source code to the corresponding Dalvik instructions. I just had the Java source file on <a href="http://androidxref.com">androidxref.com</a> open in a browser tab for reference and killed instructions line by line. You can <a href="http://www.mediafire.com/?5e8s5kzblav4a5g">download my patch here</a> and apply it like this:</p>
+<pre><code>patch -d services.jar.out -Np1 &lt; path/to/disable_screen_off_animation.patch
+</code></pre>
+<p>(For CM10.1 nightlies (after the MR1.1 merge) and CM10.1 M2, use <a href="http://www.mediafire.com/download.php?drw5t67v24tb4x9">this patch</a> instead. The same piece of code was shuffled around to <a href="https://github.com/CyanogenMod/android_frameworks_base/blob/f6f6b1d37c1d5a8ba687e4d09761eb762f7269af/services/java/com/android/server/power/DisplayPowerController.java#L777">line 777</a>. For CM10.1 M3, use <a href="http://www.mediafire.com/download.php?3xghfg9yfqyj9o7">this patch</a> instead.)</p>
+<p>Now re-assemble the code and push it back on to the device:</p>
+<pre><code># Re-assemble modified sources as services-mod.jar.
+apktool b services.jar.out services-mod.jar
+# Copy services-mod.jar to /sdcard/ on phone.
+adb push services-mod.jar /sdcard/
+# Remount /system partition as read-write in order to modify it.
+adb shell su -c 'mount -o rw,remount /system'
+# Overwrite original services.jar on phone with services-mod.jar as root.
+adb shell su -c 'cp /sdcard/services-mod.jar /system/framework/services.jar'
+# Reboot phone for this to take effect.
+adb reboot
+</code></pre>
+<p>When the phone reboots, it will say Android is upgrading and will rebuild Dalvik cache for each application, so it might take a while. But hey, it’s worth it.</p>
+<p><strong>Parting Words</strong></p>
+<p>The final product, if you just want to replace the <code>services.jar</code> on your phone, is here:</p>
+<ul>
+<li>
+<p><strong>CyanogenMod 10.1 M1</strong> - tested on Galaxy Nexus (maguro) and Nexus S (crespo), should work on other phones as well (can’t promise - let me know):</p>
+<ul>
+<li><a href="http://www.mediafire.com/?16dhrvk7esr77br">services-mod.jar</a></li>
+</ul>
+</li>
+<li>
+<p><strong>CyanogenMod 10.1 M2</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can’t promise - let me know):</p>
+<ul>
+<li><a href="http://www.mediafire.com/?kdd4af6h81bq8">services-mod.jar</a></li>
+</ul>
+</li>
+<li>
+<p><strong>CyanogenMod 10.1 M3</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can’t promise - let me know):</p>
+<ul>
+<li><a href="http://www.mediafire.com/?78cvqi6qe0s3yoy">services-mod.jar</a></li>
+</ul>
+</li>
+<li>
+<p><strong>CyanogenMod 10.1 RC1</strong> - tested on Galaxy Nexus (maguro), should work on other phones as well (can’t promise - let me know):</p>
+<ul>
+<li><a href="http://www.mediafire.com/?w1527lnv5eoh8kl">services-mod.jar</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Stock 4.2.2 (takju/JDQ39)</strong> - for <a href="https://developers.google.com/android/nexus/images#takjujdq39">&quot;takju&quot; factory image from Google</a></p>
+<ul>
+<li>
+<p><strong>Note</strong>: use this to replace <code>services.odex</code>, not <code>services.jar</code>!</p>
+</li>
+<li>
+<p><a href="http://www.mediafire.com/?g5guv4hkcvt9owm">services-mod.odex</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Stock 4.2.2 (yakju/JDQ39)</strong> - for <a href="https://developers.google.com/android/nexus/images#yakjujdq39">&quot;yakju&quot; factory image from Google</a></p>
+<ul>
+<li>
+<p><strong>Note</strong>: use this to replace <code>services.odex</code>, not <code>services.jar</code>!</p>
+</li>
+<li>
+<p><a href="http://www.mediafire.com/?8ttffv118tnxgp5">services-mod.odex</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Apply the <code>services-mod.jar</code> to your phone like this (obviously assuming you have adb working and root):</p>
+<pre><code># Copy services-mod.jar to /sdcard/ on phone.
+adb push services-mod.jar /sdcard/
+# Remount /system partition as read-write in order to modify it.
+adb shell su -c 'mount -o rw,remount /system'
+# Overwrite original services.jar on phone with services-mod.jar as root.
+adb shell su -c 'cp /sdcard/services-mod.jar /system/framework/services.jar'
+# Reboot phone for this to take effect.
+adb reboot
+</code></pre>
+<p>Or, I suppose, you could just use ES File Explorer with root mode enabled, mount <code>/system</code> as read-write and copy the file to <code>/system/framework/services.jar</code> on the phone.</p>
+<p>Note that a reboot is needed after you replace the <code>services.jar</code> whatever you do, and upon the first reboot the &quot;Android is upgrading&quot; dialog will pop up.</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item><item><title><![CDATA[Android Rooting: A Developer's Guide]]></title><description><![CDATA[<!--kg-card-begin: markdown--><p>First things first — this is not about how to apply a rooting method, e.g., a one-click-root, to an Android device. Rather, it is about how one could go about <em>developing</em> a rooting method for a device that no one has rooted before, and is told through my experiences with</p>]]></description><link>https://jichu4n.com/posts/android-rooting-a-developers-guide/</link><guid isPermaLink="false">5bc6e1da60307a000159bd99</guid><category><![CDATA[Android]]></category><category><![CDATA[Technical Notes]]></category><dc:creator><![CDATA[Chuan Ji]]></dc:creator><pubDate>Wed, 21 Nov 2012 08:16:00 GMT</pubDate><content:encoded><![CDATA[<!--kg-card-begin: markdown--><p>First things first — this is not about how to apply a rooting method, e.g., a one-click-root, to an Android device. Rather, it is about how one could go about <em>developing</em> a rooting method for a device that no one has rooted before, and is told through my experiences with rooting a particular device — the Barnes &amp; Noble Nook Tablet 8GB. For context, you can read my original thread &quot;<a href="http://forum.xda-developers.com/showthread.php?t=1529553">Root for Nook Tablet 8GB (w/ Android Market)</a> on XDA-Developers where I published my rooting method, which has reached a download count of — wait for it — OVER NINE THOUSAND!!!</p>
+<p>For an overview of how rooting works behind the scenes, you may want to read my previous article <a href="https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">How Rooting Works - A Technical Explanation of the Android Rooting Process</a> as background.</p>
+<p>Sometime in late February (2012), on a visit to to a Barnes &amp; Noble store in Boston, I bought the then freshly released Nook Tablet 8GB entirely on impulse for $199. Being the hax0r that I am, the first thing I did when I got home was to try to root the device. It came as a nasty surprise, therefore, when I discovered that no one had yet succeeded in rooting the device. All I could find was a <a href="http://www.youtube.com/watch?v=x8e0OLWQYc4">YouTube video</a> showing that the existing rooting method for its cousin, the Nook Tablet 16GB, did not work. After waiting for a few days, the absolutely pathetic app store and handicaps instituted by B&amp;N finally motivated me to develop a rooting method for the device myself.</p>
+<h1 id="theplan">The Plan</h1>
+<p>So, how do you go about rooting an Android device? As I explain in <a href="https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process.html">my previous article</a>, rooting is basically a two-step process:</p>
+<ol>
+<li>
+<p>Find exploit that allows execution of arbitrary code as root</p>
+</li>
+<li>
+<p>Use exploit to install <code>su</code> (with SUID bit set) and <code>Superuser.apk</code> as root</p>
+</li>
+</ol>
+<p>After <code>su</code> and <code>Superuser.apk</code> are installed correctly, apps that require root (such as <a href="http://matrixrewriter.com/android/">Titanium Backup</a> or <a href="https://play.google.com/store/apps/details?id=org.adaway&amp;hl=en">AdAway</a>) will invoke <code>su</code> to run code as the privileged user.</p>
+<h1 id="theprocess">The Process</h1>
+<p>There are many generic or device-specific exploits that a hax0r may leverage to achieve privileged execution of arbitrary code. I would again refer you to <a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent presentation on various Android root exploits</a> that have been or may still be used for this purpose.</p>
+<p>However, none of these methods that I knew of could work on the Nook Tablet, which is probably one of the most locked-down Android ROMs out there:</p>
+<ul>
+<li>
+<p>Bootloader is locked.</p>
+</li>
+<li>
+<p>ADB is disabled, and cannot be enabled from the UI.</p>
+</li>
+<li>
+<p>Installing non-market apps (raw APKs) is disabled, and cannot be enabled from the UI.</p>
+</li>
+<li>
+<p>No access to Google Play / Android Market (or any Google Apps).</p>
+</li>
+</ul>
+<p>This rules out 1) root APKs and 2) the majority of exploits out there that require executing commands over ADB. It means that one cannot run any code on the device that does not come from B&amp;N period.</p>
+<p>But of course there was another way in. Somebody on XDA-Developers had discovered that the bootloader of the Nook Tablet supported booting off an Android system located in partition images stored on an external microSD card. This mechanism is probably used to repair corrupted system partitions by B&amp;N customer support.</p>
+<p>The solution, then, is clear: we create dummy system partition images that, instead of booting an Android system, installs <code>su</code> and <code>Superuser.apk</code> into the &quot;normal&quot; Android system in internal flash memory. More concretely, I modified the system initialization file inside the initrd inside the boot partition image to invoke a custom script that copied the relevant files into the <code>system</code> partition in the internal flash memory.</p>
+<p>I based my work on <a href="http://forum.xda-developers.com/showthread.php?t=1517513">bauwks’s 2nduboot images</a> and used <a href="https://gitorious.org/ac100/abootimg">abootimg</a> to unpack files in the boot partition image <code>boot.img</code>:</p>
+<pre><code># Extracts files in the boot partition image into the current directory.
+abootimg -x ./boot.img
+# Extract files in the initrd cpio archive into the folder ./ramdisk/
+aboot-unpack-initrd ./initrd.img
+</code></pre>
+<p>I changed the system initialization file <code>init.omap4430.rc</code> in the initrd to mount the system partition of the internal flash memory at <code>/foo</code> rather than <code>/system</code>, because later system initialization steps attempt to remount <code>/system</code> as read-only and so on, and for some reason I could not disable that behavior:</p>
+<pre><code>on fs
+    mkdir /foo
+    mount ext4 /dev/block/platform/mmci-omap-hs.1/by-name/system /foo wait
+</code></pre>
+<p>I added the following to the system initialization file <code>init.rc</code> in the initrd to start my rooting script:</p>
+<pre><code>service root_script /sbin/busybox ash /assets/run.sh
+    oneshot
+</code></pre>
+<p>My rooting script, which I place in the directory <code>assets</code> in the initrd, installs not only <code>su</code>, but also Google Play and other Google apps which are missing from the Nook Tablet ROM:</p>
+<pre><code># Install su and Superuser.apk
+/sbin/busybox cp /assets/su /foo/bin/
+/sbin/busybox cp /assets/su /foo/xbin/
+/sbin/busybox chmod 06755 /foo/xbin/su
+/sbin/busybox chmod 06755 /foo/bin/su
+/sbin/busybox cp /assets/Superuser.apk /foo/app/
+
+# Install Busybox.
+/sbin/busybox cp /sbin/busybox /foo/xbin/
+/sbin/busybox chmod 06755 /foo/xbin/busybox
+
+# Install Google Play and other Google apps.
+/sbin/busybox cp /assets/*.apk /foo/app/
+/sbin/busybox cp /assets/com.google.android.maps..xml /foo/etc/permissions/
+/sbin/busybox cp /assets/com.google.android.maps.jar /foo/framework/
+/sbin/busybox cp /assets/libvoicesearch.so /foo/lib/
+
+# Done.
+/sbin/busybox mount -o ro,remount /foo
+</code></pre>
+<p>In accordance with the above script, I had placed all assets in the <code>assets</code> directory inside the initrd, and the Busybox binary in <code>sbin</code> inside the initrd. With all changes done, I pack everything back into a new boot.img:</p>
+<pre><code># Build initrd cpio archive
+abootimg-pack-initrd initrd.img.new
+# Build new boot.img using previously extracted components
+abootimg --create boot.img.new -f ./bootimg.cfg -k ./zImage -r ./initrd.img.new
+</code></pre>
+<p>Then I replace the <code>boot.img</code> on the SD card image with my <code>boot.img.new</code>, and the rooting method is done.</p>
+<h1 id="finalwords">Final words</h1>
+<p>The actual process, of course, was much, much more painful. The Nook Tablet’s bootloader is very picky; some microSD cards just won’t work, there is a file size limit on <code>boot.img</code>, etc.. It was also after much frustration that I discovered the mount-to-<code>/foo</code> trick. And I could not even keep track of how many factory restores I had to perform on the device to undo bad modifications. But it was still a lot of fun, and the euphoria at the end and the feeling of accomplishment when reply posts started rolling in and random people were donating $5 as a token of their appreciation could not be overstated.</p>
+<p>Good luck rooting!</p>
+<!--kg-card-end: markdown-->]]></content:encoded></item></channel></rss>

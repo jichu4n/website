@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>Flashing a Sprint Nexus S 4G to Verizon</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Flashing a Sprint Nexus S 4G to Verizon" />
+    <meta property="og:description" content="I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided" />
+    <meta property="og:url" content="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" />
+    <meta property="article:published_time" content="2015-11-11T08:27:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T07:29:00.000Z" />
+    <meta property="article:tag" content="Android" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Flashing a Sprint Nexus S 4G to Verizon" />
+    <meta name="twitter:description" content="I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Android, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "Flashing a Sprint Nexus S 4G to Verizon",
+    "url": "https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/",
+    "datePublished": "2015-11-11T08:27:00.000Z",
+    "dateModified": "2018-10-17T07:29:00.000Z",
+    "keywords": "Android, Technical Notes",
+    "description": "&gt; I originally wrote the following post in July 2012 to document how to fully\nflash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing\nit. I have long since switched away from Verizon Wireless and no longer own any\nof the phones mentioned, and decided to publish it for what it’s worth.\n\nIf you’re interested in the high-level view of how CDMA phones are programmed,\ncheck out my previous article Carrier Programming on CDMA Android Phones\n[/posts/carrier-programming-on-cdma-a",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">Flashing a Sprint Nexus S 4G to Verizon</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2015-11-11">11 Nov 2015</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <blockquote>
+<p>I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided to publish it for what it’s worth.</p>
+<p>If you’re interested in the high-level view of how CDMA phones are programmed, check out my previous article <a href="https://jichu4n.com/posts/carrier-programming-on-cdma-android-phones.html">Carrier Programming on CDMA Android Phones</a>.</p>
+</blockquote>
+<h1 id="introduction">Introduction</h1>
+<p>This is a guide for flashing a Sprint Samsung Nexus S 4G to a standard Verizon monthly plan, and voice, texting and 3G data will all be fully functional. This method will likely also work on many other phones, especially Samsung ones, and should theoretically work just file on any ROM as well.</p>
+<p>Note that this procedure entails ESN cloning, which may be illegal in your region. Please make sure you have an understanding of all applicable laws before proceeding. The author of this guide cannot be held responsible for any legal infractions that may ensue. Finally, you are solely responsible for any consequences of your actions as a result of following this guide. While I believe it to be quite safe, I cannot guarantee you that this process will not brick your devices or start a zombie apocalypse.</p>
+<h1 id="requirementsandsetup">Requirements and Setup</h1>
+<p>We will need the following before starting:</p>
+<ul>
+<li>
+<p>A currently active Verizon Wireless Android phone and plan. Please beware that not all phones will work; many phones do not allow us to extract all the information we need for this process. For instance, my Motorola Droid 3 did not work, and I had to purchase and activate an HTC Incredible for this. This phone will be our donor phone.</p>
+</li>
+<li>
+<p>A rooted Samsung Nexus 4G.</p>
+</li>
+<li>
+<p>A computer running a recent version of Windows, with at least 2 USB ports.</p>
+</li>
+<li>
+<p>2 MicroUSB cables.</p>
+</li>
+</ul>
+<p>In addition, we need the following software:</p>
+<ul>
+<li>
+<p>USB diagnostic drivers for your donor phone. These vary by manufacturer and their configuration may be quite complex; search online for how to set up yours. For HTC phones, download and install HTC Sync from HTC’s website (archived <a href="http://www.mediafire.com/?65l9idwgbzq5avb">here</a>).</p>
+</li>
+<li>
+<p>USB diagnostic drivers for the Nexus S 4G. The easiest way is to download and install PdaNet (archived <a href="http://www.mediafire.com/?jjdv8g7ie82kxdx">here</a>). We don’t actually need the functionality of PdaNet, but it happens to bundle the drivers we need. Select Samsung when prompted for the manufacturer of our phone.</p>
+</li>
+<li>
+<p>QPST and QXDM (archived <a href="http://www.mediafire.com/?ojco4qzf4r688k6">here</a>). These are internal Qualcomm tools; we will use them to clone the MEID of the donor phone.</p>
+</li>
+<li>
+<p>DFS (archived <a href="http://www.mediafire.com/?wp7hc8ny854pqrz">here</a>). This is a third-party tool for working with CDMA phones. The demo version will suffice.</p>
+</li>
+</ul>
+<h1 id="step1preparation">Step 1: Preparation</h1>
+<p>First, make sure the donor phone is fully activated and that calls, text and data are all fully functional.</p>
+<p>Now, find the HEX MEID of the donor phone. On the HTC Incredible, this can be found under <em>Settings → About Phone → Phone Identity</em>. On most Android phones, this is under <em>Settings → About Phone → Status</em>. It is also usually printed on a label underneath the phone battery. This should be 14 digits and usually begins with <code>A00000</code>.</p>
+<p>Now put the donor phone in airplane mode.</p>
+<p>We will next connect both phones to the computer in diagnostic mode.</p>
+<ul>
+<li>
+<p>On the Nexus S 4G, dial <code>*#*#8778#*#*</code>, then select <em>MODEM</em> under <em>USB</em>. Connect the Nexus S 4G to the computer. If drivers were installed correctly, you should now see a <em>SAMSUNG Mobile Modem Diagnostic Serial Port (WDM)</em> under <em>Ports (COM &amp; LPT)</em> in Windows’s Device Manager. Note down the port number of the Nexus S 4G; we will assume COM4 for convenience.</p>
+</li>
+<li>
+<p>On the HTC Incredible, dial <code>##3424#</code>, hit <em>Call</em>, connect it to the computer, then follow the instructions in <a href="http://forum.xda-developers.com/showthread.php?t=1619314">this thread</a> with Device Manager. If everything goes well you should now see a <em>HTC Diagnostic Interface</em> under <em>Ports (COM &amp; LPT)</em> in Device Manager. Note down the port number of the HTC Incredible; we will assume COM11 for convenience.</p>
+</li>
+</ul>
+<p>After confirming that both phones show up under <em>Ports (COM &amp; LPT)</em>, run QPST Configuration and hit <em>Add New Port…</em>. You should see both phones on the left. Select one and hit OK. Then repeat for the other phone.</p>
+<h1 id="step2cloning">Step 2: Cloning</h1>
+<p>We will now clone the MEID of the donor phone onto the target phone. Open QXDM Professional. Select <em>Options → Communications…</em>. For <em>Target Port</em>, select the port corresponding to the Nexus S 4G, say COM4, and hit <em>OK</em>. Then in the text box labeled <em>Command</em>, type the following:</p>
+<pre><code>Password 01F2030F5F678FF9
+</code></pre>
+<p>Hit <em>Enter</em>. You should see <code>Password Result = Correct</code> at the bottom of the <em>Command Output</em> window.</p>
+<p>Now in the <em>Command</em> text box, type the following, replacing <code>&lt;MEID&gt;</code> by the hex MEID of the <strong>donor</strong> phone:</p>
+<pre><code>RequestNVItemWrite meid 0x&lt;MEID&gt;
+</code></pre>
+<p>Hit <em>Enter</em>. You should see it repeat back the MEID to you. Type <code>RequestNVItemRead meid</code> followed by <em>Enter</em> to make sure the write happened.</p>
+<p>Close QXDM Professional and reboot the Nexus S 4G. Rebooting the target phone after writing a new MEID is essential! If prompted, do NOT go through the activation process on the Nexus S 4G. Just select <em>Skip</em> when possible.</p>
+<h1 id="step3resetspc">Step 3: Reset SPC</h1>
+<p>In order to program the Nexus S 4G, we need to obtain or reset the SPC code (also known as the MSL) of the phones. If you already know the SPC code for your phones and would rather not reset the SPC code, you can skip this step.</p>
+<p>Open QXDM Professional again. Go through <em>Options → Communications</em> and make sure the <em>Target Port</em> is still COM4. Hit <em>OK</em>. In the command text box, type the following two lines, each followed by an <em>Enter</em>:</p>
+<pre><code>Password 01F2030F5F678FF9
+RequestNVItemWrite sec_code 000000
+</code></pre>
+<p>If this is successful, the SPC on the Nexus S 4G will have been reset to <code>000000</code>. Repeat for the donor phone (in our example, on COM11).</p>
+<p>Close QXDM Professional after done. All QPST / QXDM programs must be closed before proceeding, or DFS will complain.</p>
+<h1 id="step4programmingcdmachipset">Step 4: Programming CDMA Chipset</h1>
+<p>Launch DFS. Click <em>Ports</em> on the top left. In the dialog box, double-click on each port representing our phones, in our case, COM4 and COM11, and close the dialog box. Now make sure the <em>SPC</em> text box above reads <code>000000</code> (or if you chose not to reset the SPC, whatever your SPC is). Type <code>01F2030F5F678FF9</code> into the <em>Pwd</em> text box.</p>
+<h2 id="step4abasiccdmasettings">Step 4.a: Basic CDMA settings</h2>
+<p>Let’s now copy basic CDMA settings from the donor phone to the target phone. In the drop-down menu next to <em>Ports</em>, select the donor phone (COM11). Switch to the <em>Programming</em> tab and the <em>NAM</em> tab under it. Click the <em>SPC</em> and <em>Pwd</em> buttons to send the SPC and NV password to the phone to unlock it. Then hit <em>Read</em> beneath <em>Network identification</em>. The text fields below should be populated by information from the donor phone. Now select COM4 in the drop-down menu next to <em>Ports</em>, click <em>SPC</em> and <em>Pwd</em>, then click <em>Write</em> beneath <em>Network identification</em>.</p>
+<h2 id="step4bprl">Step 4.b: PRL</h2>
+<p>Now, let’s copy over the PRL (or <em>Preferred Roaming List</em> - essentially a database of tower locations). Again, select COM11 under <em>Ports</em> and click <em>Read</em> under <em>PRL</em> towards the right. Then select COM4 under <em>Ports</em> and click <em>Write</em> under <em>PRL</em>.</p>
+<h2 id="step4c2gdatasettings">Step 4.c: 2G Data settings</h2>
+<p>Now go to the next tab, <em>Data</em>. Select COM11 and hit <em>Read</em>. Switch to COM4 and hit <em>Write</em>. If you observe errors in the log window in the bottom, and / or no information shows up in the <em>Pwd</em> boxes under <em>PPP</em> and <em>HDR AN Long</em>, your donor phone doesn’t support the extraction of some data passwords, and you will have to try a different donor phone.</p>
+<h2 id="step4c3gdatasettings">Step 4.c: 3G Data settings</h2>
+<p>We do the same with <em>Mobile IP</em>. Select COM11 and hit <em>Read</em>. Switch to COM4 and hit <em>Write</em>. Then hit <em>Write current profile settings</em>. Again, if you encounter errors, or no information shows up under <em>AAA Shared secret</em> and <em>HA Shared Secret</em>, you will have to try a different donor phone.</p>
+<p>Finally, we need to copy over a file containing a secret key used to establish a 3G connection. Go to the <em>EFS</em> tab towards the top. Select COM11 and hit <em>Read EFS</em>. Click the "<em>+</em>" sign of the root folder on the left and then the "<em>+</em>" sign next to the <code>DMU</code> folder and you should see a file called <code>10.key</code>. Right-click on this file and hit <em>Save…</em>. Save this file somewhere on your hard drive. Now switch to COM4 and hit <em>Read EFS</em> again. Select the root folder on the left, type <code>/DMU</code> under <em>Path (57 max)</em> on the right and hit <em>Add Item</em> to create a folder named <code>DMU</code> on the Nexus S 4G. Then select <code>DMU</code> on the left, click on the check box named <em>I want to add file from PC</em>, and select the <code>10.key</code> file we just saved. Then hit <em>Add Item</em> to upload the <code>10.key</code> file to <code>/DMU/10.key</code>.</p>
+<p>The programming is now done. Close DFS, select <em>OK</em> and <em>OK</em> again when prompted whether to send a <em>mode reset</em> to the phone. The Nexus S 4G will now reboot.</p>
+<h1 id="step5programmingandroid">Step 5: Programming Android</h1>
+<p>We will now modify some Android system files to Verizon settings. This step will need to be repeated whenever you flash a new ROM on the Nexus S 4G in the future.</p>
+<h2 id="1clickprogrammingapp">1-click programming app</h2>
+<p>I have built a 1-click Android application that automates this step; you can find it <a href="http://www.mediafire.com/?m796blddz3g8ifd">here</a>. It requires root as it will need to modify system files. Install the application and click the button in the middle. When the process finishes, you will be prompted to reboot. Simply reboot your phone and you’re all set; you may uninstall the app, or you could keep it around for when you update to a new ROM.</p>
+<p>If the 1-click app does not work for you, or if you want more control over what it does, follow the steps below. You do not need to do any of the following if you already used the app above.</p>
+<h2 id="step5afixvoicecalling">Step 5.a: Fix voice calling</h2>
+<p>This is required to enable calls on Verizon. On the Nexus S 4G, connect to WiFi and install ES File Explorer from the Play Store. Then go to <em>Menu → Settings</em> and check <em>Up to Root</em>, <em>Root Explorer</em>, and <em>Mount File System</em>. Allow it to use superuser privileges if asked. Then navigate to <code>/system</code> and open <code>build.prop</code> with <em>ES Note Editor</em>. Find the following two lines:</p>
+<pre><code>ro.cdma.home.operator.numeric=310120
+ro.cdma.home.operator.alpha=Sprint
+</code></pre>
+<p>Change them to read:</p>
+<pre><code>ro.cdma.home.operator.numeric=310004
+ro.cdma.home.operator.alpha=Verizon
+</code></pre>
+<p>Then add a line below (or anywhere in the file) that says:</p>
+<pre><code>ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83
+</code></pre>
+<p>Hit <em>Menu → Save</em> and then <em>Back</em> to exit.</p>
+<h2 id="step5bfixroaming">Step 5.b: Fix roaming</h2>
+<p>This step tells Android to treat the Verizon network as the home network. It sets the roaming status to "Not roaming", removes the triangular roaming indicator in the status bar and changes the displayed name of the current network to "Verizon Wireless".</p>
+<p>Now navigate to <code>/system/framework</code> and copy <code>framework-res.apk</code> onto your computer - you can use adb or email it to yourself or whatever (you have to copy it to the internal SD card before you can email it though). Once on the computer, rename it <code>framework-res.zip</code> (yes, an APK is just a zip archive) and use your favorite program to replace the file <code>res/xml/eri.xml</code> inside it with the one at <a href="http://www.mediafire.com/?jdsigtxi4gvp6ks">this link</a>. Now rename it back to <code>framework-res.apk</code>, copy it back onto the Nexus S 4G (using adb or whatever) and use ES File Explorer to overwrite the existing <code>/system/framework/framework-res.apk</code> with it.</p>
+<h2 id="step5caddverizonapns">Step 5.c: Add Verizon APNs</h2>
+<p>This last step sets up Verizon APNs that enable web and MMS. Use ES File Explorer or any other tool to replace <code>/system/etc/apns-conf.xml</code> with the one at <a href="http://www.mediafire.com/?g0vd7nfs47ksujz">this link</a>.</p>
+<h1 id="step6rebootprofit">Step 6: Reboot &amp; PROFIT</h1>
+<p>The Nexus S 4G should now be a fully functional Verizon Wireless phone. If you are curious about what each of the steps means, you’re welcome to check out my previous article <a href="https://jichu4n.com/posts/carrier-programming-on-cdma-android-phones.html">Carrier Programming on CDMA Android Phones</a> for a high-level view of how CDMA phones are programmed.</p>
+<p>While your mileage may vary, I hope the above information have been of help. Since I no longer use Verizon Wireless and no longer own any of the phones mentioned above, please take all this information with a grain of salt.</p>
+<p>Good luck, and happy hacking!</p>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

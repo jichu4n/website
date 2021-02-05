@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	    <title>Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</title>
+	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900' rel='stylesheet' type='text/css'>
+			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=8de4e4d448">
+	    <meta name="HandheldFriendly" content="True" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+			<!--[if lt IE 9]>
+				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+			<![endif]-->
+			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=8de4e4d448">
+	<meta property="og:title" content="Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial" />
+	<meta property="og:type" content="article" />
+	<meta property="og:description" content="Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as..."/>
+
+	    <link rel="canonical" href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="amphtml" href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/amp/" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial" />
+    <meta property="og:description" content="Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as" />
+    <meta property="og:url" content="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" />
+    <meta property="article:published_time" content="2014-11-06T08:01:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T07:05:09.000Z" />
+    <meta property="article:tag" content="Linux" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial" />
+    <meta name="twitter:description" content="Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Linux, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial",
+    "url": "https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/",
+    "datePublished": "2014-11-06T08:01:00.000Z",
+    "dateModified": "2018-10-17T07:05:09.000Z",
+    "keywords": "Linux, Technical Notes",
+    "description": "Custom domain e-mail addresses, like john@johnscompany.com, are cool and\nprofessional-looking. Would you want to e-mail potential clients as \njohn123@gmail.com?\n\nOn the other hand, Gmail has great reliability, speed, spam filtration, and app\nsupport. Wouldn’t it be great if we could send and receive e-mail as \njohn@johnscompany.com, but right from the comfort of our Gmail account?\n\nToday, if we want to use Gmail to send and receive e-mails on a custom domain,\nwe have a couple of options:\n\n * Goo",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//a.chu4n.com/";
+    _paq.push(['setTrackerUrl', u+'js/']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'js/'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//a.chu4n.com/js/?idsite=2&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-21264754-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-21264754-1');
+</script>
+	</head>
+	<body class="post-template tag-linux tag-technical-notes">
+		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
+			<h6></h6>
+			<div id="follow-icons">
+	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	<a href="mailto:chuan@jichu4n.com" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+</div>                                                                  
+
+<!--
+	<a href="" target="_blank"><i class="fa fa-facebook-square fa-2x"></i></a>
+	<a href="https://twitter.com/jichu4n" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	<a href="https://jichu4n.com/rss" target="_blank"><i class="fa fa-rss-square fa-2x"></i></a> 
+<a href="http://plus.google.com/+username" target="_blank"><i class="fa fa-google-plus-square fa-2x"></i></a>
+<a href="http://instagram.com/username" target="_blank"><i class="fa fa-instagram fa-2x"></i></a>
+<a href="http://vimeo.com/username" target="_blank"><i class="fa fa-vimeo-square fa-2x"></i></a>
+<a href="http://youtube.com/username" target="_blank"><i class="fa fa-youtube-square fa-2x"></i></a>
+<a href="http://flickr.com/username" target="_blank"><i class="fa fa-flickr fa-2x"></i></a>
+<a href="http://pinterest.com/username" target="_blank"><i class="fa fa-pinterest-square fa-2x"></i></a>
+<a href="http://username.tumblr.com" target="_blank"><i class="fa fa-tumblr-square fa-2x"></i></a>
+-->
+			  <h5><a href="https://jichu4n.com/">Bio</a></h5>
+  <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
+  <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
+
+		</header>
+		<nav id="mobile-header">
+  <ul class="nav-left">
+    <li><a href="https://jichu4n.com" class="title">Chuan Ji</a></li>
+  </ul>
+</nav>
+<div id="expand-mobile-header-button-container">
+  <a href="javascript:void(0);" id="expand-mobile-header-button"><i class="fa fa-bars"></i></a>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#expand-mobile-header-button').click(function() {
+      $(document.body).toggleClass('mobile-header-expanded');
+    });
+  });
+</script>
+		<main id="content">
+			<article id="5bc6de6560307a000159bd6f" class="post tag-linux tag-technical-notes no-image">
+	<div class="post-stamp">November 6, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
+	<h1 class="post-title">Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</h1>
+	<!--kg-card-begin: markdown--><p>Custom domain e-mail addresses, like <code>john@johnscompany.com</code>, are cool and professional-looking. Would <em>you</em> want to e-mail potential clients as <code>john123@gmail.com</code>?</p>
+<p>On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as <code>john@johnscompany.com</code>, but right from the comfort of our Gmail account?</p>
+<p>Today, if we want to <strong>use Gmail to send and receive e-mails on a custom domain</strong>, we have a couple of options:</p>
+<ul>
+<li>
+<p><strong><a href="http://www.google.com/work/apps/business/">Google Apps for Work</a></strong> is Google’s own offering. It’s simple to set up and manage, but it’s pretty pricey at $5/mo per user, especially if we don’t need the bundled collaborative features like Google Docs and Calendar.</p>
+</li>
+<li>
+<p><strong>Third-party services</strong> could get the job done at a lower price point; for example, <a href="https://pobox.com/">Pobox</a> offers plans starting at $20/yr. The downside is that we will have to trust another organization with our e-mail.</p>
+</li>
+<li>
+<p><strong>Set up our own e-mail forwarding server</strong>. It’s fairly easy (if we follow this guide :) and if we already have shared / dedicated hosting or a VPS, this is basically free and gives us total control over our e-mail.</p>
+</li>
+</ul>
+<p>If you want to host <strong>custom domain e-mails in Gmail without paying for Google Apps</strong> or a third-party service, this tutorial is for you. It will show you how to quickly set up you own e-mail forwarding / relay server, and how to integrate it seamlessly with Gmail.</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>For this tutorial, we’ll assume we have access to:</p>
+<ul>
+<li>
+<p><strong>VPS or shared / dedicated hosting</strong>, with a dedicated IP address and capable of listening on ports 25 and 587. We will use a Ubuntu server for the examples.</p>
+</li>
+<li>
+<p><strong>DNS records for our domain</strong>. How DNS records are manipulated depends on the DNS hosting provider (or DNS server configuration).</p>
+</li>
+</ul>
+<p>We’ll assume</p>
+<ul>
+<li>
+<p>We have a domain <code>example.com</code>;</p>
+</li>
+<li>
+<p>We have a server <code>myserver.example.com</code>;</p>
+</li>
+<li>
+<p>We want to use the Gmail account <code>john123@gmail.com</code> to manage <code>john@example.com</code>.</p>
+</li>
+</ul>
+<h1 id="step1dnssetup">Step 1: DNS Setup</h1>
+<p>The first step in setting up our e-mail forwarding server is to add MX, PTR and <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework">SPF</a> DNS records for our server. This is really important as many e-mail providers, in order to prevent spam, will refuse to talk to mail servers without proper MX, PTR and SPF records set up. How to update DNS records will depend on the DNS hosting provider.</p>
+<p>The following is what we need:</p>
+<ul>
+<li>
+<p>An <strong>MX</strong> record for <code>example.com</code>, pointing to <code>myserver.example.com</code>.</p>
+<p>This tells the world that e-mails to <code>&lt;whatever&gt;@example.com</code> should be delivered to the server <code>myserver.example.com</code>.</p>
+</li>
+<li>
+<p>An <strong>A</strong> record for <code>myserver.example.com</code>, pointing to the IP address of our server.</p>
+</li>
+<li>
+<p>A <strong>PTR</strong> (reverse DNS) record mapping the IP address of our server to <code>myserver.example.com</code>.</p>
+<p>This allows Gmail to verify the legitimacy of our server via its IP when Gmail receives a forwarded e-mail from it.</p>
+</li>
+<li>
+<p>A <strong>TXT</strong> record, with key <code>example.com</code> and value <code>v=spf1 mx ~all</code>.</p>
+<p>This is an <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework">SPF</a> record; it tells Gmail that the servers specified in the MX records of <code>example.com</code>, in this case only <code>myserver.example.com</code>, are allowed to send e-mails purporting to be from <code>&lt;whatever&gt;@example.com</code>. All other servers attempting to do the same will be rejected. This should be a sane default value, but feel free to custom it as you like.</p>
+</li>
+</ul>
+<p>DNS records will take a while (depending on our provider, up to a day) to propagate. Until they do, e-mails forwarded by our new e-mail server may get marked as spam or rejected outright.</p>
+<h1 id="step2receivingemail">Step 2: Receiving E-mail</h1>
+<p>We’ll first set up an e-mail forwarding server which will let we receive e-mails sent to our domains.</p>
+<p>We will use <a href="http://www.postfix.org">Postfix</a> as the e-mail server. Let’s start by installing the necessary packages. We will assume a Ubuntu server in the examples below; if you’re using a different distribution, please consult your distribution’s documentation for the right commands.</p>
+<pre><code>$ sudo DEBIAN_FRONTEND=noninteractive apt-get install postfix
+</code></pre>
+<p>In the above command, we skip the <code>debconf</code> configuration UI with <code>DEBIAN_FRONTEND=noninteractive</code> as we will edit the configuration files directly.</p>
+<h2 id="etcpostfixmaincf">/etc/postfix/main.cf</h2>
+<p>Open up <code>/etc/postfix/main.cf</code> in your favorite editor. This file will come pre-populated with a bunch of config options and comments. Replace the contents of the file with the following (you can comment out the original contents for reference):</p>
+<pre><code># /etc/postfix/main.cf
+
+# Host and site name.
+myhostname = myserver.example.com
+mydomain = example.com
+myorigin = example.com
+
+# Virtual aliases.
+virtual_alias_domains = example.com
+virtual_alias_maps = hash:/etc/postfix/virtual
+</code></pre>
+<p>The first few lines are pretty straightforward; they tell Postfix how to identify itself to the world. The last two lines tell Postfix to forward e-mails sent to <code>&lt;whatever&gt;@example.com</code> to another e-mail provider (Gmail), and that the forwarding is configured in the database file <code>/etc/postfix/virtual</code>.</p>
+<h2 id="etcpostfixvirtual">/etc/postfix/virtual</h2>
+<p>Let’s now open up <code>/etc/postfix/virtual</code> and fill in our forwarding configuration:</p>
+<pre><code># /etc/postfix/virtual
+
+# Forwarding mapping, one from-to address pair per line. The format is:
+#     &lt;forward-from-addr&gt; &lt;whitespace&gt; &lt;forward-to-addr&gt;
+john@example.com        john123@gmail.com
+</code></pre>
+<p>We can add as many forwarding rules as you want, one on each line. We can use any number of tabs / whitespaces between the forward-from and forward-to addresses.</p>
+<h2 id="updatelookuptable">Update lookup table</h2>
+<p>It turns out that Postfix doesn’t actually read <code>/etc/postfix/virtual</code> (surprise!); instead, what it reads is a lookup table generated from it. So, let’s generate the lookup table from our <code>/etc/postfix/virtual</code>:</p>
+<pre><code>$ sudo postmap /etc/postfix/virtual
+</code></pre>
+<p><strong>Note</strong>: we must re-run this command every time we modify <code>/etc/postfix/virtual</code>!</p>
+<h2 id="restartpostfix">(Re)start Postfix</h2>
+<p>It’s now time to (re)start Postfix with our new configuration:</p>
+<pre><code>$ sudo postfix start
+$ sudo postfix reload
+</code></pre>
+<h2 id="testing">Testing</h2>
+<p>We should test our brand-new Postfix server by sending an e-mail to our forward-from address. You might want to check out <a href="http://articles.slicehost.com/2008/8/6/postfix-using-telnet-to-test-postfix">these</a> <a href="https://workaround.org/ispmail/lenny/test-mail-through-telnet">tutorials</a> for testing directly with the <code>telnet</code> command.</p>
+<p>If you received the e-mail in your Gmail inbox, congratulations! Otherwise, check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for errors. The most likely cause of issues is that DNS records have not propagated yet, in which case we’re likely to see a &quot;rate limited&quot; or &quot;rejected for spam&quot; type error message.</p>
+<p>If we only want to <em>receive</em> but don’t care about <em>sending</em> e-mails as <code>john@example.com</code>, then this is all we need.</p>
+<p>Otherwise, let’s move on to configuring Postfix to support sending e-mails from Gmail.</p>
+<h1 id="step3sendingemail">Step 3: Sending E-mail</h1>
+<p>Gmail requires a relay server (a server that will send e-mails to their destination on behalf it) to speak <a href="http://en.wikipedia.org/wiki/Transport_Layer_Security">TLS</a>, which protects the communication between Gmail and the relay server.</p>
+<p>We will use <a href="http://www.cyrusimap.org/">Cyrus SASL</a> for this task. To install:</p>
+<pre><code>$ sudo apt-get install sasl2-bin libsasl2-modules
+</code></pre>
+<h2 id="usernamepassword">User name &amp; password</h2>
+<p><a href="http://en.wikipedia.org/wiki/Open_mail_relay">Open relays</a> are a terrible idea. We want to protect our e-mail server with a user name and password so that it will let Gmail send e-mails through it, but block spammers and other evil actors.</p>
+<p>Cyrus SASL supports several backends for storing user names and passwords, including MySQL and PAM. However, we will go with the simplest backend — a plain database file.</p>
+<p>Let’s create the user name / password database file in the default location <code>/etc/sasldb2</code>, with a single user named <code>smtp</code> (we can change the user name to anything we want):</p>
+<pre><code>$ sudo saslpasswd2 -c -u example.com smtp
+</code></pre>
+<p>Verify with:</p>
+<pre><code>$ sudo sasldblistusers2
+</code></pre>
+<p>Now, we make sure only Postfix can read this file:</p>
+<pre><code>$ sudo chmod 400 /etc/sasldb2
+$ sudo chown postfix /etc/sasldb2
+</code></pre>
+<p>Lastly, we tell Cyrus SASL to use the file-based database to authenticate. Create the file <code>/etc/postfix/sasl/smtpd.conf</code>:</p>
+<pre><code>pwcheck_method: auxprop
+auxprop_plugin: sasldb
+mech_list: PLAIN LOGIN CRAM-MD5 DIGEST-MD5 NTLM
+log_level: 7
+</code></pre>
+<h2 id="sslcertificate">SSL Certificate</h2>
+<p>We need an SSL certificate to enable TLS. While a proper SSL certificate signed by a Certificate Authority (CA) can be pricey, it turns out that a simple self-signed certificate suffices and works just fine.</p>
+<p>So, let’s generate one.</p>
+<ol>
+<li>
+<p><strong>Generate an RSA private/public key pair.</strong> Note that you MUST supply a password to this command; the password will be removed in step 3.</p>
+<pre><code>$ openssl genrsa -des3 -out example.key 1024
+</code></pre>
+</li>
+<li>
+<p><strong>Generate a Certificate Signing Request (CSR).</strong> Make sure to enter <code>myserver.example.com</code> when prompted for the &quot;Common Name&quot;.</p>
+<pre><code>$ openssl req -new -key example.key -out example.csr
+</code></pre>
+</li>
+<li>
+<p><strong>Remove RSA private/public key password.</strong></p>
+<pre><code>$ mv example.key example.key.orig
+$ openssl rsa -in example.key.orig -out example.key
+</code></pre>
+</li>
+<li>
+<p><strong>Generate a self-signed certificate.</strong> In the example, the generated certificate will be valid for 10 years.</p>
+<pre><code>$ openssl x509 -req \
+    -days 3650 -in example.csr -signkey example.key -out example.crt
+</code></pre>
+</li>
+<li>
+<p><strong>Create a PEM file.</strong></p>
+<pre><code>$ cat example.crt example.key &gt; example.pem
+</code></pre>
+</li>
+<li>
+<p><strong>Move and protect the PEM file.</strong></p>
+<pre><code>$ sudo mv example.pem /etc/postfix/example.pem
+$ sudo chmod 400 /etc/postfix/example.pem
+$ sudo chown postfix /etc/postfix/example.pem
+</code></pre>
+</li>
+</ol>
+<p><strong>Note:</strong> Make sure to protect the generated private key and certificate with care!</p>
+<h2 id="relayserver">Relay server</h2>
+<p>The final step is to configure Postfix to enable relaying of e-mail on behalf of Gmail.</p>
+<p>Let’s open up <code>/etc/postfix/master.cf</code>. This file should already contain a bunch of config options, some of which are commented out. Uncomment the lines starting with <code>submission</code> and edit them to match the following:</p>
+<pre><code>submission inet n       -       n       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_security_level=may
+  -o smtpd_tls_cert_file=/etc/postfix/example.pem
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+</code></pre>
+<p>A Postfix restart is due after all these changes:</p>
+<pre><code>$ sudo postfix reload
+</code></pre>
+<p>If all went well, you should see Postfix serving a relay server, protected by our user name and password in <code>/etc/sasldb2</code>, on port 587.</p>
+<h1 id="step4configuregmail">Step 4: Configure Gmail</h1>
+<p>Finally, let’s log in to Gmail and tell it about our brand new server. (Note that the new Inbox UI does not yet support all the settings available in the legacy interface at the time of writing, so these instructions apply to the legacy interface.)</p>
+<p>Let’s go to <em>Settings</em> &gt; <em>Accounts and Import</em> and click <em>Add another email address you own</em>.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_1.png" alt="gmail_1"></p>
+<p>In the dialog that pops up, fill in our target e-mail address and click <em>Next Step</em>.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_2.png" alt="gmail_2"></p>
+<p>In the next dialog, enter the address of our e-mail server (<code>myserver.example.com</code>), and the user name and password we set up using <code>saslpasswd2</code> above. Make sure the user name is suffixed with our domain name (so <code>smtp@example.com</code> rather than just <code>smtp</code>). Check that the correct port (587) and the correct security protocol (TLS) are selected, then click <em>Add Account</em>.</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_3.png" alt="gmail_3"></p>
+<p>If all goes well, we should see a dialog like the following:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_4.png" alt="gmail_4"></p>
+<p>And we should receive an e-mail, forwarded by our mail server set up in the first part, to our <code>john123@gmail.com</code> address. Click on the link inside the e-mail and we’re done!</p>
+<p>Now, in any e-mail compose / reply window, you should be able to select <code>john@example.com</code> in the drop-down list next to &quot;From&quot;. Congrats!</p>
+<p>If, on the other hand, you see an error like the following:</p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_5.png" alt="gmail_5"></p>
+<p>You should check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for any errors.</p>
+<h1 id="optionalstep5setupdkimandsrs">[Optional] Step 5: Setup DKIM and SRS</h1>
+<p><a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is e-mail validation system for preventing e-mail spoofing. <a href="https://support.google.com/mail/answer/180707?hl=en">Google recommends setting up DKIM</a>; if we don’t, the e-mail messages that we forward to Gmail have a higher probability of getting marked as spam.</p>
+<p><a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a relatively new standard that e-mail forwarding servers are recommended to adopt, and it also helps reduce the likelihood of our forwarded e-mail messages getting marked as spam.</p>
+<p>Thus, while technically optional, it’s a good idea to configure our Postfix server to support both these standards. See my follow-up tutorial on <a href="https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix.html">Setting Up DKIM And SRS In Postfix</a> for a detailed step-by-step guide.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>In this post, we have set up a Postfix e-mail server that accomplishes the following:</p>
+<ul>
+<li>
+<p>E-mails sent to <code>john@example.com</code> is received by Postfix on <code>myserver.example.com</code> port 25, and forwarded to <code>john123@gmail.com</code>;</p>
+</li>
+<li>
+<p>Gmail will let you select <code>john@example.com</code> as a &quot;from&quot; address when composing / replying to an e-mail, and will relay such e-mails through Postfix on <code>myserver.example.com</code> port 587 using a configured user name / password combination.</p>
+</li>
+</ul>
+<p>I hope you found this guide useful, and if you have any thoughts / questions, you’re more than welcome to leave a comment below. Cheers!</p>
+<!--kg-card-end: markdown-->
+	<div id="social-bar">
+	<ul class="rrssb-buttons clearfix">
+      <li class="email">
+          <a href="mailto:?subject=Custom%20Domain%20E-mails%20With%20Postfix%20and%20Gmail%3A%20The%20Missing%20Tutorial&amp;body=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
+                  </svg>
+              </span>
+              <span class="text">Email</span>
+          </a>
+      </li>
+      <li class="facebook">
+          <a href="https://www.facebook.com/sharer/sharer.php?u=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path d="M27.825,4.783c0-2.427-2.182-4.608-4.608-4.608H4.783c-2.422,0-4.608,2.182-4.608,4.608v18.434 c0,2.427,2.181,4.608,4.608,4.608H14V17.379h-3.379v-4.608H14v-1.795c0-3.089,2.335-5.885,5.192-5.885h3.718v4.608h-3.726 c-0.408,0-0.884,0.492-0.884,1.236v1.836h4.609v4.608h-4.609v10.446h4.916c2.422,0,4.608-2.188,4.608-4.608V4.783z"/>
+                  </svg>
+              </span>
+              <span class="text">Facebook</span>
+          </a>
+      </li>
+			<li class="twitter">
+          <a href="http://twitter.com/home?status=Custom%20Domain%20E-mails%20With%20Postfix%20and%20Gmail%3A%20The%20Missing%20Tutorial%20https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+		                  <path d="M24.253,8.756C24.689,17.08,18.297,24.182,9.97,24.62c-3.122,0.162-6.219-0.646-8.861-2.32 c2.703,0.179,5.376-0.648,7.508-2.321c-2.072-0.247-3.818-1.661-4.489-3.638c0.801,0.128,1.62,0.076,2.399-0.155 C4.045,15.72,2.215,13.6,2.115,11.077c0.688,0.275,1.426,0.407,2.168,0.386c-2.135-1.65-2.729-4.621-1.394-6.965 C5.575,7.816,9.54,9.84,13.803,10.071c-0.842-2.739,0.694-5.64,3.434-6.482c2.018-0.623,4.212,0.044,5.546,1.683 c1.186-0.213,2.318-0.662,3.329-1.317c-0.385,1.256-1.247,2.312-2.399,2.942c1.048-0.106,2.069-0.394,3.019-0.851 C26.275,7.229,25.39,8.196,24.253,8.756z"/>
+                  </svg>
+              </span>
+              <span class="text">Twitter</span>
+          </a>
+      </li>
+			<li class="linkedin">
+          <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/&amp;title=Custom%20Domain%20E-mails%20With%20Postfix%20and%20Gmail%3A%20The%20Missing%20Tutorial&amp;summary=Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as..." class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path d="M25.424,15.887v8.447h-4.896v-7.882c0-1.979-0.709-3.331-2.48-3.331c-1.354,0-2.158,0.911-2.514,1.803 c-0.129,0.315-0.162,0.753-0.162,1.194v8.216h-4.899c0,0,0.066-13.349,0-14.731h4.899v2.088c-0.01,0.016-0.023,0.032-0.033,0.048 h0.033V11.69c0.65-1.002,1.812-2.435,4.414-2.435C23.008,9.254,25.424,11.361,25.424,15.887z M5.348,2.501 c-1.676,0-2.772,1.092-2.772,2.539c0,1.421,1.066,2.538,2.717,2.546h0.032c1.709,0,2.771-1.132,2.771-2.546 C8.054,3.593,7.019,2.501,5.343,2.501H5.348z M2.867,24.334h4.897V9.603H2.867V24.334z"/>
+                  </svg>
+              </span>
+              <span class="text">LinkedIn</span>
+          </a>
+      </li>
+      <li class="tumblr">
+					<script>
+						document.write('<a href="http://www.tumblr.com/share?v=3&amp;u=' + encodeURIComponent('https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/') + '&amp;t=Custom%20Domain%20E-mails%20With%20Postfix%20and%20Gmail%3A%20The%20Missing%20Tutorial" class="popup">');
+					</script>
+              <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+											<path d="M18.02 21.842c-2.029 0.052-2.422-1.396-2.439-2.446v-7.294h4.729V7.874h-4.71V1.592c0 0-3.653 0-3.714 0 s-0.167 0.053-0.182 0.186c-0.218 1.935-1.144 5.33-4.988 6.688v3.637h2.927v7.677c0 2.8 1.7 6.7 7.3 6.6 c1.863-0.03 3.934-0.795 4.392-1.453l-1.22-3.539C19.595 21.6 18.7 21.8 18 21.842z"/>
+									</svg>
+              </span>
+              <span class="text">Tumblr</span>
+          <script>document.write('</a>');</script>
+      </li>
+      <li class="reddit">
+          <a href="http://www.reddit.com/submit?url=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/">
+              <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+											<g>
+													<path d="M11.794 15.316c0-1.029-0.835-1.895-1.866-1.895c-1.03 0-1.893 0.865-1.893 1.895s0.863 1.9 1.9 1.9 C10.958 17.2 11.8 16.3 11.8 15.316z"/>
+													<path d="M18.1 13.422c-1.029 0-1.895 0.864-1.895 1.895c0 1 0.9 1.9 1.9 1.865c1.031 0 1.869-0.836 1.869-1.865 C19.969 14.3 19.1 13.4 18.1 13.422z"/>
+													<path d="M17.527 19.791c-0.678 0.678-1.826 1.006-3.514 1.006c-0.004 0-0.009 0-0.014 0c-0.004 0-0.01 0-0.015 0 c-1.686 0-2.834-0.328-3.51-1.005c-0.264-0.265-0.693-0.265-0.958 0c-0.264 0.265-0.264 0.7 0 1 c0.943 0.9 2.4 1.4 4.5 1.402c0.005 0 0 0 0 0c0.005 0 0 0 0 0c2.066 0 3.527-0.459 4.47-1.402 c0.265-0.264 0.265-0.693 0.002-0.958C18.221 19.5 17.8 19.5 17.5 19.791z"/>
+													<path d="M27.707 13.267c0-1.785-1.453-3.237-3.236-3.237c-0.793 0-1.518 0.287-2.082 0.761c-2.039-1.295-4.646-2.069-7.438-2.219 l1.483-4.691l4.062 0.956c0.071 1.4 1.3 2.6 2.7 2.555c1.488 0 2.695-1.208 2.695-2.695C25.881 3.2 24.7 2 23.2 2 c-1.059 0-1.979 0.616-2.42 1.508l-4.633-1.091c-0.344-0.081-0.693 0.118-0.803 0.455l-1.793 5.7 C10.548 8.6 7.7 9.4 5.6 10.75C5.006 10.3 4.3 10 3.5 10.029c-1.785 0-3.237 1.452-3.237 3.2 c0 1.1 0.6 2.1 1.4 2.69c-0.04 0.272-0.061 0.551-0.061 0.831c0 2.3 1.3 4.4 3.7 5.9 c2.299 1.5 5.3 2.3 8.6 2.325c3.228 0 6.271-0.825 8.571-2.325c2.387-1.56 3.7-3.66 3.7-5.917 c0-0.26-0.016-0.514-0.051-0.768C27.088 15.5 27.7 14.4 27.7 13.267z M23.186 3.355c0.74 0 1.3 0.6 1.3 1.3 c0 0.738-0.6 1.34-1.34 1.34s-1.342-0.602-1.342-1.34C21.844 4 22.4 3.4 23.2 3.355z M1.648 13.3 c0-1.038 0.844-1.882 1.882-1.882c0.31 0 0.6 0.1 0.9 0.209c-1.049 0.868-1.813 1.861-2.26 2.9 C1.832 14.2 1.6 13.8 1.6 13.267z M21.773 21.57c-2.082 1.357-4.863 2.105-7.831 2.105c-2.967 0-5.747-0.748-7.828-2.105 c-1.991-1.301-3.088-3-3.088-4.782c0-1.784 1.097-3.484 3.088-4.784c2.081-1.358 4.861-2.106 7.828-2.106 c2.967 0 5.7 0.7 7.8 2.106c1.99 1.3 3.1 3 3.1 4.784C24.859 18.6 23.8 20.3 21.8 21.57z M25.787 14.6 c-0.432-1.084-1.191-2.095-2.244-2.977c0.273-0.156 0.59-0.245 0.928-0.245c1.035 0 1.9 0.8 1.9 1.9 C26.354 13.8 26.1 14.3 25.8 14.605z"/>
+											</g> 
+									</svg>    
+              </span>
+              <span class="text">Reddit</span>
+          </a>
+      </li>
+      <!--
+      <li class="googleplus">
+          <a href="https://plus.google.com/share?url=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <g>
+                          <path d="M14.703,15.854l-1.219-0.948c-0.372-0.308-0.88-0.715-0.88-1.459c0-0.748,0.508-1.223,0.95-1.663 c1.42-1.119,2.839-2.309,2.839-4.817c0-2.58-1.621-3.937-2.399-4.581h2.097l2.202-1.383h-6.67c-1.83,0-4.467,0.433-6.398,2.027 C3.768,4.287,3.059,6.018,3.059,7.576c0,2.634,2.022,5.328,5.604,5.328c0.339,0,0.71-0.033,1.083-0.068 c-0.167,0.408-0.336,0.748-0.336,1.324c0,1.04,0.551,1.685,1.011,2.297c-1.524,0.104-4.37,0.273-6.467,1.562 c-1.998,1.188-2.605,2.916-2.605,4.137c0,2.512,2.358,4.84,7.289,4.84c5.822,0,8.904-3.223,8.904-6.41 c0.008-2.327-1.359-3.489-2.829-4.731H14.703z M10.269,11.951c-2.912,0-4.231-3.765-4.231-6.037c0-0.884,0.168-1.797,0.744-2.511 c0.543-0.679,1.489-1.12,2.372-1.12c2.807,0,4.256,3.798,4.256,6.242c0,0.612-0.067,1.694-0.845,2.478 c-0.537,0.55-1.438,0.948-2.295,0.951V11.951z M10.302,25.609c-3.621,0-5.957-1.732-5.957-4.142c0-2.408,2.165-3.223,2.911-3.492 c1.421-0.479,3.25-0.545,3.555-0.545c0.338,0,0.52,0,0.766,0.034c2.574,1.838,3.706,2.757,3.706,4.479 c-0.002,2.073-1.736,3.665-4.982,3.649L10.302,25.609z"/>
+                          <polygon points="23.254,11.89 23.254,8.521 21.569,8.521 21.569,11.89 18.202,11.89 18.202,13.604 21.569,13.604 21.569,17.004 23.254,17.004 23.254,13.604 26.653,13.604 26.653,11.89"/>
+                      </g>  
+                  </svg>
+              </span>
+              <span class="text">Google+</span>
+          </a>
+      </li>
+      -->
+      <li class="pinterest">
+          <script>
+						var imgurl = "https://jichu4n.com/content/images/2018/10/me-3-small.jpg";
+						var firstimg = document.getElementsByClassName("post tag-linux tag-technical-notes no-image")[0].getElementsByTagName("img")[0];
+						if (firstimg !== undefined) {
+							imgurl = firstimg.src;
+						} 
+						document.write('<a href="http://pinterest.com/pin/create/button/?url=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/&amp;media=' + imgurl + '&amp;description=Custom%20Domain%20E-mails%20With%20Postfix%20and%20Gmail%3A%20The%20Missing%20Tutorial" class="popup">');
+					</script>
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+		                  <path d="M14.021,1.57C6.96,1.57,1.236,7.293,1.236,14.355c0,7.062,5.724,12.785,12.785,12.785c7.061,0,12.785-5.725,12.785-12.785 C26.807,7.294,21.082,1.57,14.021,1.57z M15.261,18.655c-1.161-0.09-1.649-0.666-2.559-1.219c-0.501,2.626-1.113,5.145-2.925,6.458 c-0.559-3.971,0.822-6.951,1.462-10.116c-1.093-1.84,0.132-5.545,2.438-4.632c2.837,1.123-2.458,6.842,1.099,7.557 c3.711,0.744,5.227-6.439,2.925-8.775c-3.325-3.374-9.678-0.077-8.897,4.754c0.19,1.178,1.408,1.538,0.489,3.168 C7.165,15.378,6.53,13.7,6.611,11.462c0.131-3.662,3.291-6.227,6.46-6.582c4.007-0.448,7.771,1.474,8.29,5.239 c0.579,4.255-1.816,8.865-6.102,8.533L15.261,18.655z"/>
+                  </svg>
+              </span>
+              <span class="text">Pinterest</span>
+          <script>document.write('</a>');</script>
+      </li>
+      <li class="pocket">
+          <a href="https://getpocket.com/save?url=https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/"  class="popup">
+              <span class="icon">
+                  <svg width="32px" height="28px" viewBox="0 0 32 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+                      <path d="M28.7817528,0.00172488695 C30.8117487,0.00431221738 31.9749312,1.12074529 31.9644402,3.10781507 C31.942147,6.67703739 32.1336065,10.2669583 31.8057648,13.8090137 C30.7147076,25.5813672 17.2181194,31.8996281 7.20714461,25.3808491 C2.71833574,22.4571656 0.196577202,18.3122624 0.0549495772,12.9357897 C-0.0342233715,9.5774348 0.00642900214,6.21519891 0.0300336062,2.85555035 C0.0405245414,1.1129833 1.21157517,0.0146615391 3.01995012,0.00819321302 C7.34746087,-0.00603710433 11.6775944,0.00431221738 16.0064164,0.00172488695 C20.2644248,0.00172488695 24.5237444,-0.00215610869 28.7817528,0.00172488695 L28.7817528,0.00172488695 Z M8.64885184,7.85611511 C7.38773662,7.99113854 6.66148108,8.42606978 6.29310958,9.33228474 C5.90114134,10.2969233 6.17774769,11.1421181 6.89875951,11.8276216 C9.35282156,14.161969 11.8108164,16.4924215 14.2976518,18.7943114 C15.3844131,19.7966007 16.5354102,19.7836177 17.6116843,18.7813283 C20.0185529,16.5495467 22.4070683,14.2982907 24.7824746,12.0327533 C25.9845979,10.8850542 26.1012707,9.56468083 25.1469132,8.60653379 C24.1361858,7.59255976 22.8449191,7.6743528 21.5890476,8.85191291 C19.9936451,10.3488554 18.3680912,11.8172352 16.8395462,13.3777945 C16.1342655,14.093159 15.7200114,14.0048744 15.0566806,13.3440386 C13.4599671,11.7484252 11.8081945,10.2060421 10.1262706,8.70001155 C9.65564653,8.27936164 9.00411403,8.05345704 8.64885184,7.85611511 L8.64885184,7.85611511 L8.64885184,7.85611511 Z"></path>
+                  </svg>
+              </span>
+              <span class="text">Pocket</span>
+          </a>
+      </li> 
+  </ul>	
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/assets/js/rrssb.min.js?v=8de4e4d448"></script>
+  <div id="comments">
+	<div id="disqus_thread"></div>
+	<script>
+		(function() {
+		var d = document, s = d.createElement('script');
+		s.src = 'https://cjix.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</article>  
+
+		</main>
+		<footer id="footer">
+			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved. Powered by <a href="http://ghost.org" target="_blank">Ghost</a>.</section>
+		</footer>
+	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	</body>
+</html>

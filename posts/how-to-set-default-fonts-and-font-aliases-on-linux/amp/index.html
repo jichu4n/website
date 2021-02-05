@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>How To Set Default Fonts and Font Aliases on Linux</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="How To Set Default Fonts and Font Aliases on Linux" />
+    <meta property="og:description" content="Font Woes It’s fairly straightforward to set the default font used in native apps on a modern Linux desktop, or the default fonts used to render web pages in your browser of choice.  But if you’re reading this, you probably know that that’s far from the end" />
+    <meta property="og:url" content="https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/" />
+    <meta property="article:published_time" content="2014-02-23T05:07:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T06:34:23.000Z" />
+    <meta property="article:tag" content="Linux" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="How To Set Default Fonts and Font Aliases on Linux" />
+    <meta name="twitter:description" content="Font Woes It’s fairly straightforward to set the default font used in native apps on a modern Linux desktop, or the default fonts used to render web pages in your browser of choice.  But if you’re reading this, you probably know that that’s far from the end" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Linux, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "How To Set Default Fonts and Font Aliases on Linux",
+    "url": "https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/",
+    "datePublished": "2014-02-23T05:07:00.000Z",
+    "dateModified": "2018-10-17T06:34:23.000Z",
+    "keywords": "Linux, Technical Notes",
+    "description": "Font Woes\nIt’s fairly straightforward to set the default font used in native apps on a\nmodern Linux desktop, or the default fonts used to render web pages in your\nbrowser of choice.\n\nBut if you’re reading this, you probably know that that’s far from the end of\nthe story. You might have noticed that Firefox and Chrome rudely ignore your\nfont settings for many websites. This is because many (if not most) popular\nsites, including Google [http://www.google.com], Yahoo [http://www.yahoo.com], \nFacebo",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">How To Set Default Fonts and Font Aliases on Linux</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2014-02-22">22 Feb 2014</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <h1 id="fontwoes">Font Woes</h1>
+<p>It’s fairly straightforward to set the default font used in native apps on a modern Linux desktop, or the default fonts used to render web pages in your browser of choice.</p>
+<p>But if you’re reading this, you probably know that that’s far from the end of the story. You might have noticed that Firefox and Chrome rudely ignore your font settings for many websites. This is because many (if not most) popular sites, including <a href="http://www.google.com">Google</a>, <a href="http://www.yahoo.com">Yahoo</a>, <a href="http://www.facebook.com">Facebook</a> or <a href="http://github.com">GitHub</a>, specify preferred fonts for text:</p>
+<ul>
+<li>Google: <code>arial, sans-serif</code></li>
+<li>Yahoo: <code>Helvetica Neue, Helvetica, Arial</code></li>
+<li>Facebook: <code>lucida grande, tahoma, verdana, arial, sans-serif</code></li>
+<li>GitHub: <code>Helvetica, arial, freesans, clean, sans-serif</code></li>
+</ul>
+<p>(Retrieved on 02/21/2014)</p>
+<p>You might immediately notice that the most commonly used fonts on these sites, Arial and Helvetica, are fonts that come bundled with Microsoft Windows, and are most likely <em>not</em> installed on your Linux system. In this case, what font is <em>actually</em> used is anyone’s guess. If they <em>are</em> installed (e.g., via a package like <a href="https://aur.archlinux.org/packages/ttf-ms-fonts/">ttf-ms-fonts</a> or directly copied from a Windows machine), well, you still probably want to display your favorite font instead :)</p>
+<p>So, let’s find out what your default fonts and aliases are with <code>fc-match</code>:</p>
+<pre><code>for family in serif sans-serif monospace Arial Helvetica Verdana "Times New Roman" "Courier New"; do
+  echo -n "$family: "
+  fc-match "$family"
+done
+</code></pre>
+<p>This is what I get on my machine by default:</p>
+<pre><code>serif: DejaVuSerif.ttf: "DejaVu Serif" "Book"
+sans-serif: DejaVuSans.ttf: "DejaVu Sans" "Book"
+monospace: DejaVuSansMono.ttf: "DejaVu Sans Mono" "Book"
+Arial: DejaVuSans.ttf: "DejaVu Sans" "Book"
+Helvetica: n019003l.pfb: "Nimbus Sans L" "Regular"
+Verdana: DejaVuSans.ttf: "DejaVu Sans" "Book"
+Times New Roman: DejaVuSerif.ttf: "DejaVu Serif" "Book"
+Courier New: DejaVuSansMono.ttf: "DejaVu Sans Mono" "Book"
+</code></pre>
+<h1 id="fontconfigurationfiles">Font Configuration Files</h1>
+<p>So, assuming you’ve installed your fonts of choice (via a package, copying to <code>/usr/share/fonts</code> or <code>~/.fonts</code> - please verify with the <code>fc-list</code> command), how do you set them as default in all apps and web sites?</p>
+<p>Well, there are two places where fonts are configured: system-wide configuration resides in <code>/etc/fonts/</code>, and per-user configs are stored in <code>~/.config/fontconfig/fonts.conf</code> (note that this used to be <code>~/.fonts.conf</code> before <code>fontconfig</code> 2.10.1). For simplicity’s sake, we’ll do it in <code>~/.config/fontconfig/fonts.conf</code>.</p>
+<p>Let’s open up <code>~/.config/fontconfig/fonts.conf</code>, or create it if it doesn’t already exist. Put the following skeleton structure in there:</p>
+<pre><code>&lt;?xml version='1.0'?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM 'fonts.dtd'&gt;
+&lt;fontconfig&gt;
+&lt;/fontconfig&gt;
+</code></pre>
+<p>We will put all of our custom configuration between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>.</p>
+<h1 id="settingdefaultfonts">Setting Default Fonts</h1>
+<p>First, let’s set the default serif, sans serif, and monospace fonts. I’ll use the beautiful <a href="http://en.wikipedia.org/wiki/Croscore_fonts">Chrome OS fonts</a> as an example (<a href="https://aur.archlinux.org/packages/ttf-chromeos-fonts/"><code>ttf-chromeos-fonts</code></a> if you’re running <a href="http://www.archlinux.org">Arch Linux</a>). Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>:</p>
+<pre><code>  &lt;!-- Set preferred serif, sans serif, and monospace fonts. --&gt;
+  &lt;alias&gt;
+    &lt;family&gt;serif&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Tinos&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+  &lt;alias&gt;
+    &lt;family&gt;sans-serif&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Arimo&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+  &lt;alias&gt;
+    &lt;family&gt;sans&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Arimo&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+  &lt;alias&gt;
+    &lt;family&gt;monospace&lt;/family&gt;
+    &lt;prefer&gt;&lt;family&gt;Cousine&lt;/family&gt;&lt;/prefer&gt;
+  &lt;/alias&gt;
+</code></pre>
+<h1 id="aliasingmicrosoftfonts">Aliasing Microsoft Fonts</h1>
+<p>Now, we will create aliases for commonly used fonts like Arial and Helvetica, so that our favorite fonts will always be used instead of these fonts, e.g. when requested by a web site.</p>
+<p>Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>, after the previous snippet:</p>
+<pre><code>  &lt;!-- Aliases for commonly used MS fonts. --&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Arial&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Helvetica&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Verdana&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Tahoma&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;!-- Insert joke here --&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Comic Sans MS&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Arimo&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Times New Roman&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Tinos&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Times&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Tinos&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+  &lt;match&gt;
+    &lt;test name="family"&gt;&lt;string&gt;Courier New&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign" binding="strong"&gt;
+      &lt;string&gt;Cousine&lt;/string&gt;
+    &lt;/edit&gt;
+  &lt;/match&gt;
+</code></pre>
+<p>Note that the Microsoft fonts are aliased directly to the our preferred substitute fonts. Aliasing to generic families (serif, sans-serif etc.) may or may not work depending on your configuration in <code>/etc/fonts</code> (they didn’t work for me), so it’s safer this way.</p>
+<p>This list is of course by no means definitive; add/remove aliases as you like.</p>
+<h1 id="theresult">The Result</h1>
+<p>You’ll need to log out and back in for all applications to update. You should see the difference immediately:</p>
+<p><strong>Google search results, before (Arial):</strong></p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/font_config_before.png" alt="font_config_before" width="506" height="334" layout="responsive"></amp-img></p>
+<p><strong>Google search results, after (Arimo):</strong></p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/font_config_after.png" alt="font_config_after" width="606" height="400" layout="responsive"></amp-img></p>
+<p>You can verify that the aliases have been set up correctly with <code>fc-match</code>:</p>
+<pre><code>for family in serif sans-serif monospace Arial Helvetica Verdana "Times New Roman" "Courier New"; do
+  echo -n "$family: "
+  fc-match "$family"
+done
+</code></pre>
+<p>which should now give you something like:</p>
+<pre><code>serif: Tinos-Regular.ttf: "Tinos" "Regular"
+sans-serif: Arimo-Regular.ttf: "Arimo" "Regular"
+monospace: Cousine-Regular.ttf: "Cousine" "Regular"
+Arial: Arimo-Regular.ttf: "Arimo" "Regular"
+Helvetica: Arimo-Regular.ttf: "Arimo" "Regular"
+Verdana: Arimo-Regular.ttf: "Arimo" "Regular"
+Times New Roman: Tinos-Regular.ttf: "Tinos" "Regular"
+Courier New: Cousine-Regular.ttf: "Cousine" "Regular"
+</code></pre>
+<h1 id="othernotes">Other Notes</h1>
+<p>Some existing examples you may find online show the following syntax:</p>
+<pre><code>&lt;!-- Deprecated syntax --&gt;
+&lt;match target="pattern" name="family"&gt;
+  &lt;test name="family" qual="any"&gt;&lt;string&gt;Arial&lt;/string&gt;&lt;/test&gt;
+  ...
+&lt;/match&gt;
+</code></pre>
+<p>This will produce an error message like</p>
+<pre><code>Fontconfig error: "/home/username/.config/fontconfig/fonts.conf", line 38: invalid attribute 'name'
+</code></pre>
+<p>The fix is to change <code>&lt;match target="pattern" name="family"&gt;</code> to just <code>&lt;match&gt;</code>, as shown above.</p>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

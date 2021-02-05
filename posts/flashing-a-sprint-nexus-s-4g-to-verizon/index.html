@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	    <title>Flashing a Sprint Nexus S 4G to Verizon</title>
+	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900' rel='stylesheet' type='text/css'>
+			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=8de4e4d448">
+	    <meta name="HandheldFriendly" content="True" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+			<!--[if lt IE 9]>
+				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+			<![endif]-->
+			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=8de4e4d448">
+	<meta property="og:title" content="Flashing a Sprint Nexus S 4G to Verizon" />
+	<meta property="og:type" content="article" />
+	<meta property="og:description" content="I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided..."/>
+
+	    <link rel="canonical" href="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="amphtml" href="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/amp/" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Flashing a Sprint Nexus S 4G to Verizon" />
+    <meta property="og:description" content="I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided" />
+    <meta property="og:url" content="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" />
+    <meta property="article:published_time" content="2015-11-11T08:27:00.000Z" />
+    <meta property="article:modified_time" content="2018-10-17T07:29:00.000Z" />
+    <meta property="article:tag" content="Android" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Flashing a Sprint Nexus S 4G to Verizon" />
+    <meta name="twitter:description" content="I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Android, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "Flashing a Sprint Nexus S 4G to Verizon",
+    "url": "https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/",
+    "datePublished": "2015-11-11T08:27:00.000Z",
+    "dateModified": "2018-10-17T07:29:00.000Z",
+    "keywords": "Android, Technical Notes",
+    "description": "&gt; I originally wrote the following post in July 2012 to document how to fully\nflash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing\nit. I have long since switched away from Verizon Wireless and no longer own any\nof the phones mentioned, and decided to publish it for what it’s worth.\n\nIf you’re interested in the high-level view of how CDMA phones are programmed,\ncheck out my previous article Carrier Programming on CDMA Android Phones\n[/posts/carrier-programming-on-cdma-a",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//a.chu4n.com/";
+    _paq.push(['setTrackerUrl', u+'js/']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'js/'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//a.chu4n.com/js/?idsite=2&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-21264754-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-21264754-1');
+</script>
+	</head>
+	<body class="post-template tag-android tag-technical-notes">
+		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
+			<h6></h6>
+			<div id="follow-icons">
+	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	<a href="mailto:chuan@jichu4n.com" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+</div>                                                                  
+
+<!--
+	<a href="" target="_blank"><i class="fa fa-facebook-square fa-2x"></i></a>
+	<a href="https://twitter.com/jichu4n" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	<a href="https://jichu4n.com/rss" target="_blank"><i class="fa fa-rss-square fa-2x"></i></a> 
+<a href="http://plus.google.com/+username" target="_blank"><i class="fa fa-google-plus-square fa-2x"></i></a>
+<a href="http://instagram.com/username" target="_blank"><i class="fa fa-instagram fa-2x"></i></a>
+<a href="http://vimeo.com/username" target="_blank"><i class="fa fa-vimeo-square fa-2x"></i></a>
+<a href="http://youtube.com/username" target="_blank"><i class="fa fa-youtube-square fa-2x"></i></a>
+<a href="http://flickr.com/username" target="_blank"><i class="fa fa-flickr fa-2x"></i></a>
+<a href="http://pinterest.com/username" target="_blank"><i class="fa fa-pinterest-square fa-2x"></i></a>
+<a href="http://username.tumblr.com" target="_blank"><i class="fa fa-tumblr-square fa-2x"></i></a>
+-->
+			  <h5><a href="https://jichu4n.com/">Bio</a></h5>
+  <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
+  <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
+
+		</header>
+		<nav id="mobile-header">
+  <ul class="nav-left">
+    <li><a href="https://jichu4n.com" class="title">Chuan Ji</a></li>
+  </ul>
+</nav>
+<div id="expand-mobile-header-button-container">
+  <a href="javascript:void(0);" id="expand-mobile-header-button"><i class="fa fa-bars"></i></a>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#expand-mobile-header-button').click(function() {
+      $(document.body).toggleClass('mobile-header-expanded');
+    });
+  });
+</script>
+		<main id="content">
+			<article id="5bc6e46460307a000159bd9f" class="post tag-android tag-technical-notes no-image">
+	<div class="post-stamp">November 11, 2015<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
+	<h1 class="post-title">Flashing a Sprint Nexus S 4G to Verizon</h1>
+	<!--kg-card-begin: markdown--><blockquote>
+<p>I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided to publish it for what it’s worth.</p>
+<p>If you’re interested in the high-level view of how CDMA phones are programmed, check out my previous article <a href="https://jichu4n.com/posts/carrier-programming-on-cdma-android-phones.html">Carrier Programming on CDMA Android Phones</a>.</p>
+</blockquote>
+<h1 id="introduction">Introduction</h1>
+<p>This is a guide for flashing a Sprint Samsung Nexus S 4G to a standard Verizon monthly plan, and voice, texting and 3G data will all be fully functional. This method will likely also work on many other phones, especially Samsung ones, and should theoretically work just file on any ROM as well.</p>
+<p>Note that this procedure entails ESN cloning, which may be illegal in your region. Please make sure you have an understanding of all applicable laws before proceeding. The author of this guide cannot be held responsible for any legal infractions that may ensue. Finally, you are solely responsible for any consequences of your actions as a result of following this guide. While I believe it to be quite safe, I cannot guarantee you that this process will not brick your devices or start a zombie apocalypse.</p>
+<h1 id="requirementsandsetup">Requirements and Setup</h1>
+<p>We will need the following before starting:</p>
+<ul>
+<li>
+<p>A currently active Verizon Wireless Android phone and plan. Please beware that not all phones will work; many phones do not allow us to extract all the information we need for this process. For instance, my Motorola Droid 3 did not work, and I had to purchase and activate an HTC Incredible for this. This phone will be our donor phone.</p>
+</li>
+<li>
+<p>A rooted Samsung Nexus 4G.</p>
+</li>
+<li>
+<p>A computer running a recent version of Windows, with at least 2 USB ports.</p>
+</li>
+<li>
+<p>2 MicroUSB cables.</p>
+</li>
+</ul>
+<p>In addition, we need the following software:</p>
+<ul>
+<li>
+<p>USB diagnostic drivers for your donor phone. These vary by manufacturer and their configuration may be quite complex; search online for how to set up yours. For HTC phones, download and install HTC Sync from HTC’s website (archived <a href="http://www.mediafire.com/?65l9idwgbzq5avb">here</a>).</p>
+</li>
+<li>
+<p>USB diagnostic drivers for the Nexus S 4G. The easiest way is to download and install PdaNet (archived <a href="http://www.mediafire.com/?jjdv8g7ie82kxdx">here</a>). We don’t actually need the functionality of PdaNet, but it happens to bundle the drivers we need. Select Samsung when prompted for the manufacturer of our phone.</p>
+</li>
+<li>
+<p>QPST and QXDM (archived <a href="http://www.mediafire.com/?ojco4qzf4r688k6">here</a>). These are internal Qualcomm tools; we will use them to clone the MEID of the donor phone.</p>
+</li>
+<li>
+<p>DFS (archived <a href="http://www.mediafire.com/?wp7hc8ny854pqrz">here</a>). This is a third-party tool for working with CDMA phones. The demo version will suffice.</p>
+</li>
+</ul>
+<h1 id="step1preparation">Step 1: Preparation</h1>
+<p>First, make sure the donor phone is fully activated and that calls, text and data are all fully functional.</p>
+<p>Now, find the HEX MEID of the donor phone. On the HTC Incredible, this can be found under <em>Settings → About Phone → Phone Identity</em>. On most Android phones, this is under <em>Settings → About Phone → Status</em>. It is also usually printed on a label underneath the phone battery. This should be 14 digits and usually begins with <code>A00000</code>.</p>
+<p>Now put the donor phone in airplane mode.</p>
+<p>We will next connect both phones to the computer in diagnostic mode.</p>
+<ul>
+<li>
+<p>On the Nexus S 4G, dial <code>*#*#8778#*#*</code>, then select <em>MODEM</em> under <em>USB</em>. Connect the Nexus S 4G to the computer. If drivers were installed correctly, you should now see a <em>SAMSUNG Mobile Modem Diagnostic Serial Port (WDM)</em> under <em>Ports (COM &amp; LPT)</em> in Windows’s Device Manager. Note down the port number of the Nexus S 4G; we will assume COM4 for convenience.</p>
+</li>
+<li>
+<p>On the HTC Incredible, dial <code>##3424#</code>, hit <em>Call</em>, connect it to the computer, then follow the instructions in <a href="http://forum.xda-developers.com/showthread.php?t=1619314">this thread</a> with Device Manager. If everything goes well you should now see a <em>HTC Diagnostic Interface</em> under <em>Ports (COM &amp; LPT)</em> in Device Manager. Note down the port number of the HTC Incredible; we will assume COM11 for convenience.</p>
+</li>
+</ul>
+<p>After confirming that both phones show up under <em>Ports (COM &amp; LPT)</em>, run QPST Configuration and hit <em>Add New Port…</em>. You should see both phones on the left. Select one and hit OK. Then repeat for the other phone.</p>
+<h1 id="step2cloning">Step 2: Cloning</h1>
+<p>We will now clone the MEID of the donor phone onto the target phone. Open QXDM Professional. Select <em>Options → Communications…</em>. For <em>Target Port</em>, select the port corresponding to the Nexus S 4G, say COM4, and hit <em>OK</em>. Then in the text box labeled <em>Command</em>, type the following:</p>
+<pre><code>Password 01F2030F5F678FF9
+</code></pre>
+<p>Hit <em>Enter</em>. You should see <code>Password Result = Correct</code> at the bottom of the <em>Command Output</em> window.</p>
+<p>Now in the <em>Command</em> text box, type the following, replacing <code>&lt;MEID&gt;</code> by the hex MEID of the <strong>donor</strong> phone:</p>
+<pre><code>RequestNVItemWrite meid 0x&lt;MEID&gt;
+</code></pre>
+<p>Hit <em>Enter</em>. You should see it repeat back the MEID to you. Type <code>RequestNVItemRead meid</code> followed by <em>Enter</em> to make sure the write happened.</p>
+<p>Close QXDM Professional and reboot the Nexus S 4G. Rebooting the target phone after writing a new MEID is essential! If prompted, do NOT go through the activation process on the Nexus S 4G. Just select <em>Skip</em> when possible.</p>
+<h1 id="step3resetspc">Step 3: Reset SPC</h1>
+<p>In order to program the Nexus S 4G, we need to obtain or reset the SPC code (also known as the MSL) of the phones. If you already know the SPC code for your phones and would rather not reset the SPC code, you can skip this step.</p>
+<p>Open QXDM Professional again. Go through <em>Options → Communications</em> and make sure the <em>Target Port</em> is still COM4. Hit <em>OK</em>. In the command text box, type the following two lines, each followed by an <em>Enter</em>:</p>
+<pre><code>Password 01F2030F5F678FF9
+RequestNVItemWrite sec_code 000000
+</code></pre>
+<p>If this is successful, the SPC on the Nexus S 4G will have been reset to <code>000000</code>. Repeat for the donor phone (in our example, on COM11).</p>
+<p>Close QXDM Professional after done. All QPST / QXDM programs must be closed before proceeding, or DFS will complain.</p>
+<h1 id="step4programmingcdmachipset">Step 4: Programming CDMA Chipset</h1>
+<p>Launch DFS. Click <em>Ports</em> on the top left. In the dialog box, double-click on each port representing our phones, in our case, COM4 and COM11, and close the dialog box. Now make sure the <em>SPC</em> text box above reads <code>000000</code> (or if you chose not to reset the SPC, whatever your SPC is). Type <code>01F2030F5F678FF9</code> into the <em>Pwd</em> text box.</p>
+<h2 id="step4abasiccdmasettings">Step 4.a: Basic CDMA settings</h2>
+<p>Let’s now copy basic CDMA settings from the donor phone to the target phone. In the drop-down menu next to <em>Ports</em>, select the donor phone (COM11). Switch to the <em>Programming</em> tab and the <em>NAM</em> tab under it. Click the <em>SPC</em> and <em>Pwd</em> buttons to send the SPC and NV password to the phone to unlock it. Then hit <em>Read</em> beneath <em>Network identification</em>. The text fields below should be populated by information from the donor phone. Now select COM4 in the drop-down menu next to <em>Ports</em>, click <em>SPC</em> and <em>Pwd</em>, then click <em>Write</em> beneath <em>Network identification</em>.</p>
+<h2 id="step4bprl">Step 4.b: PRL</h2>
+<p>Now, let’s copy over the PRL (or <em>Preferred Roaming List</em> - essentially a database of tower locations). Again, select COM11 under <em>Ports</em> and click <em>Read</em> under <em>PRL</em> towards the right. Then select COM4 under <em>Ports</em> and click <em>Write</em> under <em>PRL</em>.</p>
+<h2 id="step4c2gdatasettings">Step 4.c: 2G Data settings</h2>
+<p>Now go to the next tab, <em>Data</em>. Select COM11 and hit <em>Read</em>. Switch to COM4 and hit <em>Write</em>. If you observe errors in the log window in the bottom, and / or no information shows up in the <em>Pwd</em> boxes under <em>PPP</em> and <em>HDR AN Long</em>, your donor phone doesn’t support the extraction of some data passwords, and you will have to try a different donor phone.</p>
+<h2 id="step4c3gdatasettings">Step 4.c: 3G Data settings</h2>
+<p>We do the same with <em>Mobile IP</em>. Select COM11 and hit <em>Read</em>. Switch to COM4 and hit <em>Write</em>. Then hit <em>Write current profile settings</em>. Again, if you encounter errors, or no information shows up under <em>AAA Shared secret</em> and <em>HA Shared Secret</em>, you will have to try a different donor phone.</p>
+<p>Finally, we need to copy over a file containing a secret key used to establish a 3G connection. Go to the <em>EFS</em> tab towards the top. Select COM11 and hit <em>Read EFS</em>. Click the &quot;<em>+</em>&quot; sign of the root folder on the left and then the &quot;<em>+</em>&quot; sign next to the <code>DMU</code> folder and you should see a file called <code>10.key</code>. Right-click on this file and hit <em>Save…</em>. Save this file somewhere on your hard drive. Now switch to COM4 and hit <em>Read EFS</em> again. Select the root folder on the left, type <code>/DMU</code> under <em>Path (57 max)</em> on the right and hit <em>Add Item</em> to create a folder named <code>DMU</code> on the Nexus S 4G. Then select <code>DMU</code> on the left, click on the check box named <em>I want to add file from PC</em>, and select the <code>10.key</code> file we just saved. Then hit <em>Add Item</em> to upload the <code>10.key</code> file to <code>/DMU/10.key</code>.</p>
+<p>The programming is now done. Close DFS, select <em>OK</em> and <em>OK</em> again when prompted whether to send a <em>mode reset</em> to the phone. The Nexus S 4G will now reboot.</p>
+<h1 id="step5programmingandroid">Step 5: Programming Android</h1>
+<p>We will now modify some Android system files to Verizon settings. This step will need to be repeated whenever you flash a new ROM on the Nexus S 4G in the future.</p>
+<h2 id="1clickprogrammingapp">1-click programming app</h2>
+<p>I have built a 1-click Android application that automates this step; you can find it <a href="http://www.mediafire.com/?m796blddz3g8ifd">here</a>. It requires root as it will need to modify system files. Install the application and click the button in the middle. When the process finishes, you will be prompted to reboot. Simply reboot your phone and you’re all set; you may uninstall the app, or you could keep it around for when you update to a new ROM.</p>
+<p>If the 1-click app does not work for you, or if you want more control over what it does, follow the steps below. You do not need to do any of the following if you already used the app above.</p>
+<h2 id="step5afixvoicecalling">Step 5.a: Fix voice calling</h2>
+<p>This is required to enable calls on Verizon. On the Nexus S 4G, connect to WiFi and install ES File Explorer from the Play Store. Then go to <em>Menu → Settings</em> and check <em>Up to Root</em>, <em>Root Explorer</em>, and <em>Mount File System</em>. Allow it to use superuser privileges if asked. Then navigate to <code>/system</code> and open <code>build.prop</code> with <em>ES Note Editor</em>. Find the following two lines:</p>
+<pre><code>ro.cdma.home.operator.numeric=310120
+ro.cdma.home.operator.alpha=Sprint
+</code></pre>
+<p>Change them to read:</p>
+<pre><code>ro.cdma.home.operator.numeric=310004
+ro.cdma.home.operator.alpha=Verizon
+</code></pre>
+<p>Then add a line below (or anywhere in the file) that says:</p>
+<pre><code>ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83
+</code></pre>
+<p>Hit <em>Menu → Save</em> and then <em>Back</em> to exit.</p>
+<h2 id="step5bfixroaming">Step 5.b: Fix roaming</h2>
+<p>This step tells Android to treat the Verizon network as the home network. It sets the roaming status to &quot;Not roaming&quot;, removes the triangular roaming indicator in the status bar and changes the displayed name of the current network to &quot;Verizon Wireless&quot;.</p>
+<p>Now navigate to <code>/system/framework</code> and copy <code>framework-res.apk</code> onto your computer - you can use adb or email it to yourself or whatever (you have to copy it to the internal SD card before you can email it though). Once on the computer, rename it <code>framework-res.zip</code> (yes, an APK is just a zip archive) and use your favorite program to replace the file <code>res/xml/eri.xml</code> inside it with the one at <a href="http://www.mediafire.com/?jdsigtxi4gvp6ks">this link</a>. Now rename it back to <code>framework-res.apk</code>, copy it back onto the Nexus S 4G (using adb or whatever) and use ES File Explorer to overwrite the existing <code>/system/framework/framework-res.apk</code> with it.</p>
+<h2 id="step5caddverizonapns">Step 5.c: Add Verizon APNs</h2>
+<p>This last step sets up Verizon APNs that enable web and MMS. Use ES File Explorer or any other tool to replace <code>/system/etc/apns-conf.xml</code> with the one at <a href="http://www.mediafire.com/?g0vd7nfs47ksujz">this link</a>.</p>
+<h1 id="step6rebootprofit">Step 6: Reboot &amp; PROFIT</h1>
+<p>The Nexus S 4G should now be a fully functional Verizon Wireless phone. If you are curious about what each of the steps means, you’re welcome to check out my previous article <a href="https://jichu4n.com/posts/carrier-programming-on-cdma-android-phones.html">Carrier Programming on CDMA Android Phones</a> for a high-level view of how CDMA phones are programmed.</p>
+<p>While your mileage may vary, I hope the above information have been of help. Since I no longer use Verizon Wireless and no longer own any of the phones mentioned above, please take all this information with a grain of salt.</p>
+<p>Good luck, and happy hacking!</p>
+<!--kg-card-end: markdown-->
+	<div id="social-bar">
+	<ul class="rrssb-buttons clearfix">
+      <li class="email">
+          <a href="mailto:?subject=Flashing%20a%20Sprint%20Nexus%20S%204G%20to%20Verizon&amp;body=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
+                  </svg>
+              </span>
+              <span class="text">Email</span>
+          </a>
+      </li>
+      <li class="facebook">
+          <a href="https://www.facebook.com/sharer/sharer.php?u=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path d="M27.825,4.783c0-2.427-2.182-4.608-4.608-4.608H4.783c-2.422,0-4.608,2.182-4.608,4.608v18.434 c0,2.427,2.181,4.608,4.608,4.608H14V17.379h-3.379v-4.608H14v-1.795c0-3.089,2.335-5.885,5.192-5.885h3.718v4.608h-3.726 c-0.408,0-0.884,0.492-0.884,1.236v1.836h4.609v4.608h-4.609v10.446h4.916c2.422,0,4.608-2.188,4.608-4.608V4.783z"/>
+                  </svg>
+              </span>
+              <span class="text">Facebook</span>
+          </a>
+      </li>
+			<li class="twitter">
+          <a href="http://twitter.com/home?status=Flashing%20a%20Sprint%20Nexus%20S%204G%20to%20Verizon%20https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+		                  <path d="M24.253,8.756C24.689,17.08,18.297,24.182,9.97,24.62c-3.122,0.162-6.219-0.646-8.861-2.32 c2.703,0.179,5.376-0.648,7.508-2.321c-2.072-0.247-3.818-1.661-4.489-3.638c0.801,0.128,1.62,0.076,2.399-0.155 C4.045,15.72,2.215,13.6,2.115,11.077c0.688,0.275,1.426,0.407,2.168,0.386c-2.135-1.65-2.729-4.621-1.394-6.965 C5.575,7.816,9.54,9.84,13.803,10.071c-0.842-2.739,0.694-5.64,3.434-6.482c2.018-0.623,4.212,0.044,5.546,1.683 c1.186-0.213,2.318-0.662,3.329-1.317c-0.385,1.256-1.247,2.312-2.399,2.942c1.048-0.106,2.069-0.394,3.019-0.851 C26.275,7.229,25.39,8.196,24.253,8.756z"/>
+                  </svg>
+              </span>
+              <span class="text">Twitter</span>
+          </a>
+      </li>
+			<li class="linkedin">
+          <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/&amp;title=Flashing%20a%20Sprint%20Nexus%20S%204G%20to%20Verizon&amp;summary=I originally wrote the following post in July 2012 to document how to fully flash a Nexus S 4G from Sprint to Verizon Wireless, but never got to publishing it. I have long since switched away from Verizon Wireless and no longer own any of the phones mentioned, and decided..." class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path d="M25.424,15.887v8.447h-4.896v-7.882c0-1.979-0.709-3.331-2.48-3.331c-1.354,0-2.158,0.911-2.514,1.803 c-0.129,0.315-0.162,0.753-0.162,1.194v8.216h-4.899c0,0,0.066-13.349,0-14.731h4.899v2.088c-0.01,0.016-0.023,0.032-0.033,0.048 h0.033V11.69c0.65-1.002,1.812-2.435,4.414-2.435C23.008,9.254,25.424,11.361,25.424,15.887z M5.348,2.501 c-1.676,0-2.772,1.092-2.772,2.539c0,1.421,1.066,2.538,2.717,2.546h0.032c1.709,0,2.771-1.132,2.771-2.546 C8.054,3.593,7.019,2.501,5.343,2.501H5.348z M2.867,24.334h4.897V9.603H2.867V24.334z"/>
+                  </svg>
+              </span>
+              <span class="text">LinkedIn</span>
+          </a>
+      </li>
+      <li class="tumblr">
+					<script>
+						document.write('<a href="http://www.tumblr.com/share?v=3&amp;u=' + encodeURIComponent('https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/') + '&amp;t=Flashing%20a%20Sprint%20Nexus%20S%204G%20to%20Verizon" class="popup">');
+					</script>
+              <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+											<path d="M18.02 21.842c-2.029 0.052-2.422-1.396-2.439-2.446v-7.294h4.729V7.874h-4.71V1.592c0 0-3.653 0-3.714 0 s-0.167 0.053-0.182 0.186c-0.218 1.935-1.144 5.33-4.988 6.688v3.637h2.927v7.677c0 2.8 1.7 6.7 7.3 6.6 c1.863-0.03 3.934-0.795 4.392-1.453l-1.22-3.539C19.595 21.6 18.7 21.8 18 21.842z"/>
+									</svg>
+              </span>
+              <span class="text">Tumblr</span>
+          <script>document.write('</a>');</script>
+      </li>
+      <li class="reddit">
+          <a href="http://www.reddit.com/submit?url=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/">
+              <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+											<g>
+													<path d="M11.794 15.316c0-1.029-0.835-1.895-1.866-1.895c-1.03 0-1.893 0.865-1.893 1.895s0.863 1.9 1.9 1.9 C10.958 17.2 11.8 16.3 11.8 15.316z"/>
+													<path d="M18.1 13.422c-1.029 0-1.895 0.864-1.895 1.895c0 1 0.9 1.9 1.9 1.865c1.031 0 1.869-0.836 1.869-1.865 C19.969 14.3 19.1 13.4 18.1 13.422z"/>
+													<path d="M17.527 19.791c-0.678 0.678-1.826 1.006-3.514 1.006c-0.004 0-0.009 0-0.014 0c-0.004 0-0.01 0-0.015 0 c-1.686 0-2.834-0.328-3.51-1.005c-0.264-0.265-0.693-0.265-0.958 0c-0.264 0.265-0.264 0.7 0 1 c0.943 0.9 2.4 1.4 4.5 1.402c0.005 0 0 0 0 0c0.005 0 0 0 0 0c2.066 0 3.527-0.459 4.47-1.402 c0.265-0.264 0.265-0.693 0.002-0.958C18.221 19.5 17.8 19.5 17.5 19.791z"/>
+													<path d="M27.707 13.267c0-1.785-1.453-3.237-3.236-3.237c-0.793 0-1.518 0.287-2.082 0.761c-2.039-1.295-4.646-2.069-7.438-2.219 l1.483-4.691l4.062 0.956c0.071 1.4 1.3 2.6 2.7 2.555c1.488 0 2.695-1.208 2.695-2.695C25.881 3.2 24.7 2 23.2 2 c-1.059 0-1.979 0.616-2.42 1.508l-4.633-1.091c-0.344-0.081-0.693 0.118-0.803 0.455l-1.793 5.7 C10.548 8.6 7.7 9.4 5.6 10.75C5.006 10.3 4.3 10 3.5 10.029c-1.785 0-3.237 1.452-3.237 3.2 c0 1.1 0.6 2.1 1.4 2.69c-0.04 0.272-0.061 0.551-0.061 0.831c0 2.3 1.3 4.4 3.7 5.9 c2.299 1.5 5.3 2.3 8.6 2.325c3.228 0 6.271-0.825 8.571-2.325c2.387-1.56 3.7-3.66 3.7-5.917 c0-0.26-0.016-0.514-0.051-0.768C27.088 15.5 27.7 14.4 27.7 13.267z M23.186 3.355c0.74 0 1.3 0.6 1.3 1.3 c0 0.738-0.6 1.34-1.34 1.34s-1.342-0.602-1.342-1.34C21.844 4 22.4 3.4 23.2 3.355z M1.648 13.3 c0-1.038 0.844-1.882 1.882-1.882c0.31 0 0.6 0.1 0.9 0.209c-1.049 0.868-1.813 1.861-2.26 2.9 C1.832 14.2 1.6 13.8 1.6 13.267z M21.773 21.57c-2.082 1.357-4.863 2.105-7.831 2.105c-2.967 0-5.747-0.748-7.828-2.105 c-1.991-1.301-3.088-3-3.088-4.782c0-1.784 1.097-3.484 3.088-4.784c2.081-1.358 4.861-2.106 7.828-2.106 c2.967 0 5.7 0.7 7.8 2.106c1.99 1.3 3.1 3 3.1 4.784C24.859 18.6 23.8 20.3 21.8 21.57z M25.787 14.6 c-0.432-1.084-1.191-2.095-2.244-2.977c0.273-0.156 0.59-0.245 0.928-0.245c1.035 0 1.9 0.8 1.9 1.9 C26.354 13.8 26.1 14.3 25.8 14.605z"/>
+											</g> 
+									</svg>    
+              </span>
+              <span class="text">Reddit</span>
+          </a>
+      </li>
+      <!--
+      <li class="googleplus">
+          <a href="https://plus.google.com/share?url=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <g>
+                          <path d="M14.703,15.854l-1.219-0.948c-0.372-0.308-0.88-0.715-0.88-1.459c0-0.748,0.508-1.223,0.95-1.663 c1.42-1.119,2.839-2.309,2.839-4.817c0-2.58-1.621-3.937-2.399-4.581h2.097l2.202-1.383h-6.67c-1.83,0-4.467,0.433-6.398,2.027 C3.768,4.287,3.059,6.018,3.059,7.576c0,2.634,2.022,5.328,5.604,5.328c0.339,0,0.71-0.033,1.083-0.068 c-0.167,0.408-0.336,0.748-0.336,1.324c0,1.04,0.551,1.685,1.011,2.297c-1.524,0.104-4.37,0.273-6.467,1.562 c-1.998,1.188-2.605,2.916-2.605,4.137c0,2.512,2.358,4.84,7.289,4.84c5.822,0,8.904-3.223,8.904-6.41 c0.008-2.327-1.359-3.489-2.829-4.731H14.703z M10.269,11.951c-2.912,0-4.231-3.765-4.231-6.037c0-0.884,0.168-1.797,0.744-2.511 c0.543-0.679,1.489-1.12,2.372-1.12c2.807,0,4.256,3.798,4.256,6.242c0,0.612-0.067,1.694-0.845,2.478 c-0.537,0.55-1.438,0.948-2.295,0.951V11.951z M10.302,25.609c-3.621,0-5.957-1.732-5.957-4.142c0-2.408,2.165-3.223,2.911-3.492 c1.421-0.479,3.25-0.545,3.555-0.545c0.338,0,0.52,0,0.766,0.034c2.574,1.838,3.706,2.757,3.706,4.479 c-0.002,2.073-1.736,3.665-4.982,3.649L10.302,25.609z"/>
+                          <polygon points="23.254,11.89 23.254,8.521 21.569,8.521 21.569,11.89 18.202,11.89 18.202,13.604 21.569,13.604 21.569,17.004 23.254,17.004 23.254,13.604 26.653,13.604 26.653,11.89"/>
+                      </g>  
+                  </svg>
+              </span>
+              <span class="text">Google+</span>
+          </a>
+      </li>
+      -->
+      <li class="pinterest">
+          <script>
+						var imgurl = "https://jichu4n.com/content/images/2018/10/me-3-small.jpg";
+						var firstimg = document.getElementsByClassName("post tag-android tag-technical-notes no-image")[0].getElementsByTagName("img")[0];
+						if (firstimg !== undefined) {
+							imgurl = firstimg.src;
+						} 
+						document.write('<a href="http://pinterest.com/pin/create/button/?url=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/&amp;media=' + imgurl + '&amp;description=Flashing%20a%20Sprint%20Nexus%20S%204G%20to%20Verizon" class="popup">');
+					</script>
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+		                  <path d="M14.021,1.57C6.96,1.57,1.236,7.293,1.236,14.355c0,7.062,5.724,12.785,12.785,12.785c7.061,0,12.785-5.725,12.785-12.785 C26.807,7.294,21.082,1.57,14.021,1.57z M15.261,18.655c-1.161-0.09-1.649-0.666-2.559-1.219c-0.501,2.626-1.113,5.145-2.925,6.458 c-0.559-3.971,0.822-6.951,1.462-10.116c-1.093-1.84,0.132-5.545,2.438-4.632c2.837,1.123-2.458,6.842,1.099,7.557 c3.711,0.744,5.227-6.439,2.925-8.775c-3.325-3.374-9.678-0.077-8.897,4.754c0.19,1.178,1.408,1.538,0.489,3.168 C7.165,15.378,6.53,13.7,6.611,11.462c0.131-3.662,3.291-6.227,6.46-6.582c4.007-0.448,7.771,1.474,8.29,5.239 c0.579,4.255-1.816,8.865-6.102,8.533L15.261,18.655z"/>
+                  </svg>
+              </span>
+              <span class="text">Pinterest</span>
+          <script>document.write('</a>');</script>
+      </li>
+      <li class="pocket">
+          <a href="https://getpocket.com/save?url=https://jichu4n.com/posts/flashing-a-sprint-nexus-s-4g-to-verizon/"  class="popup">
+              <span class="icon">
+                  <svg width="32px" height="28px" viewBox="0 0 32 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+                      <path d="M28.7817528,0.00172488695 C30.8117487,0.00431221738 31.9749312,1.12074529 31.9644402,3.10781507 C31.942147,6.67703739 32.1336065,10.2669583 31.8057648,13.8090137 C30.7147076,25.5813672 17.2181194,31.8996281 7.20714461,25.3808491 C2.71833574,22.4571656 0.196577202,18.3122624 0.0549495772,12.9357897 C-0.0342233715,9.5774348 0.00642900214,6.21519891 0.0300336062,2.85555035 C0.0405245414,1.1129833 1.21157517,0.0146615391 3.01995012,0.00819321302 C7.34746087,-0.00603710433 11.6775944,0.00431221738 16.0064164,0.00172488695 C20.2644248,0.00172488695 24.5237444,-0.00215610869 28.7817528,0.00172488695 L28.7817528,0.00172488695 Z M8.64885184,7.85611511 C7.38773662,7.99113854 6.66148108,8.42606978 6.29310958,9.33228474 C5.90114134,10.2969233 6.17774769,11.1421181 6.89875951,11.8276216 C9.35282156,14.161969 11.8108164,16.4924215 14.2976518,18.7943114 C15.3844131,19.7966007 16.5354102,19.7836177 17.6116843,18.7813283 C20.0185529,16.5495467 22.4070683,14.2982907 24.7824746,12.0327533 C25.9845979,10.8850542 26.1012707,9.56468083 25.1469132,8.60653379 C24.1361858,7.59255976 22.8449191,7.6743528 21.5890476,8.85191291 C19.9936451,10.3488554 18.3680912,11.8172352 16.8395462,13.3777945 C16.1342655,14.093159 15.7200114,14.0048744 15.0566806,13.3440386 C13.4599671,11.7484252 11.8081945,10.2060421 10.1262706,8.70001155 C9.65564653,8.27936164 9.00411403,8.05345704 8.64885184,7.85611511 L8.64885184,7.85611511 L8.64885184,7.85611511 Z"></path>
+                  </svg>
+              </span>
+              <span class="text">Pocket</span>
+          </a>
+      </li> 
+  </ul>	
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/assets/js/rrssb.min.js?v=8de4e4d448"></script>
+  <div id="comments">
+	<div id="disqus_thread"></div>
+	<script>
+		(function() {
+		var d = document, s = d.createElement('script');
+		s.src = 'https://cjix.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</article>  
+
+		</main>
+		<footer id="footer">
+			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved. Powered by <a href="http://ghost.org" target="_blank">Ghost</a>.</section>
+		</footer>
+	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	</body>
+</html>

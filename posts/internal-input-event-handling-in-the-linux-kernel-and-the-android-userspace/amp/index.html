@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <title>Internal input event handling in the Linux kernel and the Android userspace</title>
+
+    <link rel="canonical" href="https://jichu4n.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Internal input event handling in the Linux kernel and the Android userspace" />
+    <meta property="og:description" content="While figuring out hardware buttons for my NITDroid project, I had the opportunity of exploring the way Linux and Android handle input events internally before passing them through to the user application. This post traces the propagation of an input event from the Linux kernel through the Android userspace as" />
+    <meta property="og:url" content="https://jichu4n.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/" />
+    <meta property="article:published_time" content="2011-05-14T07:08:00.000Z" />
+    <meta property="article:modified_time" content="2020-02-08T06:10:55.000Z" />
+    <meta property="article:tag" content="Android" />
+    <meta property="article:tag" content="Linux" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Internal input event handling in the Linux kernel and the Android userspace" />
+    <meta name="twitter:description" content="While figuring out hardware buttons for my NITDroid project, I had the opportunity of exploring the way Linux and Android handle input events internally before passing them through to the user application. This post traces the propagation of an input event from the Linux kernel through the Android userspace as" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Android, Linux, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "Internal input event handling in the Linux kernel and the Android userspace",
+    "url": "https://jichu4n.com/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/",
+    "datePublished": "2011-05-14T07:08:00.000Z",
+    "dateModified": "2020-02-08T06:10:55.000Z",
+    "keywords": "Android, Linux, Technical Notes",
+    "description": "While figuring out hardware buttons for my NITDroid project, I had the\nopportunity of exploring the way Linux and Android handle input events\ninternally before passing them through to the user application. This post traces\nthe propagation of an input event from the Linux kernel through the Android\nuserspace as far as I understand it. Although the principles are likely the same\nfor essentially any input device, I will be drawing on my investigations of the\ndrivers for the LM8323 hardware keyboard",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+
+    <style amp-custom>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        font-size: 62.5%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #3a4145;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        font-size: 1.7rem;
+        line-height: 1.55em;
+        font-weight: 400;
+        font-style: normal;
+        background: #fff;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    p,
+    ul,
+    ol,
+    li,
+    dl,
+    dd,
+    hr,
+    pre,
+    form,
+    table,
+    video,
+    figure,
+    figcaption,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul[class],
+    ol[class] {
+        padding: 0;
+        list-style: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    input,
+    button,
+    select,
+    textarea {
+        font: inherit;
+        -webkit-appearance: none;
+    }
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+
+    hr {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid currentcolor;
+        opacity: 0.1;
+    }
+
+    ::selection {
+        text-shadow: none;
+        background: #cbeafb;
+    }
+
+    mark {
+        background-color: #fdffb6;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub,
+    sup {
+        position: relative;
+        font-size: 75%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    sup {
+        top: -0.5em;
+    }
+    sub {
+        bottom: -0.25em;
+    }
+
+    ul li + li {
+        margin-top: 0.6em;
+    }
+
+    a {
+        color: #1292EE;
+        text-decoration-skip-ink: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #121212;
+        line-height: 1.4em;
+    }
+
+    h1 {
+        font-size: 3.4rem;
+        line-height: 1.1em;
+    }
+
+    h2 {
+        font-size: 2.4rem;
+        line-height: 1.2em;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.7rem;
+    }
+
+    h5 {
+        font-size: 1.6rem;
+    }
+
+    h6 {
+        font-size: 1.6rem;
+    }
+
+    amp-img {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    amp-img img {
+        object-fit: cover;
+    }
+
+    .page-header {
+        padding: 50px 5vmin 30px;
+        text-align: center;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .page-header a {
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.6rem;
+        letter-spacing: -0.1px;
+    }
+
+    .post {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin: 0 5vmin 5vmin;
+        text-align: center;
+    }
+
+    .post-meta {
+        margin: 1rem 0 0 0;
+        text-transform: uppercase;
+        color: #738a94;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+
+    .post-image {
+        margin: 0 0 5vmin;
+    }
+
+    .post-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .post-content {
+        padding: 0 5vmin;
+    }
+
+    .post-content > * + * {
+        margin-top: 1.5em;
+    }
+
+    .post-content [id]:not(:first-child) {
+        margin: 2em 0 0;
+    }
+
+    .post-content > [id] + * {
+        margin-top: 1rem;
+    }
+
+    .post-content [id] + .kg-card,
+    .post-content blockquote + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content > ul,
+    .post-content > ol,
+    .post-content > dl {
+        padding-left: 1.9em;
+    }
+
+    .post-content hr {
+        margin-top: 40px;
+    }
+
+    .post .post-content hr + * {
+        margin-top: 40px;
+    }
+
+    .post-content amp-img {
+        background-color: #f8f8f8;
+    }
+
+    .post-content blockquote {
+        position: relative;
+        font-style: italic;
+    }
+
+    .post-content blockquote::before {
+        content: "";
+        position: absolute;
+        left: -1.5em;
+        top: 0;
+        bottom: 0;
+        width: 0.3rem;
+        background: #000;
+    }
+
+    .post-content :not(.kg-card):not([id]) + .kg-card {
+        margin-top: 40px;
+    }
+
+    .post-content .kg-card + :not(.kg-card) {
+        margin-top: 40px;
+    }
+
+    .kg-card figcaption {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.4em;
+        opacity: 0.6;
+    }
+
+    .kg-card figcaption strong {
+        color: rgba(0,0,0,0.8);
+    }
+
+    .post-content :not(pre) code {
+        vertical-align: middle;
+        padding: 0.15em 0.4em 0.15em;
+        border: #e1eaef 1px solid;
+        font-weight: 400;
+        font-size: 0.9em;
+        line-height: 1em;
+        color: #dc0050;
+        background: #f0f6f9;
+        border-radius: 0.25em;
+    }
+
+    .post-content > pre {
+        overflow: scroll;
+        padding: 16px 20px;
+        color: #fff;
+        background: #1F2428;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0,0,0,.1), 0 0 1px rgba(0,0,0,.4);
+    }
+
+    .kg-embed-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .kg-image-card img {
+        margin: auto;
+    }
+
+    .kg-gallery-card + .kg-gallery-card {
+        margin-top: 0.75em;
+    }
+
+    .kg-gallery-container {
+        position: relative;
+    }
+
+    .kg-gallery-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .kg-gallery-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kg-gallery-row:not(:first-of-type) {
+        margin: 0.75em 0 0 0;
+    }
+
+    .kg-gallery-image:not(:first-of-type) {
+        margin: 0 0 0 0.75em;
+    }
+
+    .kg-bookmark-card,
+    .kg-bookmark-publisher {
+        position: relative;
+    }
+
+    .kg-bookmark-container,
+    .kg-bookmark-container:hover {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        color: currentColor;
+        background: rgba(255,255,255,0.6);
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+    }
+
+    .kg-bookmark-content {
+        flex-basis: 0;
+        flex-grow: 999;
+        padding: 20px;
+        order: 1;
+    }
+
+    .kg-bookmark-title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1.3em;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        max-height: 45px;
+        margin: 0.5em 0 0 0;
+        font-size: 1.4rem;
+        line-height: 1.55em;
+        overflow: hidden;
+        opacity: 0.8;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .kg-bookmark-metadata {
+        margin-top: 20px;
+    }
+
+    .kg-bookmark-metadata {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 1.3rem;
+        line-height: 1.3em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kg-bookmark-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-metadata amp-img {
+        width: 18px;
+        height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        margin-right: 10px;
+    }
+
+    .kg-bookmark-thumbnail {
+        display: flex;
+        flex-basis: 20rem;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .kg-bookmark-thumbnail amp-img {
+        max-height: 200px;
+    }
+
+    .kg-bookmark-author {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kg-bookmark-publisher::before {
+        content: "•";
+        margin: 0 .5em;
+    }
+
+    .kg-width-full.kg-card-hascaption {
+        display: grid;
+        grid-template-columns: inherit;
+    }
+
+    .post-content table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .post-content th {
+        padding: 0.5em 0.8em;
+        text-align: left;
+        font-size: .75em;
+        text-transform: uppercase;
+    }
+
+    .post-content td {
+        padding: 0.4em 0.7em;
+    }
+
+    .post-content tbody tr:nth-child(2n + 1) {
+        background-color: rgba(0,0,0,0.1);
+        padding: 1px;
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td:last-child {
+        box-shadow:
+            inset 1px 0 rgba(0,0,0,0.1),
+            inset -1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:nth-child(2n + 2) td {
+        box-shadow: inset 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .post-content tbody tr:last-child {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    .page-footer {
+        padding: 60px 5vmin;
+        margin: 60px auto 0;
+        text-align: center;
+        background-color: #f8f8f8;
+    }
+
+    .page-footer h3 {
+        margin: 0.5rem 0 0 0;
+    }
+
+    .page-footer p {
+        max-width: 500px;
+        margin: 1rem auto 1.5rem;
+        font-size: 1.7rem;
+        line-height: 1.5em;
+        color: rgba(0,0,0,0.6)
+    }
+
+    .powered {
+        display: inline-flex;
+        align-items: center;
+        margin: 30px 0 0;
+        padding: 6px 9px 6px 6px;
+        border: rgba(0,0,0,0.1) 1px solid;
+        font-size: 12px;
+        line-height: 12px;
+        letter-spacing: -0.2px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        color: #222;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .powered svg {
+        height: 16px;
+        width: 16px;
+        margin: 0 6px 0 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 1.6rem;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.15em;
+        }
+        h2 {
+            font-size: 2rem;
+            line-height: 1.2em;
+        }
+        h3 {
+            font-size: 1.7rem;
+        }
+    }
+    </style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="page-header">
+        <a href="https://jichu4n.com">
+                Chuan Ji
+        </a>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">Internal input event handling in the Linux kernel and the Android userspace</h1>
+                <section class="post-meta">
+                    Chuan Ji -
+                    <time class="post-date" datetime="2011-05-14">14 May 2011</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <p>While figuring out hardware buttons for my NITDroid project, I had the opportunity of exploring the way Linux and Android handle input events internally before passing them through to the user application. This post traces the propagation of an input event from the Linux kernel through the Android userspace as far as I understand it. Although the principles are likely the same for essentially any input device, I will be drawing on my investigations of the drivers for the LM8323 hardware keyboard (<code>drivers/input/keyboard/lm8323.c</code>) and the TSC2005 touchscreen (<code>drivers/input/touchscreen/tsc2005.c</code>) which are both found inside the Nokia N810.</p>
+<h1 id="iinsidethelinuxkernel">I. Inside the Linux kernel</h1>
+<p>Firstly, Linux exposes externally a uniform input event interface for each device as <code>/dev/input/eventX</code> where <code>X</code> is an integer. This means these "devices" can be polled in the same way and the events they produce are in the same uniform format. To accomplish this, Linux has a standard set of routines that every device driver uses to register / unregister the hardware it manages and publish input events it receives.</p>
+<p>When the driver module of an input device is first loaded into the kernel, its initialization routine usually sets up some sort of probing to detect the presence of the types of hardware it is supposed to manage. This probing is of course device-specific; however, if it is successful, the module will eventually invoke the function <code>input_register_device(…)</code> in <code>include/linux/input.h</code> which sets up a file representing the physical device as <code>/dev/input/eventX</code> where <code>X</code> is some integer. The module will also register a function to handle IRQs originating from the hardware it manages via <code>request_irq(…)</code> (<code>include/linux/interrupt.h</code>) so that the module will be notified when the user interacts with the physical device it manages.</p>
+<p>When the user physically interacts with the hardware (for instance by pushing / releasing a key or exerting / lifting pressure on the touchscreen), an IRQ is fired and Linux invokes the IRQ handler registered by the corresponding device driver. However, IRQ handlers by custom must return quickly as they essentially block the entire system when executing and thus cannot perform any lengthy processing; typically, therefore, an IRQ handler would merely 1) save the data carried by the IRQ, 2) ask the kernel to schedule a method that would process the event later on when we have exited IRQ mode, and 3) tell the kernel we have handled the IRQ and exit. This could be very straightforward, as the IRQ handler in the driver for the LM8323 keyboard inside the N810:</p>
+<pre><code>/*
+ * We cannot use I2C in interrupt context, so we just schedule work.
+ */
+static irqreturn_t lm8323_irq(int irq, void *data)
+{
+        struct lm8323_chip *lm = data;
+
+        schedule_work(&amp;lm-&gt;work);
+
+        return IRQ_HANDLED;
+}
+</code></pre>
+<p>It could also be more complex as the one in the driver of the TSC2005 touchscreen controller (<code>tsc2005_ts_irq_handler(…)</code>) as it integrates into the SPI framework (which I have never looked into…).</p>
+<p>Some time later, the kernel executes the scheduled method to process the recently saved event. Invariably, this method would report the event in a standard format by calling one or more of the <code>input_*</code> functions in <code>include/linux/input.h</code>; these include <code>input_event(…)</code> (general purpose), <code>input_report_key(…)</code> (for key down and key up events), <code>input_report_abs(…)</code> (for position events e.g. from a touchscreen) among others. Note that the <code>input_report_*(…)</code> functions are really just convenience functions that call <code>input_event(…)</code> internally, as defined in <code>include/linux/input.h</code>. It is likely that a lot of processing happens before the event is published via these methods; the LM8323 driver for instance does an internal key code mapping step and the TSC2005 driver goes through this crazy arithmetic involving Ohms (to calculate a pressure index from resistance data?). Furthermore, one physical IRQ could correspond to multiple published input events, and vice versa. Finally, when all event publishing is finished, the event processing method calls <code>input_sync(…)</code> to flush the event out. The event is now ready to be accessed by the userspace at <code>/dev/input/eventX</code>.</p>
+<h1 id="iiinsidetheandroiduserspace">II. Inside the Android userspace</h1>
+<p>When the Android GUI starts up, an instance of the class <code>WindowManagerService</code> (<code>frameworks/base/services/java/com/android/server/WindowManagerservice.java</code>) is created. This class, when constructed, initializes the member field</p>
+<pre><code>final KeyQ mQueue;
+</code></pre>
+<p>where <code>KeyQ</code>, defined as a private class inside the same file, extends Android’s basic input handling class, the abstract class <code>KeyInputQueue</code> (<code>frameworks/base/services/java/com/android/server/KeyInputQueue.java</code> and <code>frameworks/base/services/jni/com_android_server_KeyInputQueue.cpp</code>). As <code>mQueue</code> is instantiated, it of course calls the constructor of <code>KeyInputQueue</code>; the latter, inconspicuously, starts an anonymous thread it owns that is at the heart of the event handling system in Android:</p>
+<pre><code>Thread mThread = new Thread("InputDeviceReader") {
+    public void run() {
+        ...
+        RawInputEvent ev = new RawInputEvent();
+        while (true) {
+            try {
+                readEvent(ev);  // block, doesn't release the monitor
+
+                boolean send = false;
+                ...
+                if (ev.type == RawInputEvent.EV_DEVICE_ADDED) {
+                    ...
+                } else if (ev.type == RawInputEvent.EV_DEVICE_REMOVED) {
+                    ...
+                } else {
+                    di = getInputDevice(ev.deviceId);
+                    ...
+                    // first crack at it
+                    send = preprocessEvent(di, ev);
+                }
+                ...
+                if (!send) {
+                    continue;
+                }
+                synchronized (mFirst) {
+                    ...
+                    // Is it a key event?
+                    if (type == RawInputEvent.EV_KEY &amp;&amp;
+                            (classes&amp;RawInputEvent.CLASS_KEYBOARD) != 0 &amp;&amp;
+                            (scancode &lt; RawInputEvent.BTN_FIRST ||
+                                    scancode &gt; RawInputEvent.BTN_LAST)) {
+                        boolean down;
+                        if (ev.value != 0) {
+                            down = true;
+                            di.mKeyDownTime = curTime;
+                        } else {
+                            down = false;
+                        }
+                        int keycode = rotateKeyCodeLocked(ev.keycode);
+                        addLocked(di, curTimeNano, ev.flags,
+                                RawInputEvent.CLASS_KEYBOARD,
+                                newKeyEvent(di, di.mKeyDownTime, curTime, down,
+                                        keycode, 0, scancode,
+                                        ((ev.flags &amp; WindowManagerPolicy.FLAG_WOKE_HERE) != 0)
+                                         ? KeyEvent.FLAG_WOKE_HERE : 0));
+                    } else if (ev.type == RawInputEvent.EV_KEY) {
+                        ...
+                    } else if (ev.type == RawInputEvent.EV_ABS &amp;&amp;
+                            (classes&amp;RawInputEvent.CLASS_TOUCHSCREEN_MT) != 0) {
+                        // Process position events from multitouch protocol.
+                        ...
+                    } else if (ev.type == RawInputEvent.EV_ABS &amp;&amp;
+                            (classes&amp;RawInputEvent.CLASS_TOUCHSCREEN) != 0) {
+                        // Process position events from single touch protocol.
+                        ...
+                    } else if (ev.type == RawInputEvent.EV_REL &amp;&amp;
+                            (classes&amp;RawInputEvent.CLASS_TRACKBALL) != 0) {
+                        // Process movement events from trackball (mouse) protocol.
+                        ...
+                    }
+                    ...
+                }
+
+            } catch (RuntimeException exc) {
+                Slog.e(TAG, "InputReaderThread uncaught exception", exc);
+            }
+        }
+    }
+};
+</code></pre>
+<p>I have removed most of this ~350 lined function that is irrelevant to our discussion and reformatted the code for easier reading. The key idea is that this independent thread will</p>
+<ol>
+<li>
+<p>Read an event</p>
+</li>
+<li>
+<p>Call the <code>preprocess(…)</code> method of its derived class, offering the latter a chance to prevent the event from being propagated further</p>
+</li>
+</ol>
+<p>3.Add it to the event queue owned by the class</p>
+<p>This <code>InputDeviceReader</code> thread started by <code>WindowManagerService</code> (indirectly via <code>KeyInputQueue’s constructor</code>) is thus THE event loop of the Android UI.</p>
+<p>But we are still missing the link from the kernel to this <code>InputDeviceReader</code>. What exactly is this magical <code>readEvent(…)</code>? It turns out that this is actually a native method implemented in the C++ half of <code>KeyInputQueue</code>:</p>
+<pre><code>static Mutex gLock;
+static sp&lt;EventHub&gt; gHub;
+
+static jboolean
+android_server_KeyInputQueue_readEvent(JNIEnv* env, jobject clazz,
+                                          jobject event)
+{
+    gLock.lock();
+    sp&lt;EventHub&gt; hub = gHub;
+    if (hub == NULL) {
+        hub = new EventHub;
+        gHub = hub;
+    }
+    gLock.unlock();
+
+    ...
+    bool res = hub-&gt;getEvent(&amp;deviceId, &amp;type, &amp;scancode, &amp;keycode,
+            &amp;flags, &amp;value, &amp;when);
+    ...
+
+    return res;
+}
+</code></pre>
+<p>Ah, so <code>readEvent</code> is really just a proxy for <code>EventHub::getEvent(…)</code>. If we proceed to look up <code>EventHub</code> in <code>frameworks/base/libs/ui/EventHub.cpp</code>, we find</p>
+<pre><code>int EventHub::scan_dir(const char *dirname)
+{
+    ...
+    dir = opendir(dirname);
+    ...
+    while((de = readdir(dir))) {
+        ...
+        open_device(devname);
+    }
+    closedir(dir);
+    return 0;
+}
+...
+
+static const char *device_path = "/dev/input";
+...
+
+bool EventHub::openPlatformInput(void)
+{
+    ...
+    res = scan_dir(device_path);
+    ...
+    return true;
+}
+
+bool EventHub::getEvent(int32_t* outDeviceId, int32_t* outType,
+        int32_t* outScancode, int32_t* outKeycode, uint32_t *outFlags,
+        int32_t* outValue, nsecs_t* outWhen)
+{
+    ...
+    if (!mOpened) {
+        mError = openPlatformInput() ? NO_ERROR : UNKNOWN_ERROR;
+        mOpened = true;
+    }
+
+    while(1) {
+        // First, report any devices that had last been added/removed.
+        if (mClosingDevices != NULL) {
+            ...
+            *outType = DEVICE_REMOVED;
+            delete device;
+            return true;
+        }
+        if (mOpeningDevices != NULL) {
+            ...
+            *outType = DEVICE_ADDED;
+            return true;
+        }
+
+        ...
+        pollres = poll(mFDs, mFDCount, -1);
+        ...
+
+        // mFDs[0] is used for inotify, so process regular events starting at mFDs[1]
+        for(i = 1; i &lt; mFDCount; i++) {
+            if(mFDs[i].revents) {
+                if(mFDs[i].revents &amp; POLLIN) {
+                    res = read(mFDs[i].fd, &amp;iev, sizeof(iev));
+                    if (res == sizeof(iev)) {
+                        ...
+                        *outType = iev.type;
+                        *outScancode = iev.code;
+                        if (iev.type == EV_KEY) {
+                            err = mDevices[i]-&gt;layoutMap-&gt;map(iev.code, outKeycode, outFlags);
+                            ...
+                        } else {
+                            *outKeycode = iev.code;
+                        }
+                        ...
+                        return true;
+                    } else {
+                        // Error handling
+                        ...
+                        continue;
+                    }
+                }
+            }
+        }
+        ...
+    }
+}
+</code></pre>
+<p>Again, most of the details have been stripped out from the above code, but we now see how <code>readEvent()</code> in <code>KeyInputQueue</code> is getting these events from Linux: on first call, <code>EventHub::getEvent</code> scans the directory <code>/dev/input</code> for input devices, opens them and saves their file descriptors in an array called <code>mFDs</code>. Then whenever it is called again, it tries to read from each of these input devices by simply calling the <a href="http://linux.die.net/man/2/read"><code>read(2)</code></a> Linux system call.</p>
+<p>OK, now we know how an event propagates through <code>EventHub::getEvent(…)</code> to <code>KeyInputQueue::readEvent(…)</code> then to <code>InputDeviceReader.run(…)</code> where it could get queued inside <code>WindowManagerService.mQueue</code> (which, as a reminder, extends the otherwise abstract <code>KeyInputQueue</code>). But what happens then? How does that event get to the client application?</p>
+<p>Well, it turns out that <code>WindowManagerService</code> has yet another private member class that handles just that:</p>
+<pre><code>private final class InputDispatcherThread extends Thread {
+    ...
+    @Override public void run() {
+        while (true) {
+            try {
+                process();
+            } catch (Exception e) {
+                Slog.e(TAG, "Exception in input dispatcher", e);
+            }
+        }
+    }
+
+    private void process() {
+        android.os.Process.setThreadPriority(
+                android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
+        ...
+        while (true) {
+            ...
+            // Retrieve next event, waiting only as long as the next
+            // repeat timeout.  If the configuration has changed, then
+            // don't wait at all -- we'll report the change as soon as
+            // we have processed all events.
+            QueuedEvent ev = mQueue.getEvent(
+                (int)((!configChanged &amp;&amp; curTime &lt; nextKeyTime)
+                        ? (nextKeyTime-curTime) : 0));
+            ...
+            try {
+                if (ev != null) {
+                    curTime = SystemClock.uptimeMillis();
+                    int eventType;
+                    if (ev.classType == RawInputEvent.CLASS_TOUCHSCREEN) {
+                        eventType = eventType((MotionEvent)ev.event);
+                    } else if (ev.classType == RawInputEvent.CLASS_KEYBOARD ||
+                                ev.classType == RawInputEvent.CLASS_TRACKBALL) {
+                        eventType = LocalPowerManager.BUTTON_EVENT;
+                    } else {
+                        eventType = LocalPowerManager.OTHER_EVENT;
+                    }
+                    ...
+                    switch (ev.classType) {
+                        case RawInputEvent.CLASS_KEYBOARD:
+                            KeyEvent ke = (KeyEvent)ev.event;
+                            if (ke.isDown()) {
+                                lastKey = ke;
+                                downTime = curTime;
+                                keyRepeatCount = 0;
+                                lastKeyTime = curTime;
+                                nextKeyTime = lastKeyTime
+                                        + ViewConfiguration.getLongPressTimeout();
+                            } else {
+                                lastKey = null;
+                                downTime = 0;
+                                // Arbitrary long timeout.
+                                lastKeyTime = curTime;
+                                nextKeyTime = curTime + LONG_WAIT;
+                            }
+                            dispatchKey((KeyEvent)ev.event, 0, 0);
+                            mQueue.recycleEvent(ev);
+                            break;
+                        case RawInputEvent.CLASS_TOUCHSCREEN:
+                            dispatchPointer(ev, (MotionEvent)ev.event, 0, 0);
+                            break;
+                        case RawInputEvent.CLASS_TRACKBALL:
+                            dispatchTrackball(ev, (MotionEvent)ev.event, 0, 0);
+                            break;
+                        case RawInputEvent.CLASS_CONFIGURATION_CHANGED:
+                            configChanged = true;
+                            break;
+                        default:
+                            mQueue.recycleEvent(ev);
+                        break;
+                    }
+                } else if (configChanged) {
+                    ...
+                } else if (lastKey != null) {
+                    ...
+                } else {
+                    ...
+                }
+            } catch (Exception e) {
+                Slog.e(TAG,
+                    "Input thread received uncaught exception: " + e, e);
+            }
+        }
+    }
+}
+</code></pre>
+<p>As we can see, this thread started by <code>WindowManagerService</code> is very simple; all it does is</p>
+<ol>
+<li>
+<p>Grabs events queued into <code>WindowManagerService.mQueue</code></p>
+</li>
+<li>
+<p>Calls <code>WindowManagerService.dispatchKey(…)</code> when appropriate.</p>
+</li>
+</ol>
+<p>If we next inspect <code>WindowManagerService.dispatchKey(…)</code>, we would see that it checks the currently focused window, and calls <code>android.view.IWindow.dispatchKey(…)</code> on that window. The event is now in the user space.</p>
+<p>I put together some nice diagrams that illustrate these interactions. The conceptual model:</p>
+<p><strong>Event propagation flow on Android - simplified version</strong></p>
+<p><amp-img src="https://jichu4n.com/content/images/2018/10/sJYlULHwnFLgIlQz3aYMfeg.png" alt="sJYlULHwnFLgIlQz3aYMfeg" width="962" height="421" layout="responsive"></amp-img></p>
+<p>The full model (click to open in full size):</p>
+<p><strong>Event propagation flow on Android</strong></p>
+<p>[<amp-img src="https://jichu4n.com/content/images/2018/10/smdgPyLmU8rJKxbF2ThRXJw.png" alt="smdgPyLmU8rJKxbFsmdgPyLmU8rJKxbF2ThRXJw" width="750" height="901" layout="responsive"></amp-img></p>
+<p>The yellow boxes are Java implementations, and the blue boxes native or other.</p>
+
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="page-footer">
+        <h3>Chuan Ji</h3>
+        <p><a href="https://jichu4n.com">Read more posts →</a></p>
+        <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
+    </footer>
+    
+</body>
+</html>

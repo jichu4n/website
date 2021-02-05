@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	    <title>How X Window Managers Work, And How To Write One (Part III)</title>
+	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900' rel='stylesheet' type='text/css'>
+			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=8de4e4d448">
+	    <meta name="HandheldFriendly" content="True" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+			<!--[if lt IE 9]>
+				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+			<![endif]-->
+			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=8de4e4d448">
+	<meta property="og:title" content="How X Window Managers Work, And How To Write One (Part III)" />
+	<meta property="og:type" content="article" />
+	<meta property="og:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in..."/>
+
+	    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="amphtml" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/amp/" />
+    
+    <meta property="og:site_name" content="Chuan Ji" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part III)" />
+    <meta property="og:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in" />
+    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
+    <meta property="article:published_time" content="2017-02-03T07:50:00.000Z" />
+    <meta property="article:modified_time" content="2020-02-08T06:07:04.000Z" />
+    <meta property="article:tag" content="Window Manager" />
+    <meta property="article:tag" content="Technical Notes" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part III)" />
+    <meta name="twitter:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in" />
+    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Chuan Ji" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Window Manager, Technical Notes" />
+    <meta name="twitter:site" content="@jichu4n" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Chuan Ji",
+        "url": "https://jichu4n.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichu4n.com/content/images/2018/10/me-3-small.jpg",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Chuan Ji",
+        "image": {
+            "@type": "ImageObject",
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
+        },
+        "url": "https://jichu4n.com/author/chuan/",
+        "sameAs": []
+    },
+    "headline": "How X Window Managers Work, And How To Write One (Part III)",
+    "url": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/",
+    "datePublished": "2017-02-03T07:50:00.000Z",
+    "dateModified": "2020-02-08T06:07:04.000Z",
+    "keywords": "Window Manager, Technical Notes",
+    "description": "In Part II of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html], we\ndiscussed X libraries and implementation choices, and examined the basic\nstructure of a window manager. In Part III, we will start interacting with\nclient windows and the user through events. We will review the fundamentals of\nwindow manager implementation, using the implementation in our example\nnon-compositing reparenting window manager, basic_wm\n[https://github.com/jichu4n/basic_wm], for refere",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://jichu4n.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.41" />
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//a.chu4n.com/";
+    _paq.push(['setTrackerUrl', u+'js/']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'js/'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//a.chu4n.com/js/?idsite=2&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-21264754-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-21264754-1');
+</script>
+	</head>
+	<body class="post-template tag-window-manager tag-technical-notes">
+		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
+			<h6></h6>
+			<div id="follow-icons">
+	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	<a href="mailto:chuan@jichu4n.com" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+</div>                                                                  
+
+<!--
+	<a href="" target="_blank"><i class="fa fa-facebook-square fa-2x"></i></a>
+	<a href="https://twitter.com/jichu4n" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	<a href="https://jichu4n.com/rss" target="_blank"><i class="fa fa-rss-square fa-2x"></i></a> 
+<a href="http://plus.google.com/+username" target="_blank"><i class="fa fa-google-plus-square fa-2x"></i></a>
+<a href="http://instagram.com/username" target="_blank"><i class="fa fa-instagram fa-2x"></i></a>
+<a href="http://vimeo.com/username" target="_blank"><i class="fa fa-vimeo-square fa-2x"></i></a>
+<a href="http://youtube.com/username" target="_blank"><i class="fa fa-youtube-square fa-2x"></i></a>
+<a href="http://flickr.com/username" target="_blank"><i class="fa fa-flickr fa-2x"></i></a>
+<a href="http://pinterest.com/username" target="_blank"><i class="fa fa-pinterest-square fa-2x"></i></a>
+<a href="http://username.tumblr.com" target="_blank"><i class="fa fa-tumblr-square fa-2x"></i></a>
+-->
+			  <h5><a href="https://jichu4n.com/">Bio</a></h5>
+  <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
+  <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
+
+		</header>
+		<nav id="mobile-header">
+  <ul class="nav-left">
+    <li><a href="https://jichu4n.com" class="title">Chuan Ji</a></li>
+  </ul>
+</nav>
+<div id="expand-mobile-header-button-container">
+  <a href="javascript:void(0);" id="expand-mobile-header-button"><i class="fa fa-bars"></i></a>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#expand-mobile-header-button').click(function() {
+      $(document.body).toggleClass('mobile-header-expanded');
+    });
+  });
+</script>
+		<main id="content">
+			<article id="5bc6dbd460307a000159bd56" class="post tag-window-manager tag-technical-notes no-image">
+	<div class="post-stamp">February 2, 2017<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
+	<h1 class="post-title">How X Window Managers Work, And How To Write One (Part III)</h1>
+	<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in our example non-compositing reparenting window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, for reference.</p>
+<h1 id="step4interactionwithapplicationwindows">Step 4: Interaction with Application Windows</h1>
+<p>Following the steps in <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we now have a basic skeleton for our window manager. Our next step is to start talking to clients and the user via events.</p>
+<p>The interaction between clients, X, and the window manager is fairly complex. To facilitate our discussion, I’ve created a diagram that illustrates the flow of events throughout the lifetime of a client window, and how a window manager might respond to each of them. We’ll be referring to this cheat sheet for window manager event handling throughout this series. You can click through for the full-sized diagram.</p>
+<p>[<img src="https://jichu4n.com/content/images/2018/10/sB-bXhvvzFJe2u65_YRwARA.png" alt="sB-bXhvvzFJe2u65sB-bXhvvzFJe2u65_YRwARA"></p>
+<p>In general, a window manager must handle two kinds of actions: those initiated by client applications (such as creating new windows), and those initiated by users (such as moving or minimizing windows). In this diagram, actions initiated by client applications are shown in the yellow box on the left hand side, and actions initiated by users are shown in blue on the right hand side. A window manager communicates with client applications via events, which are represented as parallelograms in red.</p>
+<p>You may have noticed that some of the events in this diagram have the suffix <em>Request</em>, while others have the suffix <em>Notify</em>. This distinction is crucial to our discussion.</p>
+<p>Recalling <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection">our discussion in Part I</a> on substructure redirection, when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request. Such requests are delivered to a window manager as events with the <em>Request</em> suffix. It is important to understand that when a window manager receives such an event, the action it represents <em>has not actually occurred</em>, and it is the responsibility of the window manager to decide what to do with it. If the window manager does nothing, the request is implicitly denied.</p>
+<p>On the other hand, events with the <em>Notify</em> suffix represent actions that have already been executed by the X server. The window manager can respond to such events, but of course cannot change the fact that they have already happened.</p>
+<p>With that in mind, let’s dive into the implementation by looking at how our example window manager will handle the life cycle of a client window from creation to destruction.</p>
+<h2 id="creatingawindow">Creating a Window</h2>
+<p>When an X client application creates a top-level window (<a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindow.3.html"><code>XCreateWindow()</code></a>), our window manager will receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> event. However, a newly created window is always invisible, so there’s nothing for our window manager to do. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<pre><code>void WindowManager::Run() {
+  ...
+  // 2. Main event loop.
+  for (;;) {
+    // 1. Get next event.
+    ...
+    // 2. Dispatch event.
+    switch (e.type) {
+      ...
+      case CreateNotify:
+        OnCreateNotify(e.xcreatewindow);
+        break;
+      ...
+    }
+  }
+}
+
+void WindowManager::OnCreateNotify(const XCreateWindowEvent&amp; e) {}
+</code></pre>
+<h2 id="configuringanewlycreatedwindow">Configuring a Newly Created Window</h2>
+<p>At this stage, the application can configure the window to set its initial size, position, or other attributes. To do so, the application would invoke <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a>, which would send a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> event to the window manager. However, since the window is still invisible, the window manager doesn’t need to care and can grant such requests without modification by invoking <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> itself with the same parameters.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ConfigureRequest:
+        OnConfigureRequest(e.xconfigurerequest);
+        break;
+      ...
+}
+
+void WindowManager::OnConfigureRequest(const XConfigureRequestEvent&amp; e) {
+  XWindowChanges changes;
+  // Copy fields from e to changes.
+  changes.x = e.x;
+  changes.y = e.y;
+  changes.width = e.width;
+  changes.height = e.height;
+  changes.border_width = e.border_width;
+  changes.sibling = e.above;
+  changes.stack_mode = e.detail;
+  // Grant request by calling XConfigureWindow().
+  XConfigureWindow(display_, e.window, e.value_mask, &amp;changes);
+  LOG(INFO) &lt;&lt; &quot;Resize &quot; &lt;&lt; e.window &lt;&lt; &quot; to &quot; &lt;&lt; Size&lt;int&gt;(e.width, e.height);
+}
+</code></pre>
+<h2 id="mappingawindow">Mapping a Window</h2>
+<p>To make the window finally visible on screen, the client application will call <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a> to <em>map</em> it. This sends a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event to the window manager. As noted earlier, at this point, the window is still not yet visible, as it’s up to the window manager to actually make it so. This is probably the most important event in our discussion, as this is where a window manager would usually start really managing a window.</p>
+<p>A reparenting window manager would typically respond to a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> for a client application window <em>w</em> with the following actions:</p>
+<ol>
+<li>
+<p>Create a frame window <em>f</em>, perhaps with borders and window decoration (e.g. title, minimize / maximize / close buttons).</p>
+</li>
+<li>
+<p>Register for substructure redirect on <em>f</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XSelectInput.3.html"><code>XSelectInput()</code></a>. Recall that substructure redirect only applies to direct child windows, so after reparenting, the substructure redirect previously registered on the root window would no longer apply to <em>w</em>, hence this step.</p>
+</li>
+<li>
+<p>Make <em>w</em> a child of <em>f</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>.</p>
+</li>
+<li>
+<p>Render <em>f</em> and <em>w</em> with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a>.</p>
+</li>
+<li>
+<p>Register for mouse or keyboard shortcuts on <em>w</em> and/or <em>f</em>.</p>
+</li>
+</ol>
+<p>The example implementation in <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> will create a very simple frame window that has the same size as the client window, but with a 3px red border:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case MapRequest:
+        OnMapRequest(e.xmaprequest);
+        break;
+      ...
+}
+
+void WindowManager::OnMapRequest(const XMapRequestEvent&amp; e) {
+  // 1. Frame or re-frame window.
+  Frame(e.window);
+  // 2. Actually map window.
+  XMapWindow(display_, e.window);
+}
+
+void WindowManager::Frame(Window w) {
+  // Visual properties of the frame to create.
+  const unsigned int BORDER_WIDTH = 3;
+  const unsigned long BORDER_COLOR = 0xff0000;
+  const unsigned long BG_COLOR = 0x0000ff;
+
+  // 1. Retrieve attributes of window to frame.
+  XWindowAttributes x_window_attrs;
+  CHECK(XGetWindowAttributes(display_, w, &amp;x_window_attrs));
+
+  // 2. TODO - see Framing Existing Top-Level Windows section below.
+
+  // 3. Create frame.
+  const Window frame = XCreateSimpleWindow(
+      display_,
+      root_,
+      x_window_attrs.x,
+      x_window_attrs.y,
+      x_window_attrs.width,
+      x_window_attrs.height,
+      BORDER_WIDTH,
+      BORDER_COLOR,
+      BG_COLOR);
+  // 3. Select events on frame.
+  XSelectInput(
+      display_,
+      frame,
+      SubstructureRedirectMask | SubstructureNotifyMask);
+  // 4. Add client to save set, so that it will be restored and kept alive if we
+  // crash.
+  XAddToSaveSet(display_, w);
+  // 5. Reparent client window.
+  XReparentWindow(
+      display_,
+      w,
+      frame,
+      0, 0);  // Offset of client window within frame.
+  // 6. Map frame.
+  XMapWindow(display_, frame);
+  // 7. Save frame handle.
+  clients_[w] = frame;
+  // 8. Grab events for window management actions on client window.
+  //   a. Move windows with alt + left button.
+  XGrabButton(...);
+  //   b. Resize windows with alt + right button.
+  XGrabButton(...);
+  //   c. Kill windows with alt + f4.
+  XGrabKey(...);
+  //   d. Switch windows with alt + tab.
+  XGrabKey(...);
+
+  LOG(INFO) &lt;&lt; &quot;Framed window &quot; &lt;&lt; w &lt;&lt; &quot; [&quot; &lt;&lt; frame &lt;&lt; &quot;]&quot;;
+}
+</code></pre>
+<p>The outline of the code should be fairly clear following our discussion. A few additional points to note:</p>
+<ul>
+<li>
+<p>Regarding the <em>save-set</em> and <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"><code>XAddToSaveSet()</code></a>:</p>
+<blockquote>
+<p>The save-set is a list of windows, usually maintained by the window manager, but including only windows created by other clients. If the window manager dies, all windows listed in the save-set will be reparented back to their closest living ancestor if they were reparented in the first place and mapped if the window manager has unmapped them so that it could map an icon.</p>
+<p>The save-set is necessary because the window manager might not exit normally. The user might kill it with CTRL-C if it is running in the foreground, or more likely, the user might get the process number and kill it. Actually, the actions of the save-set are performed even if the window manager exits normally, so less code is needed since the save-set does the cleaning up.</p>
+<p>Window managers almost always place in the save-set all the windows they reparent or iconify, using <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XAddToSaveSet.3.html"><code>XAddToSaveSet()</code></a>.</p>
+<p>Windows are automatically removed from the save-set when they are destroyed.</p>
+<p>—  Xlib Programming Manual §16.4</p>
+</blockquote>
+</li>
+<li>
+<p>When our window manager creates a frame window (step 2 in the example code), it will also trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> event for the frame window. It will ignore it just like it ignores other <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XCreateWindowEvent.3.html"><code>CreateNotify</code></a> events as discussed earlier.</p>
+</li>
+<li>
+<p>When our window manager calls <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a> in step 5 in the example code, it will trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event, which it will ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ReparentNotify:
+        OnReparentNotify(e.xreparent);
+        break;
+      ...
+}
+
+void WindowManager::OnReparentNotify(const XReparentEvent&amp; e) {}
+</code></pre>
+</li>
+<li>
+<p>When our window manager calls <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a> to map the frame window (step 6 in the example code), the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event. Our window manager will later receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"><code>MapNotify</code></a> event, which it can ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case MapNotify:
+        OnMapNotify(e.xmap);
+        break;
+      ...
+}
+
+void WindowManager::OnMapNotify(const XMapEvent&amp; e) {}
+</code></pre>
+</li>
+</ul>
+<h2 id="configuringamappedwindow">Configuring a Mapped Window</h2>
+<p>A client application can configure a window that is currently visible, again with the <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> function. For example, an application may want to resize a window to better accomodate its contents. When a reparenting window manager receives the resulting <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> and decides to grant the request, it additionally needs to resize / reposition the corresponding frame window and any window decorations.</p>
+<pre><code>void WindowManager::OnConfigureRequest(const XConfigureRequestEvent&amp; e) {
+  XWindowChanges changes;
+  // Copy fields from e to changes.
+  ...
+  if (clients_.count(e.window)) {
+    const Window frame = clients_[e.window];
+    XConfigureWindow(display_, frame, e.value_mask, &amp;changes);
+    LOG(INFO) &lt;&lt; &quot;Resize [&quot; &lt;&lt; frame &lt;&lt; &quot;] to &quot; &lt;&lt; Size&lt;int&gt;(e.width, e.height);
+  }
+  // Grant request by calling XConfigureWindow().
+  ...
+}
+</code></pre>
+<p>When our window manager re-configures the frame window with the <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XConfigureWindow.3.html"><code>XConfigureWindow()</code></a> call above, the X server knows that the action originates from the current window manager, and will execute it directly instead of redirecting it back as a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureRequestEvent.3.html"><code>ConfigureRequest</code></a> event. Our window manager will then receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XConfigureEvent.3.html"><code>ConfigureNotify</code></a> event, which it will ignore:</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case ConfigureNotify:
+        OnConfigureNotify(e.xconfigure);
+        break;
+      ...
+}
+
+void WindowManager::OnConfigureNotify(const XConfigureEvent&amp; e) {}
+</code></pre>
+<h2 id="unmappingawindow">Unmapping a Window</h2>
+<p>When a client application <em>unmaps</em> (i.e. hides) a window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"><code>XUnmapWindow()</code></a>, for example in response to the user exiting or minimizing the application, the window manager will receive a <code>UnmapNotify</code> event. Unlike the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> event, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event is delivered to the window manager after the fact, and the window manager can only respond to it, not intercept it.</p>
+<p>A reparenting window manager will typically want to reverse the actions it performed in response to <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a>. In other words, it would reparent the client window back to the root window, and destroy the corresponding frame window.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case UnmapNotify:
+        OnUnmapNotify(e.xunmap);
+        break;
+      ...
+}
+
+void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
+  // If the window is a client window we manage, unframe it upon UnmapNotify. We
+  // need the check because we will receive an UnmapNotify event for a frame
+  // window we just destroyed ourselves.
+  if (!clients_.count(e.window)) {
+    LOG(INFO) &lt;&lt; &quot;Ignore UnmapNotify for non-client window &quot; &lt;&lt; e.window;
+    return;
+  }
+
+  Unframe(e.window);
+}
+
+void WindowManager::Unframe(Window w) {
+  // We reverse the steps taken in Frame().
+  const Window frame = clients_[w];
+  // 1. Unmap frame.
+  XUnmapWindow(display_, frame);
+  // 2. Reparent client window back to root window.
+  XReparentWindow(
+      display_,
+      w,
+      root_,
+      0, 0);  // Offset of client window within root.
+  // 3. Remove client window from save set, as it is now unrelated to us.
+  XRemoveFromSaveSet(display_, w);
+  // 4. Destroy frame.
+  XDestroyWindow(display_, frame);
+  // 5. Drop reference to frame handle.
+  clients_.erase(w);
+
+  LOG(INFO) &lt;&lt; &quot;Unframed window &quot; &lt;&lt; w &lt;&lt; &quot; [&quot; &lt;&lt; frame &lt;&lt; &quot;]&quot;;
+}
+</code></pre>
+<p>A few additional points to note:</p>
+<ul>
+<li>
+<p>When our window manager unmaps the frame window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUnmapWindow.3.html"><code>XUnmapWindow()</code></a> in step 1 in the example code above, it will again receive a corresponding <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event. This is the reason why the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event handler needs to check that the unmapped window is an actual client window.</p>
+</li>
+<li>
+<p>When our window manager makes the client window a direct child of the root window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a> in step 2 above, it will receive a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event. As discussed in the <a href="#mapping-a-window">Mapping a Window</a> section above, this <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a> event will be ignored.</p>
+</li>
+<li>
+<p>When our window manager destroys the frame window with <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"><code>XDestroyWindow()</code></a> in step 4, it will trigger a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"><code>DestroyNotify</code></a> event. This event will also be ignored, as shown in the next section.</p>
+</li>
+</ul>
+<p>At this point, the client window has become invisible, but not yet destroyed. It can be displayed again with a call to <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XMapWindow.3.html"><code>XMapWindow()</code></a>, which would take us back to the <a href="#mapping-a-window">Mapping a Window</a> step. It could also be reconfigured in this state, which would take us back to the <a href="#configuring-a-newly-created-window">Configuring a Newly Created Window</a> step.</p>
+<h2 id="destroyingawindow">Destroying a Window</h2>
+<p>When a client application exits or no longer needs a window, it will call <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XDestroyWindow.3.html"><code>XDestroyWindow()</code></a> to dispose of the window. This triggers a <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XDestroyWindowEvent.3.html"><code>DestroyNotify</code></a> event. In our case, there’s nothing we need to do in response.</p>
+<pre><code>void WindowManager::Run() {
+      ...
+      case DestroyNotify:
+        OnDestroyNotify(e.xdestroywindow);
+        break;
+      ...
+}
+
+void WindowManager::OnDestroyNotify(const XDestroyWindowEvent&amp; e) {}
+</code></pre>
+<h2 id="framingexistingtoplevelwindows">Framing Existing Top-Level Windows</h2>
+<p>Now that we’ve walked through the life cycle of a client window, from creation to destruction, let’s turn our attention to the problem of existing top-level windows.</p>
+<p>You may recall from <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I</a> that X applications in general run just fine without a window manager. Depending on how an X session is started (e.g. <code>xinitrc</code>), by the time a window manager starts, any number of windows may have already been created by other applications. Additionally, the user can kill a running window manager and replace it with a different window manager, without affecting windows from other applications.</p>
+<p>Therefore, when our window manager starts up, it needs to handle any existing top-level windows that are already mapped. As a reparenting window manager, it will invoke the same <code>Frame()</code> function on such windows as if these windows are being mapped for the first time:</p>
+<pre><code>void WindowManager::Run() {
+  // 1. Initialization.
+  //   a. Select events on root window. Use a special error handler so we can
+  //   exit gracefully if another window manager is already running.
+  ...
+  //   b. Set error handler.
+  ...
+  //   c. Grab X server to prevent windows from changing under us while we
+  //   frame them.
+  XGrabServer(display_);
+  //   d. Frame existing top-level windows.
+  //     i. Query existing top-level windows.
+  Window returned_root, returned_parent;
+  Window* top_level_windows;
+  unsigned int num_top_level_windows;
+  CHECK(XQueryTree(
+      display_,
+      root_,
+      &amp;returned_root,
+      &amp;returned_parent,
+      &amp;top_level_windows,
+      &amp;num_top_level_windows));
+  CHECK_EQ(returned_root, root_);
+  //     ii. Frame each top-level window.
+  for (unsigned int i = 0; i &lt; num_top_level_windows; ++i) {
+    Frame(top_level_windows[i], true /* was_created_before_window_manager */);
+  }
+  //     iii. Free top-level window array.
+  XFree(top_level_windows);
+  //   e. Ungrab X server.
+  XUngrabServer(display_);
+
+  // 2. Main event loop.
+  ...
+}
+
+void WindowManager::OnMapRequest(const XMapRequestEvent&amp; e) {
+  // 1. Frame or re-frame window.
+  Frame(e.window, false /* was_created_before_window_manager */);
+  ...
+}
+
+void WindowManager::Frame(Window w, bool was_created_before_window_manager) {
+  ...
+  // 1. Retrieve attributes of window to frame.
+  ...
+  // 2. If window was created before window manager started, we should frame
+  // it only if it is visible and doesn't set override_redirect.
+  if (was_created_before_window_manager) {
+    if (x_window_attrs.override_redirect ||
+        x_window_attrs.map_state != IsViewable) {
+      return;
+    }
+  }
+  // 3. Create frame.
+  ...
+}
+
+void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
+  ...
+
+  // Ignore event if it is triggered by reparenting a window that was mapped
+  // before the window manager started.
+  //
+  // Since we receive UnmapNotify events from the SubstructureNotify mask, the
+  // event attribute specifies the parent window of the window that was
+  // unmapped. This means that an UnmapNotify event from a normal client window
+  // should have this attribute set to a frame window we maintain. Only an
+  // UnmapNotify event triggered by reparenting a pre-existing window will have
+  // this attribute set to the root window.
+  if (e.event == root_) {
+    LOG(INFO) &lt;&lt; &quot;Ignore UnmapNotify for reparented pre-existing window &quot;
+              &lt;&lt; e.window;
+    return;
+  }
+
+  Unframe(e.window);
+}
+</code></pre>
+<p>Some additional things to note:</p>
+<ul>
+<li>
+<p>You may notice that the process of framing existing top-level windows is guarded by <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XGrabServer.3.html"><code>XGrabServer()</code></a> and <a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XUngrabServer.3.html"><code>XUngrabServer()</code></a>. From the <em>Xlib Programming Manual</em>:</p>
+<blockquote>
+<p>These functions can be used to control processing of output on other connections by the window system server. While the server is grabbed, no processing of requests or close downs on any other connection will occur.</p>
+<p>—  Xlib Programming Manual §9.5</p>
+</blockquote>
+<p>By <em>grabbing</em> the X server, our window manager ensures that, between the time when it fetches the list of existing top-level windows and when it finishes framing them, no other application can interfere and mess up our state: no new windows can be created, and no existing windows can be modified or destroyed.</p>
+</li>
+<li>
+<p>The <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"><code>override_redirect</code></a> attribute, if set to true, indicates that a window should not be managed by window managers. From the <em>Xlib Programming Manual</em>:</p>
+<blockquote>
+<p>To control window placement or to add decoration, a window manager often needs to intercept (redirect) any map or configure request. Pop-up windows, however, often need to be mapped without a window manager getting in the way. […]</p>
+<p>The override-redirect flag specifies whether map and configure requests on this window should override a <code>SubstructureRedirectMask</code> on the parent. You can set the override-redirect flag to True or False (default). Window managers use this information to avoid tampering with pop-up windows […].</p>
+<p>—  Xlib Programming Manual §3.2.8</p>
+</blockquote>
+<p>The reason our window manager doesn’t need to check for this attribute except at start up is that the X server knows not to redirect events from such windows:</p>
+<blockquote>
+<p>The window manager […] will normally ignore windows that are mapped with their <code>override_redirect</code> attribute set, since no *Request events will be generated for them.</p>
+<p>—  Xlib Programming Manual §16.3</p>
+</blockquote>
+</li>
+<li>
+<p>The <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XGetWindowAttributes.3.html"><code>map_state</code></a> attribute indicates whether a window is currently visible (mapped). When <code>Frame()</code> is invoked for pre-existing windows during start up, we want to ignore windows that are currently unmapped. However, when <code>Frame()</code> is invoked during the event loop as part of the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapRequestEvent.3.html"><code>MapRequest</code></a> handler, we know that the client window to be framed is necessarily still unmapped, as our window manager wouldn’t have granted the request yet.</p>
+</li>
+<li>
+<p>You might be wondering why an additional check for <code>e.event == root_</code> is needed in the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> handler. It turns out that reparenting an already mapped window (<a href="http://manpages.ubuntu.com/manpages/xenial/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>) will trigger a pair of <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> and <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XMapEvent.3.html"><code>MapNotify</code></a> events in addition to <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XReparentEvent.3.html"><code>ReparentNotify</code></a>. Therefore, when we enter into the event loop, we will receive an <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event for every pre-existing top-level window we reparented. We can distinguish these events by their <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute, which in this case represents the parent of the client window. Normally, when a client window we already framed is unmapped, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute would be its frame window. But when a pre-existing window is reparented at start up, the <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>event</code></a> attribute in the resulting <a href="http://manpages.ubuntu.com/manpages/xenial/man3/XUnmapEvent.3.html"><code>UnmapNotify</code></a> event will be its original parent - i.e., the root window.</p>
+</li>
+</ul>
+<h1 id="whatsnext">What’s Next</h1>
+<p>At this point, we have a basic but functional reparenting window manager that will correctly handle the life cycle of windows. If you strip out window decorations, shortcuts and fancy UI, the core structure of every X window manager will quite closely resemble what we have here.</p>
+<p>In our next installment, we will improve the user-facing functionality of our window manager by adding ways to move, resize and close windows. In the meantime, you’re more than welcome to check out the code for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> on GitHub.</p>
+<blockquote>
+<ul>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+</li>
+<li>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>Part III: Interaction with Application Windows</strong></a></p>
+</li>
+</ul>
+</blockquote>
+<!--kg-card-end: markdown-->
+	<div id="social-bar">
+	<ul class="rrssb-buttons clearfix">
+      <li class="email">
+          <a href="mailto:?subject=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20III)&amp;body=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
+                  </svg>
+              </span>
+              <span class="text">Email</span>
+          </a>
+      </li>
+      <li class="facebook">
+          <a href="https://www.facebook.com/sharer/sharer.php?u=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path d="M27.825,4.783c0-2.427-2.182-4.608-4.608-4.608H4.783c-2.422,0-4.608,2.182-4.608,4.608v18.434 c0,2.427,2.181,4.608,4.608,4.608H14V17.379h-3.379v-4.608H14v-1.795c0-3.089,2.335-5.885,5.192-5.885h3.718v4.608h-3.726 c-0.408,0-0.884,0.492-0.884,1.236v1.836h4.609v4.608h-4.609v10.446h4.916c2.422,0,4.608-2.188,4.608-4.608V4.783z"/>
+                  </svg>
+              </span>
+              <span class="text">Facebook</span>
+          </a>
+      </li>
+			<li class="twitter">
+          <a href="http://twitter.com/home?status=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20III)%20https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+		                  <path d="M24.253,8.756C24.689,17.08,18.297,24.182,9.97,24.62c-3.122,0.162-6.219-0.646-8.861-2.32 c2.703,0.179,5.376-0.648,7.508-2.321c-2.072-0.247-3.818-1.661-4.489-3.638c0.801,0.128,1.62,0.076,2.399-0.155 C4.045,15.72,2.215,13.6,2.115,11.077c0.688,0.275,1.426,0.407,2.168,0.386c-2.135-1.65-2.729-4.621-1.394-6.965 C5.575,7.816,9.54,9.84,13.803,10.071c-0.842-2.739,0.694-5.64,3.434-6.482c2.018-0.623,4.212,0.044,5.546,1.683 c1.186-0.213,2.318-0.662,3.329-1.317c-0.385,1.256-1.247,2.312-2.399,2.942c1.048-0.106,2.069-0.394,3.019-0.851 C26.275,7.229,25.39,8.196,24.253,8.756z"/>
+                  </svg>
+              </span>
+              <span class="text">Twitter</span>
+          </a>
+      </li>
+			<li class="linkedin">
+          <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/&amp;title=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20III)&amp;summary=In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in..." class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <path d="M25.424,15.887v8.447h-4.896v-7.882c0-1.979-0.709-3.331-2.48-3.331c-1.354,0-2.158,0.911-2.514,1.803 c-0.129,0.315-0.162,0.753-0.162,1.194v8.216h-4.899c0,0,0.066-13.349,0-14.731h4.899v2.088c-0.01,0.016-0.023,0.032-0.033,0.048 h0.033V11.69c0.65-1.002,1.812-2.435,4.414-2.435C23.008,9.254,25.424,11.361,25.424,15.887z M5.348,2.501 c-1.676,0-2.772,1.092-2.772,2.539c0,1.421,1.066,2.538,2.717,2.546h0.032c1.709,0,2.771-1.132,2.771-2.546 C8.054,3.593,7.019,2.501,5.343,2.501H5.348z M2.867,24.334h4.897V9.603H2.867V24.334z"/>
+                  </svg>
+              </span>
+              <span class="text">LinkedIn</span>
+          </a>
+      </li>
+      <li class="tumblr">
+					<script>
+						document.write('<a href="http://www.tumblr.com/share?v=3&amp;u=' + encodeURIComponent('https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/') + '&amp;t=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20III)" class="popup">');
+					</script>
+              <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+											<path d="M18.02 21.842c-2.029 0.052-2.422-1.396-2.439-2.446v-7.294h4.729V7.874h-4.71V1.592c0 0-3.653 0-3.714 0 s-0.167 0.053-0.182 0.186c-0.218 1.935-1.144 5.33-4.988 6.688v3.637h2.927v7.677c0 2.8 1.7 6.7 7.3 6.6 c1.863-0.03 3.934-0.795 4.392-1.453l-1.22-3.539C19.595 21.6 18.7 21.8 18 21.842z"/>
+									</svg>
+              </span>
+              <span class="text">Tumblr</span>
+          <script>document.write('</a>');</script>
+      </li>
+      <li class="reddit">
+          <a href="http://www.reddit.com/submit?url=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">
+              <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+											<g>
+													<path d="M11.794 15.316c0-1.029-0.835-1.895-1.866-1.895c-1.03 0-1.893 0.865-1.893 1.895s0.863 1.9 1.9 1.9 C10.958 17.2 11.8 16.3 11.8 15.316z"/>
+													<path d="M18.1 13.422c-1.029 0-1.895 0.864-1.895 1.895c0 1 0.9 1.9 1.9 1.865c1.031 0 1.869-0.836 1.869-1.865 C19.969 14.3 19.1 13.4 18.1 13.422z"/>
+													<path d="M17.527 19.791c-0.678 0.678-1.826 1.006-3.514 1.006c-0.004 0-0.009 0-0.014 0c-0.004 0-0.01 0-0.015 0 c-1.686 0-2.834-0.328-3.51-1.005c-0.264-0.265-0.693-0.265-0.958 0c-0.264 0.265-0.264 0.7 0 1 c0.943 0.9 2.4 1.4 4.5 1.402c0.005 0 0 0 0 0c0.005 0 0 0 0 0c2.066 0 3.527-0.459 4.47-1.402 c0.265-0.264 0.265-0.693 0.002-0.958C18.221 19.5 17.8 19.5 17.5 19.791z"/>
+													<path d="M27.707 13.267c0-1.785-1.453-3.237-3.236-3.237c-0.793 0-1.518 0.287-2.082 0.761c-2.039-1.295-4.646-2.069-7.438-2.219 l1.483-4.691l4.062 0.956c0.071 1.4 1.3 2.6 2.7 2.555c1.488 0 2.695-1.208 2.695-2.695C25.881 3.2 24.7 2 23.2 2 c-1.059 0-1.979 0.616-2.42 1.508l-4.633-1.091c-0.344-0.081-0.693 0.118-0.803 0.455l-1.793 5.7 C10.548 8.6 7.7 9.4 5.6 10.75C5.006 10.3 4.3 10 3.5 10.029c-1.785 0-3.237 1.452-3.237 3.2 c0 1.1 0.6 2.1 1.4 2.69c-0.04 0.272-0.061 0.551-0.061 0.831c0 2.3 1.3 4.4 3.7 5.9 c2.299 1.5 5.3 2.3 8.6 2.325c3.228 0 6.271-0.825 8.571-2.325c2.387-1.56 3.7-3.66 3.7-5.917 c0-0.26-0.016-0.514-0.051-0.768C27.088 15.5 27.7 14.4 27.7 13.267z M23.186 3.355c0.74 0 1.3 0.6 1.3 1.3 c0 0.738-0.6 1.34-1.34 1.34s-1.342-0.602-1.342-1.34C21.844 4 22.4 3.4 23.2 3.355z M1.648 13.3 c0-1.038 0.844-1.882 1.882-1.882c0.31 0 0.6 0.1 0.9 0.209c-1.049 0.868-1.813 1.861-2.26 2.9 C1.832 14.2 1.6 13.8 1.6 13.267z M21.773 21.57c-2.082 1.357-4.863 2.105-7.831 2.105c-2.967 0-5.747-0.748-7.828-2.105 c-1.991-1.301-3.088-3-3.088-4.782c0-1.784 1.097-3.484 3.088-4.784c2.081-1.358 4.861-2.106 7.828-2.106 c2.967 0 5.7 0.7 7.8 2.106c1.99 1.3 3.1 3 3.1 4.784C24.859 18.6 23.8 20.3 21.8 21.57z M25.787 14.6 c-0.432-1.084-1.191-2.095-2.244-2.977c0.273-0.156 0.59-0.245 0.928-0.245c1.035 0 1.9 0.8 1.9 1.9 C26.354 13.8 26.1 14.3 25.8 14.605z"/>
+											</g> 
+									</svg>    
+              </span>
+              <span class="text">Reddit</span>
+          </a>
+      </li>
+      <!--
+      <li class="googleplus">
+          <a href="https://plus.google.com/share?url=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" class="popup">
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+                      <g>
+                          <path d="M14.703,15.854l-1.219-0.948c-0.372-0.308-0.88-0.715-0.88-1.459c0-0.748,0.508-1.223,0.95-1.663 c1.42-1.119,2.839-2.309,2.839-4.817c0-2.58-1.621-3.937-2.399-4.581h2.097l2.202-1.383h-6.67c-1.83,0-4.467,0.433-6.398,2.027 C3.768,4.287,3.059,6.018,3.059,7.576c0,2.634,2.022,5.328,5.604,5.328c0.339,0,0.71-0.033,1.083-0.068 c-0.167,0.408-0.336,0.748-0.336,1.324c0,1.04,0.551,1.685,1.011,2.297c-1.524,0.104-4.37,0.273-6.467,1.562 c-1.998,1.188-2.605,2.916-2.605,4.137c0,2.512,2.358,4.84,7.289,4.84c5.822,0,8.904-3.223,8.904-6.41 c0.008-2.327-1.359-3.489-2.829-4.731H14.703z M10.269,11.951c-2.912,0-4.231-3.765-4.231-6.037c0-0.884,0.168-1.797,0.744-2.511 c0.543-0.679,1.489-1.12,2.372-1.12c2.807,0,4.256,3.798,4.256,6.242c0,0.612-0.067,1.694-0.845,2.478 c-0.537,0.55-1.438,0.948-2.295,0.951V11.951z M10.302,25.609c-3.621,0-5.957-1.732-5.957-4.142c0-2.408,2.165-3.223,2.911-3.492 c1.421-0.479,3.25-0.545,3.555-0.545c0.338,0,0.52,0,0.766,0.034c2.574,1.838,3.706,2.757,3.706,4.479 c-0.002,2.073-1.736,3.665-4.982,3.649L10.302,25.609z"/>
+                          <polygon points="23.254,11.89 23.254,8.521 21.569,8.521 21.569,11.89 18.202,11.89 18.202,13.604 21.569,13.604 21.569,17.004 23.254,17.004 23.254,13.604 26.653,13.604 26.653,11.89"/>
+                      </g>  
+                  </svg>
+              </span>
+              <span class="text">Google+</span>
+          </a>
+      </li>
+      -->
+      <li class="pinterest">
+          <script>
+						var imgurl = "https://jichu4n.com/content/images/2018/10/me-3-small.jpg";
+						var firstimg = document.getElementsByClassName("post tag-window-manager tag-technical-notes no-image")[0].getElementsByTagName("img")[0];
+						if (firstimg !== undefined) {
+							imgurl = firstimg.src;
+						} 
+						document.write('<a href="http://pinterest.com/pin/create/button/?url=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/&amp;media=' + imgurl + '&amp;description=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20III)" class="popup">');
+					</script>
+              <span class="icon">
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
+		                  <path d="M14.021,1.57C6.96,1.57,1.236,7.293,1.236,14.355c0,7.062,5.724,12.785,12.785,12.785c7.061,0,12.785-5.725,12.785-12.785 C26.807,7.294,21.082,1.57,14.021,1.57z M15.261,18.655c-1.161-0.09-1.649-0.666-2.559-1.219c-0.501,2.626-1.113,5.145-2.925,6.458 c-0.559-3.971,0.822-6.951,1.462-10.116c-1.093-1.84,0.132-5.545,2.438-4.632c2.837,1.123-2.458,6.842,1.099,7.557 c3.711,0.744,5.227-6.439,2.925-8.775c-3.325-3.374-9.678-0.077-8.897,4.754c0.19,1.178,1.408,1.538,0.489,3.168 C7.165,15.378,6.53,13.7,6.611,11.462c0.131-3.662,3.291-6.227,6.46-6.582c4.007-0.448,7.771,1.474,8.29,5.239 c0.579,4.255-1.816,8.865-6.102,8.533L15.261,18.655z"/>
+                  </svg>
+              </span>
+              <span class="text">Pinterest</span>
+          <script>document.write('</a>');</script>
+      </li>
+      <li class="pocket">
+          <a href="https://getpocket.com/save?url=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/"  class="popup">
+              <span class="icon">
+                  <svg width="32px" height="28px" viewBox="0 0 32 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+                      <path d="M28.7817528,0.00172488695 C30.8117487,0.00431221738 31.9749312,1.12074529 31.9644402,3.10781507 C31.942147,6.67703739 32.1336065,10.2669583 31.8057648,13.8090137 C30.7147076,25.5813672 17.2181194,31.8996281 7.20714461,25.3808491 C2.71833574,22.4571656 0.196577202,18.3122624 0.0549495772,12.9357897 C-0.0342233715,9.5774348 0.00642900214,6.21519891 0.0300336062,2.85555035 C0.0405245414,1.1129833 1.21157517,0.0146615391 3.01995012,0.00819321302 C7.34746087,-0.00603710433 11.6775944,0.00431221738 16.0064164,0.00172488695 C20.2644248,0.00172488695 24.5237444,-0.00215610869 28.7817528,0.00172488695 L28.7817528,0.00172488695 Z M8.64885184,7.85611511 C7.38773662,7.99113854 6.66148108,8.42606978 6.29310958,9.33228474 C5.90114134,10.2969233 6.17774769,11.1421181 6.89875951,11.8276216 C9.35282156,14.161969 11.8108164,16.4924215 14.2976518,18.7943114 C15.3844131,19.7966007 16.5354102,19.7836177 17.6116843,18.7813283 C20.0185529,16.5495467 22.4070683,14.2982907 24.7824746,12.0327533 C25.9845979,10.8850542 26.1012707,9.56468083 25.1469132,8.60653379 C24.1361858,7.59255976 22.8449191,7.6743528 21.5890476,8.85191291 C19.9936451,10.3488554 18.3680912,11.8172352 16.8395462,13.3777945 C16.1342655,14.093159 15.7200114,14.0048744 15.0566806,13.3440386 C13.4599671,11.7484252 11.8081945,10.2060421 10.1262706,8.70001155 C9.65564653,8.27936164 9.00411403,8.05345704 8.64885184,7.85611511 L8.64885184,7.85611511 L8.64885184,7.85611511 Z"></path>
+                  </svg>
+              </span>
+              <span class="text">Pocket</span>
+          </a>
+      </li> 
+  </ul>	
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/assets/js/rrssb.min.js?v=8de4e4d448"></script>
+  <div id="comments">
+	<div id="disqus_thread"></div>
+	<script>
+		(function() {
+		var d = document, s = d.createElement('script');
+		s.src = 'https://cjix.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</article>  
+
+		</main>
+		<footer id="footer">
+			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved. Powered by <a href="http://ghost.org" target="_blank">Ghost</a>.</section>
+		</footer>
+	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	</body>
+</html>
