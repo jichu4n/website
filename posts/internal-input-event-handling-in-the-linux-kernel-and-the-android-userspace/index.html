@@ -7,7 +7,7 @@
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=8de4e4d448">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=996ebbb85d">
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -16,7 +16,7 @@
 				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 			<![endif]-->
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=8de4e4d448">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=996ebbb85d">
 	<meta property="og:title" content="Internal input event handling in the Linux kernel and the Android userspace" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="While figuring out hardware buttons for my NITDroid project, I had the opportunity of exploring the way Linux and Android handle input events internally before passing them through to the user application. This post traces the propagation of an input event from the Linux kernel through the Android userspace as..."/>
@@ -593,12 +593,13 @@ bool EventHub::getEvent(int32_t* outDeviceId, int32_t* outType,
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=8de4e4d448"></script>
+<script src="/assets/js/rrssb.min.js?v=996ebbb85d"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
 		(function() {
 		var d = document, s = d.createElement('script');
+                s.async = true;
 		s.src = 'https://cjix.disqus.com/embed.js';
 		s.setAttribute('data-timestamp', +new Date());
 		(d.head || d.body).appendChild(s);
