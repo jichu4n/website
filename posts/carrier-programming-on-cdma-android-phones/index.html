@@ -3,20 +3,25 @@
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
 	    <title>Carrier programming on CDMA Android phones</title>
+
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=4919defe1e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=995c88db1e">
+
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
 			<!--[if lt IE 9]>
-				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+							<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+							<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 			<![endif]-->
+
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=4919defe1e">
+
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=995c88db1e">
 	<meta property="og:title" content="Carrier programming on CDMA Android phones" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="Have you ever wondered how CDMA phones are programmed to a specific carrier for voice calls, SMS and data?  In the U.S., all major CDMA carriers operate on the same frequencies, which means that there is no inherent difference in hardware between phones sold by any of them, and..."/>
@@ -66,7 +71,9 @@
         "name": "Chuan Ji",
         "image": {
             "@type": "ImageObject",
-            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x"
+            "url": "//www.gravatar.com/avatar/e4ece9d358a3ec977c6f2b6d94a5f1b8?s=250&d=mm&r=x",
+            "width": 251,
+            "height": 251
         },
         "url": "https://jichu4n.com/author/chuan/",
         "sameAs": []
@@ -110,7 +117,8 @@
 </script>
 	</head>
 	<body class="post-template tag-android tag-technical-notes">
-		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+
+		<header id="header" >
 			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
@@ -136,6 +144,44 @@
   <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
   <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
 
+
+			<div class="header-bottom">
+				<div id="dark-mode-toggle-button" role="button">
+  <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
+</div>
+
+<script>
+  // Dark mode toggle button handler.
+  $(document).ready(function() {
+    $('#dark-mode-toggle-button').click(function() {
+      $(document.body).toggleClass('dark-mode');
+      localStorage.setItem('darkMode', JSON.stringify($(document.body).hasClass('dark-mode')));
+    });
+  });
+
+  // Initialize dark mode.
+  (function(){
+    var darkMode = null;
+    // Try parsing darkMode setting from localStorage.
+    var darkModeValue = localStorage.getItem('darkMode');
+    if (darkModeValue !== null) {
+      try {
+        darkMode = !!JSON.parse(darkModeValue);
+      } catch (err) {
+        // no-op
+      }
+    }
+    // Try system settings.
+    if (darkMode === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      darkMode = true;
+    }
+    // Apply to document.
+    if (darkMode) {
+      $(document.body).addClass('dark-mode');
+    }
+  })();
+</script>
+			</div>
 		</header>
 		<nav id="mobile-header">
   <ul class="nav-left">
@@ -153,6 +199,7 @@
     });
   });
 </script>
+
 		<main id="content">
 			<article id="5bc6d81060307a000159bd3b" class="post tag-android tag-technical-notes no-image">
 	<div class="post-stamp">November 15, 2012<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
@@ -312,7 +359,7 @@ ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=4919defe1e"></script>
+<script src="/assets/js/rrssb.min.js?v=995c88db1e"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
@@ -329,11 +376,15 @@ ro.cdma.homesystem=64,65,76,77,78,79,80,81,82,83
 </article>  
 
 		</main>
+
 		<footer id="footer">
 			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
 		</footer>
-	
-	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
+
+		
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+
 	</body>
 </html>

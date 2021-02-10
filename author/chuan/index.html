@@ -3,19 +3,24 @@
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
 	    <title>Chuan Ji - Chuan Ji</title>
+
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=4919defe1e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=995c88db1e">
+
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
 			<!--[if lt IE 9]>
-				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+							<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+							<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 			<![endif]-->
+
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 			
 	    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="canonical" href="https://jichu4n.com/author/chuan/" />
@@ -70,7 +75,8 @@
 </script>
 	</head>
 	<body class="author-template author-chuan">
-		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+
+		<header id="header" >
 			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
@@ -96,6 +102,44 @@
   <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
   <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
 
+
+			<div class="header-bottom">
+				<div id="dark-mode-toggle-button" role="button">
+  <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
+</div>
+
+<script>
+  // Dark mode toggle button handler.
+  $(document).ready(function() {
+    $('#dark-mode-toggle-button').click(function() {
+      $(document.body).toggleClass('dark-mode');
+      localStorage.setItem('darkMode', JSON.stringify($(document.body).hasClass('dark-mode')));
+    });
+  });
+
+  // Initialize dark mode.
+  (function(){
+    var darkMode = null;
+    // Try parsing darkMode setting from localStorage.
+    var darkModeValue = localStorage.getItem('darkMode');
+    if (darkModeValue !== null) {
+      try {
+        darkMode = !!JSON.parse(darkModeValue);
+      } catch (err) {
+        // no-op
+      }
+    }
+    // Try system settings.
+    if (darkMode === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      darkMode = true;
+    }
+    // Apply to document.
+    if (darkMode) {
+      $(document.body).addClass('dark-mode');
+    }
+  })();
+</script>
+			</div>
 		</header>
 		<nav id="mobile-header">
   <ul class="nav-left">
@@ -113,69 +157,176 @@
     });
   });
 </script>
+
 		<main id="content">
-			<section id="5bc6dbd460307a000159bd56" class="post tag-window-manager tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">How X Window Managers Work, And How To Write One (Part III)</a><span class="separator"> &middot; </span>February 2, 2017<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+			<hr>
+<section id="5bc6dbd460307a000159bd56" class="post tag-window-manager tag-technical-notes no-image">
+	<h3 class="post-title">
+		<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" class="title">How X Window Managers Work, And How To Write One (Part III)</a>
+		<div class="meta">
+			<span class="date">Feb 2, 2017</span><span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e46460307a000159bd9f" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon/">Flashing a Sprint Nexus S 4G to Verizon</a><span class="separator"> &middot; </span>November 11, 2015<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" class="title">Flashing a Sprint Nexus S 4G to Verizon</a>
+		<div class="meta">
+			<span class="date">Nov 11, 2015</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6df7260307a000159bd7f" class="post tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/setting-up-dkim-and-srs-in-postfix/">Setting Up DKIM And SRS In Postfix</a><span class="separator"> &middot; </span>December 9, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/setting-up-dkim-and-srs-in-postfix/" class="title">Setting Up DKIM And SRS In Postfix</a>
+		<div class="meta">
+			<span class="date">Dec 9, 2014</span><span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6de6560307a000159bd6f" class="post tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/">Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</a><span class="separator"> &middot; </span>November 6, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/" class="title">Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</a>
+		<div class="meta">
+			<span class="date">Nov 6, 2014</span><span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6d8e460307a000159bd41" class="post tag-python tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-to-add-custom-build-steps-and-commands-to-setuppy/">How To Add Custom Build Steps and Commands To setup.py</a><span class="separator"> &middot; </span>October 7, 2014<span class="taglist"> &middot; <a href="/tag/python/">Python</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-to-add-custom-build-steps-and-commands-to-setuppy/" class="title">How To Add Custom Build Steps and Commands To setup.py</a>
+		<div class="meta">
+			<span class="date">Oct 7, 2014</span><span class="taglist"> &middot; <a href="/tag/python/">Python</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6d9a160307a000159bd47" class="post tag-window-manager tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">How X Window Managers Work, And How To Write One (Part II)</a><span class="separator"> &middot; </span>June 8, 2014<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/" class="title">How X Window Managers Work, And How To Write One (Part II)</a>
+		<div class="meta">
+			<span class="date">Jun 8, 2014</span><span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e11f60307a000159bd91" class="post tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/debug-trap-and-prompt_command-in-bash/">DEBUG trap and PROMPT_COMMAND in Bash</a><span class="separator"> &middot; </span>June 8, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/debug-trap-and-prompt_command-in-bash/" class="title">DEBUG trap and PROMPT_COMMAND in Bash</a>
+		<div class="meta">
+			<span class="date">Jun 8, 2014</span><span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6cde4f21e630001a84ab4" class="post tag-window-manager tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">How X Window Managers Work, And How To Write One (Part I)</a><span class="separator"> &middot; </span>April 10, 2014<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" class="title">How X Window Managers Work, And How To Write One (Part I)</a>
+		<div class="meta">
+			<span class="date">Apr 10, 2014</span><span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e6bb60307a000159bdbc" class="post tag-web tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/the-most-popular-fonts-on-the-web-a-study/">The Most Popular Fonts On The Web: A Study</a><span class="separator"> &middot; </span>April 4, 2014<span class="taglist"> &middot; <a href="/tag/web/">Web</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/the-most-popular-fonts-on-the-web-a-study/" class="title">The Most Popular Fonts On The Web: A Study</a>
+		<div class="meta">
+			<span class="date">Apr 4, 2014</span><span class="taglist"> &middot; <a href="/tag/web/">Web</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6da5a60307a000159bd4f" class="post tag-python tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/python-multiprocessing-and-exceptions/">Python: Multiprocessing and Exceptions</a><span class="separator"> &middot; </span>March 10, 2014<span class="taglist"> &middot; <a href="/tag/python/">Python</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/python-multiprocessing-and-exceptions/" class="title">Python: Multiprocessing and Exceptions</a>
+		<div class="meta">
+			<span class="date">Mar 10, 2014</span><span class="taglist"> &middot; <a href="/tag/python/">Python</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e5ea60307a000159bdb1" class="post tag-c tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/c-access-specifiers-and-overriding/">C++: Access Specifiers and Overriding</a><span class="separator"> &middot; </span>March 1, 2014<span class="taglist"> &middot; <a href="/tag/c/">C++</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/c-access-specifiers-and-overriding/" class="title">C++: Access Specifiers and Overriding</a>
+		<div class="meta">
+			<span class="date">Mar 1, 2014</span><span class="taglist"> &middot; <a href="/tag/c/">C++</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6b58fa2b173000150bc2c" class="post tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-to-set-default-fonts-and-font-aliases-on-linux/">How To Set Default Fonts and Font Aliases on Linux</a><span class="separator"> &middot; </span>February 22, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-to-set-default-fonts-and-font-aliases-on-linux/" class="title">How To Set Default Fonts and Font Aliases on Linux</a>
+		<div class="meta">
+			<span class="date">Feb 22, 2014</span><span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e65560307a000159bdb7" class="post tag-python tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/unicode-io-and-locales-in-python/">Unicode I/O and Locales in Python</a><span class="separator"> &middot; </span>February 20, 2014<span class="taglist"> &middot; <a href="/tag/python/">Python</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/unicode-io-and-locales-in-python/" class="title">Unicode I/O and Locales in Python</a>
+		<div class="meta">
+			<span class="date">Feb 20, 2014</span><span class="taglist"> &middot; <a href="/tag/python/">Python</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e82f60307a000159bdc8" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/disabling-screen-off-animation-in-android/">Disabling Screen-Off Animation In Android</a><span class="separator"> &middot; </span>February 2, 2013<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/disabling-screen-off-animation-in-android/" class="title">Disabling Screen-Off Animation In Android</a>
+		<div class="meta">
+			<span class="date">Feb 2, 2013</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e1da60307a000159bd99" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/android-rooting-a-developers-guide/">Android Rooting: A Developer&#x27;s Guide</a><span class="separator"> &middot; </span>November 21, 2012<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/android-rooting-a-developers-guide/" class="title">Android Rooting: A Developer&#x27;s Guide</a>
+		<div class="meta">
+			<span class="date">Nov 21, 2012</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6d81060307a000159bd3b" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/carrier-programming-on-cdma-android-phones/">Carrier programming on CDMA Android phones</a><span class="separator"> &middot; </span>November 15, 2012<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/carrier-programming-on-cdma-android-phones/" class="title">Carrier programming on CDMA Android phones</a>
+		<div class="meta">
+			<span class="date">Nov 15, 2012</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e4fa60307a000159bda6" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/using-alsa-audio-drivers-in-android/">Using ALSA audio drivers in Android</a><span class="separator"> &middot; </span>October 23, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/using-alsa-audio-drivers-in-android/" class="title">Using ALSA audio drivers in Android</a>
+		<div class="meta">
+			<span class="date">Oct 23, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6dce560307a000159bd61" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/">How Rooting Works: A Technical Explanation of the Android Rooting Process</a><span class="separator"> &middot; </span>October 19, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/" class="title">How Rooting Works: A Technical Explanation of the Android Rooting Process</a>
+		<div class="meta">
+			<span class="date">Oct 19, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6dff560307a000159bd84" class="post tag-android tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/">Internal input event handling in the Linux kernel and the Android userspace</a><span class="separator"> &middot; </span>May 14, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/" class="title">Internal input event handling in the Linux kernel and the Android userspace</a>
+		<div class="meta">
+			<span class="date">May 14, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6dde060307a000159bd69" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change/">Prevent Android app from restarting on rotate / hardware keyboard state change</a><span class="separator"> &middot; </span>May 13, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change/" class="title">Prevent Android app from restarting on rotate / hardware keyboard state change</a>
+		<div class="meta">
+			<span class="date">May 13, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e58260307a000159bdab" class="post tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/shortening-paths-in-the-bash-prompt-with-prompt_dirtrim/">Shortening paths in the Bash prompt with PROMPT_DIRTRIM</a><span class="separator"> &middot; </span>May 10, 2011<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/shortening-paths-in-the-bash-prompt-with-prompt_dirtrim/" class="title">Shortening paths in the Bash prompt with PROMPT_DIRTRIM</a>
+		<div class="meta">
+			<span class="date">May 10, 2011</span><span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <nav class="pagination" role="pagination">
     
@@ -184,11 +335,15 @@
 </nav>
 
 		</main>
+
 		<footer id="footer">
 			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
 		</footer>
-	
-	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
+
+		
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+
 	</body>
 </html>

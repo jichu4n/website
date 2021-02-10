@@ -3,19 +3,24 @@
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
 	    <title>Android - Chuan Ji</title>
+
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=4919defe1e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=995c88db1e">
+
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
 			<!--[if lt IE 9]>
-				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+							<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+							<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 			<![endif]-->
+
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 			
 	    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="canonical" href="https://jichu4n.com/tag/android/" />
@@ -25,14 +30,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Android - Chuan Ji" />
     <meta property="og:url" content="https://jichu4n.com/tag/android/" />
-    <meta property="og:image" content="https://jichu4n.com/content/images/2018/10/cover-1.jpeg" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Android - Chuan Ji" />
     <meta name="twitter:url" content="https://jichu4n.com/tag/android/" />
-    <meta name="twitter:image" content="https://jichu4n.com/content/images/2018/10/cover-1.jpeg" />
     <meta name="twitter:site" content="@jichu4n" />
-    <meta property="og:image:width" content="876" />
-    <meta property="og:image:height" content="1638" />
     
     <script type="application/ld+json">
 {
@@ -84,7 +85,8 @@
 </script>
 	</head>
 	<body class="tag-template tag-android">
-		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+
+		<header id="header" >
 			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
@@ -110,6 +112,44 @@
   <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
   <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
 
+
+			<div class="header-bottom">
+				<div id="dark-mode-toggle-button" role="button">
+  <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
+</div>
+
+<script>
+  // Dark mode toggle button handler.
+  $(document).ready(function() {
+    $('#dark-mode-toggle-button').click(function() {
+      $(document.body).toggleClass('dark-mode');
+      localStorage.setItem('darkMode', JSON.stringify($(document.body).hasClass('dark-mode')));
+    });
+  });
+
+  // Initialize dark mode.
+  (function(){
+    var darkMode = null;
+    // Try parsing darkMode setting from localStorage.
+    var darkModeValue = localStorage.getItem('darkMode');
+    if (darkModeValue !== null) {
+      try {
+        darkMode = !!JSON.parse(darkModeValue);
+      } catch (err) {
+        // no-op
+      }
+    }
+    // Try system settings.
+    if (darkMode === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      darkMode = true;
+    }
+    // Apply to document.
+    if (darkMode) {
+      $(document.body).addClass('dark-mode');
+    }
+  })();
+</script>
+			</div>
 		</header>
 		<nav id="mobile-header">
   <ul class="nav-left">
@@ -127,31 +167,73 @@
     });
   });
 </script>
+
 		<main id="content">
 			<h1 class="post-title">Android</h1> 
+<hr>
 <section id="5bc6e46460307a000159bd9f" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon/">Flashing a Sprint Nexus S 4G to Verizon</a><span class="separator"> &middot; </span>November 11, 2015<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/flashing-a-sprint-nexus-s-4g-to-verizon/" class="title">Flashing a Sprint Nexus S 4G to Verizon</a>
+		<div class="meta">
+			<span class="date">Nov 11, 2015</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e82f60307a000159bdc8" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/disabling-screen-off-animation-in-android/">Disabling Screen-Off Animation In Android</a><span class="separator"> &middot; </span>February 2, 2013<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/disabling-screen-off-animation-in-android/" class="title">Disabling Screen-Off Animation In Android</a>
+		<div class="meta">
+			<span class="date">Feb 2, 2013</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e1da60307a000159bd99" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/android-rooting-a-developers-guide/">Android Rooting: A Developer&#x27;s Guide</a><span class="separator"> &middot; </span>November 21, 2012<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/android-rooting-a-developers-guide/" class="title">Android Rooting: A Developer&#x27;s Guide</a>
+		<div class="meta">
+			<span class="date">Nov 21, 2012</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6d81060307a000159bd3b" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/carrier-programming-on-cdma-android-phones/">Carrier programming on CDMA Android phones</a><span class="separator"> &middot; </span>November 15, 2012<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/carrier-programming-on-cdma-android-phones/" class="title">Carrier programming on CDMA Android phones</a>
+		<div class="meta">
+			<span class="date">Nov 15, 2012</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6e4fa60307a000159bda6" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/using-alsa-audio-drivers-in-android/">Using ALSA audio drivers in Android</a><span class="separator"> &middot; </span>October 23, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/using-alsa-audio-drivers-in-android/" class="title">Using ALSA audio drivers in Android</a>
+		<div class="meta">
+			<span class="date">Oct 23, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6dce560307a000159bd61" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/">How Rooting Works: A Technical Explanation of the Android Rooting Process</a><span class="separator"> &middot; </span>October 19, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/" class="title">How Rooting Works: A Technical Explanation of the Android Rooting Process</a>
+		<div class="meta">
+			<span class="date">Oct 19, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6dff560307a000159bd84" class="post tag-android tag-linux tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/">Internal input event handling in the Linux kernel and the Android userspace</a><span class="separator"> &middot; </span>May 14, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/internal-input-event-handling-in-the-linux-kernel-and-the-android-userspace/" class="title">Internal input event handling in the Linux kernel and the Android userspace</a>
+		<div class="meta">
+			<span class="date">May 14, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6dde060307a000159bd69" class="post tag-android tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change/">Prevent Android app from restarting on rotate / hardware keyboard state change</a><span class="separator"> &middot; </span>May 13, 2011<span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/prevent-android-app-from-restarting-on-rotate-hardware-keyboard-state-change/" class="title">Prevent Android app from restarting on rotate / hardware keyboard state change</a>
+		<div class="meta">
+			<span class="date">May 13, 2011</span><span class="taglist"> &middot; <a href="/tag/android/">Android</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <nav class="pagination" role="pagination">
     
@@ -160,11 +242,15 @@
 </nav>
 
 		</main>
+
 		<footer id="footer">
 			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
 		</footer>
-	
-	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
+
+		
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+
 	</body>
 </html>

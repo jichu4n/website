@@ -3,19 +3,24 @@
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
 	    <title>Window Manager - Chuan Ji</title>
+
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=4919defe1e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=995c88db1e">
+
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
 			<!--[if lt IE 9]>
-				<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-				<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+							<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+							<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 			<![endif]-->
+
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 			
 	    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="canonical" href="https://jichu4n.com/tag/window-manager/" />
@@ -25,14 +30,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Window Manager - Chuan Ji" />
     <meta property="og:url" content="https://jichu4n.com/tag/window-manager/" />
-    <meta property="og:image" content="https://jichu4n.com/content/images/2018/10/cover-1.jpeg" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Window Manager - Chuan Ji" />
     <meta name="twitter:url" content="https://jichu4n.com/tag/window-manager/" />
-    <meta name="twitter:image" content="https://jichu4n.com/content/images/2018/10/cover-1.jpeg" />
     <meta name="twitter:site" content="@jichu4n" />
-    <meta property="og:image:width" content="876" />
-    <meta property="og:image:height" content="1638" />
     
     <script type="application/ld+json">
 {
@@ -84,7 +85,8 @@
 </script>
 	</head>
 	<body class="tag-template tag-window-manager">
-		<header id="header" style="background-image: url('/content/images/2018/10/cover-1.jpeg')">
+
+		<header id="header" >
 			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
@@ -110,6 +112,44 @@
   <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
   <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
 
+
+			<div class="header-bottom">
+				<div id="dark-mode-toggle-button" role="button">
+  <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
+</div>
+
+<script>
+  // Dark mode toggle button handler.
+  $(document).ready(function() {
+    $('#dark-mode-toggle-button').click(function() {
+      $(document.body).toggleClass('dark-mode');
+      localStorage.setItem('darkMode', JSON.stringify($(document.body).hasClass('dark-mode')));
+    });
+  });
+
+  // Initialize dark mode.
+  (function(){
+    var darkMode = null;
+    // Try parsing darkMode setting from localStorage.
+    var darkModeValue = localStorage.getItem('darkMode');
+    if (darkModeValue !== null) {
+      try {
+        darkMode = !!JSON.parse(darkModeValue);
+      } catch (err) {
+        // no-op
+      }
+    }
+    // Try system settings.
+    if (darkMode === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      darkMode = true;
+    }
+    // Apply to document.
+    if (darkMode) {
+      $(document.body).addClass('dark-mode');
+    }
+  })();
+</script>
+			</div>
 		</header>
 		<nav id="mobile-header">
   <ul class="nav-left">
@@ -127,16 +167,33 @@
     });
   });
 </script>
+
 		<main id="content">
 			<h1 class="post-title">Window Manager</h1> 
+<hr>
 <section id="5bc6dbd460307a000159bd56" class="post tag-window-manager tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">How X Window Managers Work, And How To Write One (Part III)</a><span class="separator"> &middot; </span>February 2, 2017<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" class="title">How X Window Managers Work, And How To Write One (Part III)</a>
+		<div class="meta">
+			<span class="date">Feb 2, 2017</span><span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6d9a160307a000159bd47" class="post tag-window-manager tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">How X Window Managers Work, And How To Write One (Part II)</a><span class="separator"> &middot; </span>June 8, 2014<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/" class="title">How X Window Managers Work, And How To Write One (Part II)</a>
+		<div class="meta">
+			<span class="date">Jun 8, 2014</span><span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <section id="5bc6cde4f21e630001a84ab4" class="post tag-window-manager tag-technical-notes no-image">
-	<h3 class="post-title"><a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">How X Window Managers Work, And How To Write One (Part I)</a><span class="separator"> &middot; </span>April 10, 2014<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></h3>
+	<h3 class="post-title">
+		<a href="/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" class="title">How X Window Managers Work, And How To Write One (Part I)</a>
+		<div class="meta">
+			<span class="date">Apr 10, 2014</span><span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span>
+		</div>
+	</h3>
 </section>
 <nav class="pagination" role="pagination">
     
@@ -145,11 +202,15 @@
 </nav>
 
 		</main>
+
 		<footer id="footer">
 			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
 		</footer>
-	
-	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
+
+		
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+
 	</body>
 </html>
