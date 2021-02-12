@@ -16,7 +16,7 @@
     <meta property="og:description" content="I have always been curious how rooting actually worked behind the scenes. After recently acquiring a new Eee Pad Slider, a Honeycomb tablet that so far no one has been able to root, the frustration of being locked out of this amazing piece of hardware with so much potential led" />
     <meta property="og:url" content="https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/" />
     <meta property="article:published_time" content="2011-10-20T06:55:00.000Z" />
-    <meta property="article:modified_time" content="2018-10-17T06:58:27.000Z" />
+    <meta property="article:modified_time" content="2021-02-12T21:30:37.000Z" />
     <meta property="article:tag" content="Android" />
     <meta property="article:tag" content="Technical Notes" />
     
@@ -60,7 +60,7 @@
     "headline": "How Rooting Works: A Technical Explanation of the Android Rooting Process",
     "url": "https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/",
     "datePublished": "2011-10-20T06:55:00.000Z",
-    "dateModified": "2018-10-17T06:58:27.000Z",
+    "dateModified": "2021-02-12T21:30:37.000Z",
     "keywords": "Android, Technical Notes",
     "description": "I have always been curious how rooting actually worked behind the scenes. After\nrecently acquiring a new Eee Pad Slider, a Honeycomb tablet that so far no one\nhas been able to root, the frustration of being locked out of this amazing piece\nof hardware with so much potential led me to finally sit down and figure out\nwhat exactly rooting means, what it entails from a technical perspective, and\nhow hackers out in the wild are approaching the rooting of a new device.\nAlthough all this information is",
     "mainEntityOfPage": {
@@ -680,7 +680,7 @@
 <p>Now here’s the key insight: if you can hack / trick one of these system processes running in privileged mode to execute your arbitrary code, you have just gained privileged access to the system. This how all one-click-root methods work, including z4root, gingerbreak, and so on. If you are truly curious, I highly recommend <a href="http://jon.oberheide.org/files/bsides11-dontrootrobots.pdf">this excellent presentation on the various exploits used by current rooting tools</a>, but the details are not as relevant here as the simple idea behind them. That idea is that there are vulnerabilities in the system processes running as root in the background that, if exploited, will allow us to execute arbitrary code as root. Well, that "arbitrary code" is most certainly a piece of code that mounts <code>/system</code> in read-write mode and installs a copy of <code>su</code> permanently on the system, so that from then on we don’t need to jump through the hoops to run the programs we really wanted to run in the first place.</p>
 <p>Since Android is open source as is Linux, what people have done is to scrutinize and reason about the source code of the various system services until they find a security hole they can leverage. This becomes increasingly hard as Google and the maintainers of the various pieces of code fix those particular vulnerabilities when they are discovered and published, which means that the exploits will eventually become obsolete with newer devices. But the good news is that manufacturers are not stupid enough to push OTA updates to fix a vulnerability just to prevent rooting as it is very expensive for them; in addition, devices in the market are always lagging behind the newest software releases. Thus, it takes quite some time before these rooting tools are rendered useless by new patches, and by then hopefully other exploits would have been discovered.</p>
 <h1 id="ivseeitinaction">IV. See It In Action!</h1>
-<p>To see all of this in action, you are invited to check out my follow-up article: <a href="https://jichu4n.com/posts/android-rooting-a-developers-guide.html">Android Rooting: A Developer’s Guide</a>, which explains how I applied this stuff to figure out how to root an actual device.</p>
+<p>To see all of this in action, you are invited to check out my follow-up article: <a href="https://jichu4n.com/posts/android-rooting-a-developers-guide/">Android Rooting: A Developer’s Guide</a>, which explains how I applied this stuff to figure out how to root an actual device.</p>
 
 
             </section>
