@@ -16,7 +16,7 @@
     <meta property="og:description" content="In Part I of this series, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting" />
     <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/" />
     <meta property="article:published_time" content="2014-06-09T06:41:00.000Z" />
-    <meta property="article:modified_time" content="2018-10-17T07:23:57.000Z" />
+    <meta property="article:modified_time" content="2021-02-12T21:22:09.000Z" />
     <meta property="article:tag" content="Window Manager" />
     <meta property="article:tag" content="Technical Notes" />
     
@@ -60,9 +60,9 @@
     "headline": "How X Window Managers Work, And How To Write One (Part II)",
     "url": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/",
     "datePublished": "2014-06-09T06:41:00.000Z",
-    "dateModified": "2018-10-17T07:23:57.000Z",
+    "dateModified": "2021-02-12T21:22:09.000Z",
     "keywords": "Window Manager, Technical Notes",
-    "description": "In Part I of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html], we\nexamined the role of X window managers in a modern Linux/BSD desktop\nenvironment, and how they interact with the X server and applications. In Part\nII, we will dig into the dirty details and walk through the code of an example\nreparenting non-compositing window manager, basic_wm\n[https://github.com/jichu4n/basic_wm].\n\nIntroduction\nBefore we start with the code, let’s go over a couple of basic implem",
+    "description": "In Part I of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-i/], we examined\nthe role of X window managers in a modern Linux/BSD desktop environment, and how\nthey interact with the X server and applications. In Part II, we will dig into\nthe dirty details and walk through the code of an example reparenting\nnon-compositing window manager, basic_wm [https://github.com/jichu4n/basic_wm].\n\nIntroduction\nBefore we start with the code, let’s go over a couple of basic implementa",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://jichu4n.com/"
@@ -658,7 +658,7 @@
             </header>
             <section class="post-content">
 
-                <p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I of this series</a>, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting non-compositing window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>.</p>
+                <p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">Part I of this series</a>, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting non-compositing window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>.</p>
 <h1 id="introduction">Introduction</h1>
 <p>Before we start with the code, let’s go over a couple of basic implementation choices such as language and API.</p>
 <h2 id="language">Language</h2>
@@ -839,7 +839,7 @@ int WindowManager::OnWMDetected(Display* display, XErrorEvent* e) {
 
 int WindowManager::OnXError(Display* display, XErrorEvent* e) { /* Print e */ }
 </code></pre>
-<p>We first select substructure redirection and substructure notify events on the root window. This is discussed in more detail in the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection">Substructure Redirection</a> section in Part I; to recap, this allows the window manager to intercept requests from top level windows, and subscribe to events concerning the same. Only one X client can select substructure redirection on the root window at any given time; the second client to attempt to do so will get a <code>BadAccess</code> error.</p>
+<p>We first select substructure redirection and substructure notify events on the root window. This is discussed in more detail in the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/#substructure-redirection">Substructure Redirection</a> section in Part I; to recap, this allows the window manager to intercept requests from top level windows, and subscribe to events concerning the same. Only one X client can select substructure redirection on the root window at any given time; the second client to attempt to do so will get a <code>BadAccess</code> error.</p>
 <p>Catching this error is somewhat tricky, however. <a href="http://manpages.ubuntu.com/manpages/en/man3/XSelectInput.3.html"><code>XSelectInput</code></a>, like all asynchronous Xlib functions, does not actually send a request to the X server, but instead only <em>queues</em> the request and returns. Hence, we have to explicitly flush the request queue with <a href="http://manpages.ubuntu.com/manpages/en/man3/XSync.3.html"><code>XSync</code></a> (see our discussion above in <a href="#a-tale-of-two-x-libraries">A Tale of Two X Libraries</a>). We set up a temporary error handler, <code>OnWMDetected</code>, to catch errors during this <code>XSync</code> invocation.</p>
 <p>Next, we set up our regular error handler which will be invoked for any future errors. Our implementation, which logs the error and continues, will be an important debugging aid as we implement and test our window manager. I will not show it here for the sake of brevity; for reference, check it out in <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>.</p>
 <h1 id="step3theeventloop">Step 3: The Event Loop</h1>
@@ -904,18 +904,18 @@ typedef union _XEvent {
 <p>In <code>basic_wm</code>, the event handlers follow the naming convention of <code>OnFoo()</code>, where <code>Foo</code> is the type of the event, so it should be straightforward to figure out who does what.</p>
 <h1 id="whatsnext">What’s Next</h1>
 <p>We now have a basic skeleton for our window manager, and we can start filling in the meat - the event handlers. The million-dollar question is, what events does a window manager handle, and what should it do with them?</p>
-<p>In the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">next installment</a> in this series, we’ll answer that question by diving into the complex ways window managers, clients and the user interact with each other via X events. In the meantime, you’re more than welcome to check out the code for <code>basic_wm</code> <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>.</p>
+<p>In the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">next installment</a> in this series, we’ll answer that question by diving into the complex ways window managers, clients and the user interact with each other via X events. In the meantime, you’re more than welcome to check out the code for <code>basic_wm</code> <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>.</p>
 <blockquote>
-<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>How X Window Managers Work, And How To Write One (Part III)</strong></a></p>
+<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/"><strong>How X Window Managers Work, And How To Write One (Part III)</strong></a></p>
 <ul>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">Part I: Basic Concepts</a></p>
 </li>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</strong></a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/"><strong>Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</strong></a></p>
 </li>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">Part III: Interaction with Application Windows</a></p>
 </li>
 </ul>
 </blockquote>

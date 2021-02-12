@@ -37,7 +37,7 @@
     <meta property="og:description" content="Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves." />
     <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
     <meta property="article:published_time" content="2014-04-11T05:54:00.000Z" />
-    <meta property="article:modified_time" content="2018-10-17T06:24:52.000Z" />
+    <meta property="article:modified_time" content="2021-02-12T21:23:42.000Z" />
     <meta property="article:tag" content="Window Manager" />
     <meta property="article:tag" content="Technical Notes" />
     
@@ -81,7 +81,7 @@
     "headline": "How X Window Managers Work, And How To Write One (Part I)",
     "url": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/",
     "datePublished": "2014-04-11T05:54:00.000Z",
-    "dateModified": "2018-10-17T06:24:52.000Z",
+    "dateModified": "2021-02-12T21:23:42.000Z",
     "keywords": "Window Manager, Technical Notes",
     "description": "Window managers are one of the core components of the modern Linux/BSD desktop.\nIt is not an exaggeration to say that they define to a large degree our\nday-to-day user experience, as they are responsible for deciding how individual\nwindows look, move around, react to input, and organize themselves. Hence,\nalmost 30 years since the first X window manager\n[http://en.wikipedia.org/wiki/Ultrix_Window_Manager], we still argue over the\nmerits of different window managers, and new window managers conti",
     "mainEntityOfPage": {
@@ -338,18 +338,18 @@
 <p>On the other hand, a window manager may need to support both a compositing and a non-compositing mode, for compatibility with older or unsupported graphics hardware. In this case, it needs to implement reparenting and frame windows for non-compositing mode anyway, so additionally implementing drawing window decorations using graphics operations becomes redundant. This is why may other compositing window managers still choose to reparent.</p>
 <h1 id="readyforsomecode">Ready For Some Code?</h1>
 <p>If you’ve read everything up to this point, you’re probably holding back the urge to cry out &quot;<em>Enough talk - show me some code!</em>&quot; I don’t blame you.</p>
-<p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">the next installment</a> in this series, I will walk you through a basic implementation of a reparenting, non-compositing window manager. Impatient? Check out the code <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>!</p>
+<p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">the next installment</a> in this series, I will walk you through a basic implementation of a reparenting, non-compositing window manager. Impatient? Check out the code <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>!</p>
 <blockquote>
-<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html"><strong>How X Window Managers Work, And How To Write One (Part II)</strong></a></p>
+<p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/"><strong>How X Window Managers Work, And How To Write One (Part II)</strong></a></p>
 <ul>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html"><strong>Part I: Basic Concepts</strong></a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/"><strong>Part I: Basic Concepts</strong></a></p>
 </li>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
 </li>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html">Part III: Interaction with Application Windows</a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">Part III: Interaction with Application Windows</a></p>
 </li>
 </ul>
 </blockquote>

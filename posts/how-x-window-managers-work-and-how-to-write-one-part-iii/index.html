@@ -37,7 +37,7 @@
     <meta property="og:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in" />
     <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/" />
     <meta property="article:published_time" content="2017-02-03T07:50:00.000Z" />
-    <meta property="article:modified_time" content="2020-02-08T06:07:04.000Z" />
+    <meta property="article:modified_time" content="2021-02-12T21:20:42.000Z" />
     <meta property="article:tag" content="Window Manager" />
     <meta property="article:tag" content="Technical Notes" />
     
@@ -81,9 +81,9 @@
     "headline": "How X Window Managers Work, And How To Write One (Part III)",
     "url": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/",
     "datePublished": "2017-02-03T07:50:00.000Z",
-    "dateModified": "2020-02-08T06:07:04.000Z",
+    "dateModified": "2021-02-12T21:20:42.000Z",
     "keywords": "Window Manager, Technical Notes",
-    "description": "In Part II of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html], we\ndiscussed X libraries and implementation choices, and examined the basic\nstructure of a window manager. In Part III, we will start interacting with\nclient windows and the user through events. We will review the fundamentals of\nwindow manager implementation, using the implementation in our example\nnon-compositing reparenting window manager, basic_wm\n[https://github.com/jichu4n/basic_wm], for refere",
+    "description": "In Part II of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/], we discussed\nX libraries and implementation choices, and examined the basic structure of a\nwindow manager. In Part III, we will start interacting with client windows and\nthe user through events. We will review the fundamentals of window manager\nimplementation, using the implementation in our example non-compositing\nreparenting window manager, basic_wm [https://github.com/jichu4n/basic_wm], for\nreference.",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://jichu4n.com/"
@@ -204,14 +204,14 @@
 			<article id="5bc6dbd460307a000159bd56" class="post tag-window-manager tag-technical-notes no-image">
 	<div class="post-stamp">February 2, 2017<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
 	<h1 class="post-title">How X Window Managers Work, And How To Write One (Part III)</h1>
-	<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in our example non-compositing reparenting window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, for reference.</p>
+	<!--kg-card-begin: markdown--><p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">Part II of this series</a>, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in our example non-compositing reparenting window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, for reference.</p>
 <h1 id="step4interactionwithapplicationwindows">Step 4: Interaction with Application Windows</h1>
-<p>Following the steps in <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II of this series</a>, we now have a basic skeleton for our window manager. Our next step is to start talking to clients and the user via events.</p>
+<p>Following the steps in <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">Part II of this series</a>, we now have a basic skeleton for our window manager. Our next step is to start talking to clients and the user via events.</p>
 <p>The interaction between clients, X, and the window manager is fairly complex. To facilitate our discussion, I’ve created a diagram that illustrates the flow of events throughout the lifetime of a client window, and how a window manager might respond to each of them. We’ll be referring to this cheat sheet for window manager event handling throughout this series. You can click through for the full-sized diagram.</p>
 <p>[<img src="https://jichu4n.com/content/images/2018/10/sB-bXhvvzFJe2u65_YRwARA.png" alt="sB-bXhvvzFJe2u65sB-bXhvvzFJe2u65_YRwARA"></p>
 <p>In general, a window manager must handle two kinds of actions: those initiated by client applications (such as creating new windows), and those initiated by users (such as moving or minimizing windows). In this diagram, actions initiated by client applications are shown in the yellow box on the left hand side, and actions initiated by users are shown in blue on the right hand side. A window manager communicates with client applications via events, which are represented as parallelograms in red.</p>
 <p>You may have noticed that some of the events in this diagram have the suffix <em>Request</em>, while others have the suffix <em>Notify</em>. This distinction is crucial to our discussion.</p>
-<p>Recalling <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html#substructure-redirection">our discussion in Part I</a> on substructure redirection, when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request. Such requests are delivered to a window manager as events with the <em>Request</em> suffix. It is important to understand that when a window manager receives such an event, the action it represents <em>has not actually occurred</em>, and it is the responsibility of the window manager to decide what to do with it. If the window manager does nothing, the request is implicitly denied.</p>
+<p>Recalling <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/#substructure-redirection">our discussion in Part I</a> on substructure redirection, when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request. Such requests are delivered to a window manager as events with the <em>Request</em> suffix. It is important to understand that when a window manager receives such an event, the action it represents <em>has not actually occurred</em>, and it is the responsibility of the window manager to decide what to do with it. If the window manager does nothing, the request is implicitly denied.</p>
 <p>On the other hand, events with the <em>Notify</em> suffix represent actions that have already been executed by the X server. The window manager can respond to such events, but of course cannot change the fact that they have already happened.</p>
 <p>With that in mind, let’s dive into the implementation by looking at how our example window manager will handle the life cycle of a client window from creation to destruction.</p>
 <h2 id="creatingawindow">Creating a Window</h2>
@@ -489,7 +489,7 @@ void WindowManager::OnDestroyNotify(const XDestroyWindowEvent&amp; e) {}
 </code></pre>
 <h2 id="framingexistingtoplevelwindows">Framing Existing Top-Level Windows</h2>
 <p>Now that we’ve walked through the life cycle of a client window, from creation to destruction, let’s turn our attention to the problem of existing top-level windows.</p>
-<p>You may recall from <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I</a> that X applications in general run just fine without a window manager. Depending on how an X session is started (e.g. <code>xinitrc</code>), by the time a window manager starts, any number of windows may have already been created by other applications. Additionally, the user can kill a running window manager and replace it with a different window manager, without affecting windows from other applications.</p>
+<p>You may recall from <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">Part I</a> that X applications in general run just fine without a window manager. Depending on how an X session is started (e.g. <code>xinitrc</code>), by the time a window manager starts, any number of windows may have already been created by other applications. Additionally, the user can kill a running window manager and replace it with a different window manager, without affecting windows from other applications.</p>
 <p>Therefore, when our window manager starts up, it needs to handle any existing top-level windows that are already mapped. As a reparenting window manager, it will invoke the same <code>Frame()</code> function on such windows as if these windows are being mapped for the first time:</p>
 <pre><code>void WindowManager::Run() {
   // 1. Initialization.
@@ -606,13 +606,13 @@ void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
 <blockquote>
 <ul>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html">Part I: Basic Concepts</a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">Part I: Basic Concepts</a></p>
 </li>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii.html">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">Part II: Introduction, Setup &amp; Teardown, Initialization, Event Loop</a></p>
 </li>
 <li>
-<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii.html"><strong>Part III: Interaction with Application Windows</strong></a></p>
+<p><a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/"><strong>Part III: Interaction with Application Windows</strong></a></p>
 </li>
 </ul>
 </blockquote>
