@@ -16,7 +16,7 @@
     <meta property="og:description" content="Font Woes It’s fairly straightforward to set the default font used in native apps on a modern Linux desktop, or the default fonts used to render web pages in your browser of choice.  But if you’re reading this, you probably know that that’s far from the end" />
     <meta property="og:url" content="https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/" />
     <meta property="article:published_time" content="2014-02-23T05:07:00.000Z" />
-    <meta property="article:modified_time" content="2018-10-17T06:34:23.000Z" />
+    <meta property="article:modified_time" content="2021-02-12T22:31:31.000Z" />
     <meta property="article:tag" content="Linux" />
     <meta property="article:tag" content="Technical Notes" />
     
@@ -60,7 +60,7 @@
     "headline": "How To Set Default Fonts and Font Aliases on Linux",
     "url": "https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/",
     "datePublished": "2014-02-23T05:07:00.000Z",
-    "dateModified": "2018-10-17T06:34:23.000Z",
+    "dateModified": "2021-02-12T22:31:31.000Z",
     "keywords": "Linux, Technical Notes",
     "description": "Font Woes\nIt’s fairly straightforward to set the default font used in native apps on a\nmodern Linux desktop, or the default fonts used to render web pages in your\nbrowser of choice.\n\nBut if you’re reading this, you probably know that that’s far from the end of\nthe story. You might have noticed that Firefox and Chrome rudely ignore your\nfont settings for many websites. This is because many (if not most) popular\nsites, including Google [http://www.google.com], Yahoo [http://www.yahoo.com], \nFacebo",
     "mainEntityOfPage": {
@@ -696,7 +696,7 @@ Courier New: DejaVuSansMono.ttf: "DejaVu Sans Mono" "Book"
 </code></pre>
 <p>We will put all of our custom configuration between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>.</p>
 <h1 id="settingdefaultfonts">Setting Default Fonts</h1>
-<p>First, let’s set the default serif, sans serif, and monospace fonts. I’ll use the beautiful <a href="http://en.wikipedia.org/wiki/Croscore_fonts">Chrome OS fonts</a> as an example (<a href="https://aur.archlinux.org/packages/ttf-chromeos-fonts/"><code>ttf-chromeos-fonts</code></a> if you’re running <a href="http://www.archlinux.org">Arch Linux</a>). Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>:</p>
+<p>First, let’s set the default serif, sans serif, and monospace fonts. I’ll use the beautiful <a href="http://en.wikipedia.org/wiki/Croscore_fonts">Chrome OS fonts</a> as an example (<a href="https://archlinux.org/packages/extra/any/ttf-croscore/"><code>ttf-croscore</code></a> if you’re running <a href="http://www.archlinux.org">Arch Linux</a>). Insert the following between <code>&lt;fontconfig&gt;</code> and <code>&lt;/fontconfig&gt;</code>:</p>
 <pre><code>  &lt;!-- Set preferred serif, sans serif, and monospace fonts. --&gt;
   &lt;alias&gt;
     &lt;family&gt;serif&lt;/family&gt;
