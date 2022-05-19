@@ -9,7 +9,7 @@
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=648c41a66e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=79b5ceb009">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=648c41a66e">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=79b5ceb009">
 	<meta property="og:title" content="How X Window Managers Work, And How To Write One (Part I)" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves...."/>
@@ -91,8 +91,74 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 3.41" />
+    <meta name="generator" content="Ghost 4.47" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <script defer src="https://unpkg.com/@tryghost/portal@~1.22.0/umd/portal.min.js" data-ghost="https://jichu4n.com/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
+.gh-post-upgrade-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    width: 100%;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.gh-post-upgrade-cta-content {
+    border-radius: 8px;
+    padding: 40px 4vw;
+}
+
+.gh-post-upgrade-cta h2 {
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: -0.2px;
+    margin: 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta p {
+    margin: 20px 0 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta small {
+    font-size: 16px;
+    letter-spacing: -0.2px;
+}
+
+.gh-post-upgrade-cta a {
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a:hover {
+    color: #ffffff;
+    opacity: 0.8;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a.gh-btn {
+    display: block;
+    background: #ffffff;
+    text-decoration: none;
+    margin: 28px 0 0;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.gh-post-upgrade-cta a.gh-btn:hover {
+    opacity: 0.92;
+}</style>
+    <script defer src="/public/cards.min.js?v=79b5ceb009"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=79b5ceb009">
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -115,11 +181,12 @@
   gtag('js', new Date());
   gtag('config', 'UA-21264754-1');
 </script>
+<style>:root {--ghost-accent-color: #15171A;}</style>
 	</head>
 	<body class="post-template tag-window-manager tag-technical-notes">
 
 		<header id="header" >
-			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+			<a id="logo" href="https://jichu4n.com"><img src="https://jichu4n.com/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
 			<div id="follow-icons">
@@ -226,14 +293,14 @@
 <p><strong>A window manager is a regular X client.</strong> It doesn’t have any superuser privileges or keys to kernel backdoors; it is a normal user process that is allowed by the X server to call a set of special APIs. X ensures that no more than one window manager is running at any given point by denying a client access to these APIs if another client currently has access. The first client to attempt to access these APIs always succeeds.</p>
 <p>A window manager communicates with the windows it manages through two X mechanisms: properties and events. We will discuss these in detail in later sections, but the takeaway is that the communication happens through the X server, not directly between the window manager and other applications.</p>
 <p>This is illustrated by the following diagram:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/so1jXbe2d2Vvx917pbA5Cjw.png" alt="so1jXbe2d2Vvx917pbA5Cjw"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/so1jXbe2d2Vvx917pbA5Cjw.png" alt="so1jXbe2d2Vvx917pbA5Cjw" loading="lazy"></p>
 <h1 id="howanxwindowmanagermanageswindows">How an X Window Manager Manages Windows</h1>
 <p>Let’s now dive into the details of how a window manager does its job.</p>
 <h2 id="thewindowhierarchy">The Window Hierarchy</h2>
 <p>When we think about modern GUIs, we usually use the term <em>widgets</em> or <em>controls</em> to refer to UI elements such as buttons, scrollbars, or text boxes, and the term <em>windows</em> to refer to a container for such widgets that has its own name and can be independently moved around, closed, resized, etc..</p>
 <p>X, however, was designed to be as low-level as possible. The fundamental UI model that X provides, upon which UI frameworks such as <a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an <em>hierarchy of rectangles</em>. In X terminology, all top level windows and all UI elements within are <em>windows</em>. In other words, a <em>window</em>, is any rectangular area that is an unit of user interaction and/or graphic display.</p>
 <p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the <em>root window</em>, a virtual, invisible window that has the same size as the screen, and is always present. Top level windows are direct children of the root window. UI elements within a top level window are descendants of that window.</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/wm_sample_dialog.png" alt="wm_sample_dialog"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/wm_sample_dialog.png" alt="wm_sample_dialog" loading="lazy"></p>
 <p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a> desktop environment. The entire dialog is an X <em>window</em>. All UI elements in the dialog box - the magnifying glass icon, the text box, the green down arrow, the Close and Launch buttons, and the icons inside those buttons - are also X _window_s.</p>
 <p>The whole dialog window is a child of the root window. The magnifying glass icon, the text box, and the Close and Launch buttons are children of the dialog window. The green down arrow is a child of the text box window, and the icons in the Close and Launch buttons are children of those buttons respectively.</p>
 <p>An important thing to note about X windows is that a child window is clipped to the boundaries of its parent:</p>
@@ -259,7 +326,7 @@
 </blockquote>
 <p>In other words, a window manager must register for substructure redirection on the root window, which causes all creation, destruction, reconfiguration etc. of top level windows - which are direct children of the root window - to be routed to the window manager. This is the magic hook into the X server that window managers rely on to do their job.</p>
 <p>This relationship is shown in the following diagram:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/sTifV_OHk9dsZi6cwbLS7qQ.png" alt="sTifV_OHk9dsZi6cwbLS7qQ"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/sTifV_OHk9dsZi6cwbLS7qQ.png" alt="sTifV_OHk9dsZi6cwbLS7qQ" loading="lazy"></p>
 <p>Finally, the X server only allows one running program to register for substructure redirection on any given window at any given time. An attempt to register for substructure redirection on a window will fail if another X client has already done the same on the same window, and has not unregistered, disconnected from the X server, or crashed. Since all window managers must register for substructure redirection on the root window, this latter acts as a locking mechanism that prevents two or more window managers from running simultaneously on the same screen.</p>
 <h2 id="reparenting">Reparenting</h2>
 <p>In the example dialog box above, we see a title bar with, for example, little buttons for minimizing, maximizing, and closing the window. These UI elements are not created by the application, but by the window manager, via a process known as <em>reparenting</em> or <em>framing</em>:</p>
@@ -270,7 +337,7 @@
 </blockquote>
 <p>In other words, if we were to run an X application without a window manager present, the top level window of the application would be a direct child of the root window. With a window manager running, however, the top level window of the application may be <em>reparented</em> by the window manager; it becomes a child of a frame window which is created by the window manager, and which is itself a direct child of the root window. The window manager can add other UI elements inside this frame window alongside the application’s top level window as it sees fit.</p>
 <p>Therefore, I’ve kind of lied to you several paragraphs ago: the dialog box shown earlier is really a child window within a frame window created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along with other UI elements for window management:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/snfQMUpwYCAfp6q_mmpEVoQ.png" alt="snfQMUpwYCAfp6q_mmpEVoQ"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/snfQMUpwYCAfp6q_mmpEVoQ.png" alt="snfQMUpwYCAfp6q_mmpEVoQ" loading="lazy"></p>
 <p>Reparenting is what allows different window managers to draw different window decorations, and thereby achieve a consistent look-and-feel across windows. However, there are also window managers that do <em>not</em> reparent at all: these are called <em>non-reparenting</em> window managers. There are two reasons why a window manager would not want to reparent:</p>
 <ol>
 <li>
@@ -288,9 +355,9 @@
 <p>In our discussion above on substructure redirection and reparenting, we saw how a window manager can respond to various requests for a top level window - to display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But we didn’t talk about how to deal with what’s <em>inside</em> the top level windows.</p>
 <p>Indeed, from the perspective of the window manager, top level windows are black boxes; they each manage their own descendant windows (UI elements), perhaps through a framework such as <a href="http://www.gtk.org">GTK+</a> or <a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere there. The application that creates a top level window is responsible for rendering and handling events for any descendant windows (UI elements), and does so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p>
 <p>As the computing power of graphics hardware grew, so did people’s expectations from their window managers. With hardware acceleration, it became possible to build much more computationally intensive user interfaces, such as the (in)famous Desktop Cube in <a href="http://www.compiz.org">Compiz</a>:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/wm_compiz.png" alt="wm_compiz"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/wm_compiz.png" alt="wm_compiz" loading="lazy"></p>
 <p>or the Shift Switcher:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/wm_compiz_2.png" alt="wm_compiz_2"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/wm_compiz_2.png" alt="wm_compiz_2" loading="lazy"></p>
 <p>Let’s take a moment to think about how we can implement an interface such as the Shift Switcher above. When the user triggers this interface, we need to:</p>
 <ol>
 <li>
@@ -332,7 +399,7 @@
 <p>The Composite extension provides a mechanism to request the X server not to render a specific window and its descendants directly to hardware, but to a special buffer maintained by the X server, and do so without the normal clipping and overlap computations. This buffer can then be read and used by the client that made the request.</p>
 <p>That’s exactly what a compositing window manager does: it will ask X to render each top level window to an off-screen, in-memory buffer and composite the results into an overlay window itself. And it needs to do this not just for fancy task switcher interfaces as in our example, but also to achieve effects like translucency, animations, soft shadows, and the like.</p>
 <p>This is illustrated in the following diagram:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/sawR1epQiKxE5bX3Cplms2A.png" alt="sawR1epQiKxE5bX3Cplms2A"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/sawR1epQiKxE5bX3Cplms2A.png" alt="sawR1epQiKxE5bX3Cplms2A" loading="lazy"></p>
 <p>Let’s end this section by considering whether a compositing window manager should reparent top level windows.</p>
 <p>Since a compositing window manager already knows the size and position of all top level windows, it’s easy for it to just draw window decorations during compositing into the overlay window using graphics operations (e.g. OpenGL), without ever creating an actual X frame window and reparenting. Some compositing window managers do operate this way.</p>
 <p>On the other hand, a window manager may need to support both a compositing and a non-compositing mode, for compatibility with older or unsupported graphics hardware. In this case, it needs to implement reparenting and frame windows for non-compositing mode anyway, so additionally implementing drawing window decorations using graphics operations becomes redundant. This is why may other compositing window managers still choose to reparent.</p>
@@ -440,7 +507,7 @@
       -->
       <li class="pinterest">
           <script>
-						var imgurl = "https://jichu4n.com/content/images/2018/10/me-3-small.jpg";
+						var imgurl = "https://jichu4n.comhttps://jichu4n.com/content/images/2018/10/me-3-small.jpg";
 						var firstimg = document.getElementsByClassName("post tag-window-manager tag-technical-notes no-image")[0].getElementsByTagName("img")[0];
 						if (firstimg !== undefined) {
 							imgurl = firstimg.src;
@@ -468,7 +535,7 @@
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=648c41a66e"></script>
+<script src="/assets/js/rrssb.min.js?v=79b5ceb009"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
@@ -487,7 +554,7 @@
 		</main>
 
 		<footer id="footer">
-			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
+			<section id="footer-message">&copy; 2022 Chuan Ji. All rights reserved.</section>
 		</footer>
 
 		

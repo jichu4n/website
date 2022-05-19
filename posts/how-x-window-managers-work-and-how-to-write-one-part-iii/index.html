@@ -9,7 +9,7 @@
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=648c41a66e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=79b5ceb009">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=648c41a66e">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=79b5ceb009">
 	<meta property="og:title" content="How X Window Managers Work, And How To Write One (Part III)" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="In Part II of this series, we discussed X libraries and implementation choices, and examined the basic structure of a window manager. In Part III, we will start interacting with client windows and the user through events. We will review the fundamentals of window manager implementation, using the implementation in..."/>
@@ -83,7 +83,7 @@
     "datePublished": "2017-02-03T07:50:00.000Z",
     "dateModified": "2021-02-12T21:20:42.000Z",
     "keywords": "Window Manager, Technical Notes",
-    "description": "In Part II of this series\n[/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/], we discussed\nX libraries and implementation choices, and examined the basic structure of a\nwindow manager. In Part III, we will start interacting with client windows and\nthe user through events. We will review the fundamentals of window manager\nimplementation, using the implementation in our example non-compositing\nreparenting window manager, basic_wm [https://github.com/jichu4n/basic_wm], for\nreference.",
+    "description": "In Part II of this series\n[https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/],\nwe discussed X libraries and implementation choices, and examined the basic\nstructure of a window manager. In Part III, we will start interacting with\nclient windows and the user through events. We will review the fundamentals of\nwindow manager implementation, using the implementation in our example\nnon-compositing reparenting window manager, basic_wm\n[https://github.com/jichu4n/ba",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://jichu4n.com/"
@@ -91,8 +91,74 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 3.41" />
+    <meta name="generator" content="Ghost 4.47" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <script defer src="https://unpkg.com/@tryghost/portal@~1.22.0/umd/portal.min.js" data-ghost="https://jichu4n.com/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
+.gh-post-upgrade-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    width: 100%;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.gh-post-upgrade-cta-content {
+    border-radius: 8px;
+    padding: 40px 4vw;
+}
+
+.gh-post-upgrade-cta h2 {
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: -0.2px;
+    margin: 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta p {
+    margin: 20px 0 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta small {
+    font-size: 16px;
+    letter-spacing: -0.2px;
+}
+
+.gh-post-upgrade-cta a {
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a:hover {
+    color: #ffffff;
+    opacity: 0.8;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a.gh-btn {
+    display: block;
+    background: #ffffff;
+    text-decoration: none;
+    margin: 28px 0 0;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.gh-post-upgrade-cta a.gh-btn:hover {
+    opacity: 0.92;
+}</style>
+    <script defer src="/public/cards.min.js?v=79b5ceb009"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=79b5ceb009">
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -115,11 +181,12 @@
   gtag('js', new Date());
   gtag('config', 'UA-21264754-1');
 </script>
+<style>:root {--ghost-accent-color: #15171A;}</style>
 	</head>
 	<body class="post-template tag-window-manager tag-technical-notes">
 
 		<header id="header" >
-			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+			<a id="logo" href="https://jichu4n.com"><img src="https://jichu4n.com/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
 			<div id="follow-icons">
@@ -208,7 +275,7 @@
 <h1 id="step4interactionwithapplicationwindows">Step 4: Interaction with Application Windows</h1>
 <p>Following the steps in <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">Part II of this series</a>, we now have a basic skeleton for our window manager. Our next step is to start talking to clients and the user via events.</p>
 <p>The interaction between clients, X, and the window manager is fairly complex. To facilitate our discussion, I’ve created a diagram that illustrates the flow of events throughout the lifetime of a client window, and how a window manager might respond to each of them. We’ll be referring to this cheat sheet for window manager event handling throughout this series. You can click through for the full-sized diagram.</p>
-<p>[<img src="https://jichu4n.com/content/images/2018/10/sB-bXhvvzFJe2u65_YRwARA.png" alt="sB-bXhvvzFJe2u65sB-bXhvvzFJe2u65_YRwARA"></p>
+<p>[<img src="/content/images/2018/10/sB-bXhvvzFJe2u65_YRwARA.png" alt="sB-bXhvvzFJe2u65sB-bXhvvzFJe2u65_YRwARA" loading="lazy"></p>
 <p>In general, a window manager must handle two kinds of actions: those initiated by client applications (such as creating new windows), and those initiated by users (such as moving or minimizing windows). In this diagram, actions initiated by client applications are shown in the yellow box on the left hand side, and actions initiated by users are shown in blue on the right hand side. A window manager communicates with client applications via events, which are represented as parallelograms in red.</p>
 <p>You may have noticed that some of the events in this diagram have the suffix <em>Request</em>, while others have the suffix <em>Notify</em>. This distinction is crucial to our discussion.</p>
 <p>Recalling <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/#substructure-redirection">our discussion in Part I</a> on substructure redirection, when a client application wants to do something with a window (such as moving, resizing, showing, or hiding), its request is redirected to the window manager, which can grant, modify, or deny the request. Such requests are delivered to a window manager as events with the <em>Request</em> suffix. It is important to understand that when a window manager receives such an event, the action it represents <em>has not actually occurred</em>, and it is the responsibility of the window manager to decide what to do with it. If the window manager does nothing, the request is implicitly denied.</p>
@@ -703,7 +770,7 @@ void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
       -->
       <li class="pinterest">
           <script>
-						var imgurl = "https://jichu4n.com/content/images/2018/10/me-3-small.jpg";
+						var imgurl = "https://jichu4n.comhttps://jichu4n.com/content/images/2018/10/me-3-small.jpg";
 						var firstimg = document.getElementsByClassName("post tag-window-manager tag-technical-notes no-image")[0].getElementsByTagName("img")[0];
 						if (firstimg !== undefined) {
 							imgurl = firstimg.src;
@@ -731,7 +798,7 @@ void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=648c41a66e"></script>
+<script src="/assets/js/rrssb.min.js?v=79b5ceb009"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
@@ -750,7 +817,7 @@ void WindowManager::OnUnmapNotify(const XUnmapEvent&amp; e) {
 		</main>
 
 		<footer id="footer">
-			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
+			<section id="footer-message">&copy; 2022 Chuan Ji. All rights reserved.</section>
 		</footer>
 
 		

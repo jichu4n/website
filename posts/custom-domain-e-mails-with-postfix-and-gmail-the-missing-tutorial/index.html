@@ -9,7 +9,7 @@
 	    <link href='//fonts.googleapis.com/css?family=Roboto:400italic,700italic,900italic,400,700,900&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=648c41a66e">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=79b5ceb009">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=648c41a66e">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=79b5ceb009">
 	<meta property="og:title" content="Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="Custom domain e-mail addresses, like john@johnscompany.com, are cool and professional-looking. Would you want to e-mail potential clients as john123@gmail.com?  On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as..."/>
@@ -91,8 +91,74 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 3.41" />
+    <meta name="generator" content="Ghost 4.47" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <script defer src="https://unpkg.com/@tryghost/portal@~1.22.0/umd/portal.min.js" data-ghost="https://jichu4n.com/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
+.gh-post-upgrade-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    width: 100%;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.gh-post-upgrade-cta-content {
+    border-radius: 8px;
+    padding: 40px 4vw;
+}
+
+.gh-post-upgrade-cta h2 {
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: -0.2px;
+    margin: 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta p {
+    margin: 20px 0 0;
+    padding: 0;
+}
+
+.gh-post-upgrade-cta small {
+    font-size: 16px;
+    letter-spacing: -0.2px;
+}
+
+.gh-post-upgrade-cta a {
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a:hover {
+    color: #ffffff;
+    opacity: 0.8;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.gh-post-upgrade-cta a.gh-btn {
+    display: block;
+    background: #ffffff;
+    text-decoration: none;
+    margin: 28px 0 0;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.gh-post-upgrade-cta a.gh-btn:hover {
+    opacity: 0.92;
+}</style>
+    <script defer src="/public/cards.min.js?v=79b5ceb009"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=79b5ceb009">
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -115,11 +181,12 @@
   gtag('js', new Date());
   gtag('config', 'UA-21264754-1');
 </script>
+<style>:root {--ghost-accent-color: #15171A;}</style>
 	</head>
 	<body class="post-template tag-linux tag-technical-notes">
 
 		<header id="header" >
-			<a id="logo" href="https://jichu4n.com"><img src="/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+			<a id="logo" href="https://jichu4n.com"><img src="https://jichu4n.com/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
 			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
 			<h6></h6>
 			<div id="follow-icons">
@@ -389,17 +456,17 @@ $ sudo chown postfix /etc/postfix/example.pem
 <h1 id="step4configuregmail">Step 4: Configure Gmail</h1>
 <p>Finally, let’s log in to Gmail and tell it about our brand new server. (Note that the new Inbox UI does not yet support all the settings available in the legacy interface at the time of writing, so these instructions apply to the legacy interface.)</p>
 <p>Let’s go to <em>Settings</em> &gt; <em>Accounts and Import</em> and click <em>Add another email address you own</em>.</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/gmail_1.png" alt="gmail_1"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_1.png" alt="gmail_1" loading="lazy"></p>
 <p>In the dialog that pops up, fill in our target e-mail address and click <em>Next Step</em>.</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/gmail_2.png" alt="gmail_2"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_2.png" alt="gmail_2" loading="lazy"></p>
 <p>In the next dialog, enter the address of our e-mail server (<code>myserver.example.com</code>), and the user name and password we set up using <code>saslpasswd2</code> above. Make sure the user name is suffixed with our domain name (so <code>smtp@example.com</code> rather than just <code>smtp</code>). Check that the correct port (587) and the correct security protocol (TLS) are selected, then click <em>Add Account</em>.</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/gmail_3.png" alt="gmail_3"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_3.png" alt="gmail_3" loading="lazy"></p>
 <p>If all goes well, we should see a dialog like the following:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/gmail_4.png" alt="gmail_4"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_4.png" alt="gmail_4" loading="lazy"></p>
 <p>And we should receive an e-mail, forwarded by our mail server set up in the first part, to our <code>john123@gmail.com</code> address. Click on the link inside the e-mail and we’re done!</p>
 <p>Now, in any e-mail compose / reply window, you should be able to select <code>john@example.com</code> in the drop-down list next to &quot;From&quot;. Congrats!</p>
 <p>If, on the other hand, you see an error like the following:</p>
-<p><img src="https://jichu4n.com/content/images/2018/10/gmail_5.png" alt="gmail_5"></p>
+<p><img src="https://jichu4n.com/content/images/2018/10/gmail_5.png" alt="gmail_5" loading="lazy"></p>
 <p>You should check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for any errors.</p>
 <h1 id="optionalstep5setupdkimandsrs">[Optional] Step 5: Setup DKIM and SRS</h1>
 <p><a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is e-mail validation system for preventing e-mail spoofing. <a href="https://support.google.com/mail/answer/180707?hl=en">Google recommends setting up DKIM</a>; if we don’t, the e-mail messages that we forward to Gmail have a higher probability of getting marked as spam.</p>
@@ -503,7 +570,7 @@ $ sudo chown postfix /etc/postfix/example.pem
       -->
       <li class="pinterest">
           <script>
-						var imgurl = "https://jichu4n.com/content/images/2018/10/me-3-small.jpg";
+						var imgurl = "https://jichu4n.comhttps://jichu4n.com/content/images/2018/10/me-3-small.jpg";
 						var firstimg = document.getElementsByClassName("post tag-linux tag-technical-notes no-image")[0].getElementsByTagName("img")[0];
 						if (firstimg !== undefined) {
 							imgurl = firstimg.src;
@@ -531,7 +598,7 @@ $ sudo chown postfix /etc/postfix/example.pem
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=648c41a66e"></script>
+<script src="/assets/js/rrssb.min.js?v=79b5ceb009"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
@@ -550,7 +617,7 @@ $ sudo chown postfix /etc/postfix/example.pem
 		</main>
 
 		<footer id="footer">
-			<section id="footer-message">&copy; 2021 Chuan Ji. All rights reserved.</section>
+			<section id="footer-message">&copy; 2022 Chuan Ji. All rights reserved.</section>
 		</footer>
 
 		
