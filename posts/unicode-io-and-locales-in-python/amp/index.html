@@ -6,14 +6,26 @@
 
     <title>Unicode I/O and Locales in Python</title>
 
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="https://jichu4n.com/content/images/2021/02/favicon-2.ico" type="image/x-icon" />
     <link rel="canonical" href="https://jichu4n.com/posts/unicode-io-and-locales-in-python/" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
     
     <meta property="og:site_name" content="Chuan Ji" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Unicode I/O and Locales in Python" />
-    <meta property="og:description" content="I recently ran into a weird error when running some Python code in a chroot jail.  s &#x3D; &#x27;你好&#x27; with open(&#x27;/tmp/asdf&#x27;, &#x27;w&#x27;) as f:   f.write(s) gave me  Traceback (most recent call last):   File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;   File &amp;quot;" />
+    <meta property="og:description" content="I recently ran into a weird error when running some Python code in a chroot
+jail.
+
+s &#x3D; &#x27;你好&#x27;
+with open(&#x27;/tmp/asdf&#x27;, &#x27;w&#x27;) as f:
+  f.write(s)
+
+
+gave me
+
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26,&lt;/module&gt;&lt;/stdin&gt;" />
     <meta property="og:url" content="https://jichu4n.com/posts/unicode-io-and-locales-in-python/" />
     <meta property="article:published_time" content="2014-02-20T08:35:00.000Z" />
     <meta property="article:modified_time" content="2018-10-17T07:36:49.000Z" />
@@ -22,7 +34,19 @@
     
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Unicode I/O and Locales in Python" />
-    <meta name="twitter:description" content="I recently ran into a weird error when running some Python code in a chroot jail.  s &#x3D; &#x27;你好&#x27; with open(&#x27;/tmp/asdf&#x27;, &#x27;w&#x27;) as f:   f.write(s) gave me  Traceback (most recent call last):   File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;   File &amp;quot;" />
+    <meta name="twitter:description" content="I recently ran into a weird error when running some Python code in a chroot
+jail.
+
+s &#x3D; &#x27;你好&#x27;
+with open(&#x27;/tmp/asdf&#x27;, &#x27;w&#x27;) as f:
+  f.write(s)
+
+
+gave me
+
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26,&lt;/module&gt;&lt;/stdin&gt;" />
     <meta name="twitter:url" content="https://jichu4n.com/posts/unicode-io-and-locales-in-python/" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Chuan Ji" />
@@ -70,7 +94,7 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 4.47" />
+    <meta name="generator" content="Ghost 5.3" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
 
     <style amp-custom>
