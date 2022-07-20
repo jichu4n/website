@@ -483,3 +483,7 @@ footer a:hover {
 .dark-mode #social-bar {
   background-color: #444;
 }
+
+h4.kg-toggle-heading-text {
+  font-weight: 400 !important;
+}
