@@ -9,7 +9,7 @@
                         <link href='//fonts.googleapis.com/css?family=Inter:400italic,700italic,400,700&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=3deef8abe6">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=1a8304be59">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=3deef8abe6">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=1a8304be59">
 	<meta property="og:title" content="How Rooting Works: A Technical Explanation of the Android Rooting Process" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="I have always been curious how rooting actually worked behind the scenes. After
@@ -167,8 +167,8 @@ of hardware with so much potential led" />
     opacity: 0.92;
 }</style>
     <script defer src="https://unpkg.com/@tryghost/sodo-search@~1.0.0/umd/sodo-search.min.js" data-sodo-search="https://jichu4n.com/" data-version="1.0.0" data-key="1e7b8730b75794685463d33094" crossorigin="anonymous"></script>
-    <script defer src="/public/cards.min.js?v=3deef8abe6"></script>
-    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=3deef8abe6">
+    <script defer src="/public/cards.min.js?v=1a8304be59"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=1a8304be59">
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -196,8 +196,10 @@ of hardware with so much potential led" />
 	<body class="post-template tag-android tag-technical-notes">
 
 		<header id="header" >
-			<a id="logo" href="https://jichu4n.com"><img src="https://jichu4n.com/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
-			<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
+		  <div id="logo-and-title">
+				<a id="logo" href="https://jichu4n.com"><img src="https://jichu4n.com/content/images/2018/10/me-3-small.jpg" alt="Chuan Ji" /></a>
+				<h1><a href="https://jichu4n.com">Chuan Ji</a></h1>
+			</div>
 			<h6></h6>
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
@@ -217,7 +219,7 @@ of hardware with so much potential led" />
 <a href="http://pinterest.com/username" target="_blank"><i class="fa fa-pinterest-square fa-2x"></i></a>
 <a href="http://username.tumblr.com" target="_blank"><i class="fa fa-tumblr-square fa-2x"></i></a>
 -->
-			  <h5><a href="https://jichu4n.com/">Bio</a></h5>
+			  <h5><a href="https://jichu4n.com/">About</a></h5>
   <h5><a href="https://jichu4n.com/projects/">Projects</a></h5>
   <h5><a href="https://jichu4n.com/tag/essays/">Essays</a></h5>
   <h5><a href="https://jichu4n.com/tag/technical-notes/">Technical Notes</a></h5>
@@ -232,6 +234,7 @@ of hardware with so much potential led" />
   // Dark mode toggle button handler.
   $(document).ready(function() {
     $('#dark-mode-toggle-button').click(function() {
+      $(document.documentElement).toggleClass('dark-mode');
       $(document.body).toggleClass('dark-mode');
       localStorage.setItem('darkMode', JSON.stringify($(document.body).hasClass('dark-mode')));
     });
@@ -255,6 +258,7 @@ of hardware with so much potential led" />
     }
     // Apply to document.
     if (darkMode) {
+      $(document.documentElement).addClass('dark-mode');
       $(document.body).addClass('dark-mode');
     }
   })();
@@ -423,7 +427,7 @@ of hardware with so much potential led..." class="popup">
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=3deef8abe6"></script>
+<script src="/assets/js/rrssb.min.js?v=1a8304be59"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>

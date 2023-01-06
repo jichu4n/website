@@ -44,12 +44,16 @@ footer {
   line-height: 1.5em;
   color: #888;
 }
+#footer-message {
+  text-align: center;
+}
 article {
   border-bottom: 0.1em #eee solid;
   padding-bottom: 1.7em;
-  max-width: 54em;
+  max-width: 48em;
   font-size: 1.0em;
   line-height: 1.8em;
+  margin: 0 auto 0 auto;
 }
 p,
 hr,
@@ -198,13 +202,14 @@ header h1 a {
 header h1 a:hover {
   text-decoration: none;
 }
-header #logo img {
-  width: 10em;
-  height: 10em;
-  border-radius: 5em;
-  -moz-border-radius: 5em;
-  -webkit-border-radius: 5em;
+#logo-and-title #logo img {
+  width: 8em;
+  height: 8em;
+  border-radius: 4em;
+  -moz-border-radius: 4em;
+  -webkit-border-radius: 4em;
   border: none;
+  display: block;
 }
 #follow-icons {
   font-size: 1em;
@@ -318,17 +323,13 @@ footer a:hover {
   text-decoration: none;
 }
 /* Large Screens */
-@media only screen and (min-width: 1281px) {
-  html,
-  body {
-    /* font-size: 1.1em; */
-  }
+@media only screen and (min-width: 1200px) {
   figure {
     margin-left: -2em;
   }
 }
 /* Small Screens */
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 1199px) {
   body {
     padding: 0;
   }
@@ -339,7 +340,24 @@ footer a:hover {
     height: auto;
     width: auto;
     text-align: center;
-    padding-bottom: 1em;
+    padding: 3.5em 1em 1em 1em;
+  }
+  #logo-and-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #logo-and-title h1 {
+    margin: 0;
+    font-size: 2em;
+  }
+  #logo-and-title #logo img {
+    width: 4em;
+    height: 4em;
+    border-radius: 2em;
+    -moz-border-radius: 2em;
+    -webkit-border-radius: 25em;
+    margin-right: 1.25em;
   }
   #content {
     margin-left: 0;
@@ -351,9 +369,12 @@ footer a:hover {
   }
 }
 /* Tiny Screens */
-@media only screen and (max-width: 320px) {
+@media only screen and (max-width: 360px) {
   header {
-    padding: 1.2em 1.2em 0.6em 1.2em;
+    padding: 1.4em 1.2em 0.6em 1.2em;
+  }
+  #logo-and-title #logo img {
+    display: none;
   }
   #content {
     padding: 1.2em 1.2em 0.6em 1.2em;
@@ -372,7 +393,7 @@ footer a:hover {
 #expand-mobile-header-button-container {
   display: none;
 }
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 1199px) {
   header {
     display: none;
   }
@@ -445,7 +466,7 @@ footer a:hover {
   background-image: none !important;
   border-right: 1px solid #444;
 }
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 1199px) {
   .dark-mode header {
     border-right: none;
     border-bottom: 1px solid #444;
