@@ -9,7 +9,7 @@
                         <link href='//fonts.googleapis.com/css?family=Inter:400italic,700italic,400,700&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=1a8304be59">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=5f30b01520">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=1a8304be59">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=5f30b01520">
 	<meta property="og:title" content="Setting Up DKIM And SRS In Postfix" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="In my previous post Custom Domain E-mails With Postfix And Gmail: The Missing
@@ -31,7 +31,7 @@ Tutorial
 with Gmail.
 
 However, the tutorial skipped two important security standards that will help
-prevent e-mails..."/>
+prevent e-mails routed..."/>
 
 	    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/2023/01/me-6-circular.png" type="image/png" />
     <link rel="canonical" href="https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/" />
@@ -48,7 +48,7 @@ Tutorial
 with Gmail.
 
 However, the tutorial skipped two important security standards that will help
-prevent e-mails" />
+prevent e-mails routed" />
     <meta property="og:url" content="https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/" />
     <meta property="article:published_time" content="2014-12-09T08:06:00.000Z" />
     <meta property="article:modified_time" content="2021-02-12T21:31:19.000Z" />
@@ -64,7 +64,7 @@ Tutorial
 with Gmail.
 
 However, the tutorial skipped two important security standards that will help
-prevent e-mails" />
+prevent e-mails routed" />
     <meta name="twitter:url" content="https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Chuan Ji" />
@@ -112,9 +112,9 @@ prevent e-mails" />
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.3" />
+    <meta name="generator" content="Ghost 5.32" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
-    <script defer src="https://unpkg.com/@tryghost/portal@~2.3.0/umd/portal.min.js" data-ghost="https://jichu4n.com/" data-key="1e7b8730b75794685463d33094" data-api="https://jichu4n.com/ghost/api/content/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
+    <script defer src="https://cdn.jsdelivr.net/ghost/portal@~2.24/umd/portal.min.js" data-ghost="https://jichu4n.com/" data-key="1e7b8730b75794685463d33094" data-api="https://jichu4n.com/ghost/api/content/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
 .gh-post-upgrade-cta {
     display: flex;
     flex-direction: column;
@@ -178,9 +178,11 @@ prevent e-mails" />
 .gh-post-upgrade-cta a.gh-btn:hover {
     opacity: 0.92;
 }</style>
-    <script defer src="https://unpkg.com/@tryghost/sodo-search@~1.0.0/umd/sodo-search.min.js" data-sodo-search="https://jichu4n.com/" data-version="1.0.0" data-key="1e7b8730b75794685463d33094" crossorigin="anonymous"></script>
-    <script defer src="/public/cards.min.js?v=1a8304be59"></script>
-    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=1a8304be59">
+    <script defer src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/sodo-search.min.js" data-key="1e7b8730b75794685463d33094" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/main.css" data-sodo-search="https://jichu4n.com/" crossorigin="anonymous"></script>
+    <link href="https://jichu4n.com/webmentions/receive/" rel="webmention" />
+    <script defer src="/public/cards.min.js?v=5f30b01520"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=5f30b01520">
+    <script defer src="/public/member-attribution.min.js?v=5f30b01520"></script>
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -215,8 +217,8 @@ prevent e-mails" />
 			<h6></h6>
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
-	<a href="http://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
-	<a href="mailto:chuan@jichu4n.com" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+	<a href="https://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	<a href="/cdn-cgi/l/email-protection#0e6d667b6f604e64676d667b3a60206d6163" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
 </div>                                                                  
 
 <!--
@@ -242,7 +244,7 @@ prevent e-mails" />
   <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Dark mode toggle button handler.
   $(document).ready(function() {
     $('#dark-mode-toggle-button').click(function() {
@@ -299,10 +301,10 @@ prevent e-mails" />
 	<div class="post-stamp">December 9, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
 	<h1 class="post-title">Setting Up DKIM And SRS In Postfix</h1>
 	<!--kg-card-begin: markdown--><p>In my previous post <a href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/"><em>Custom Domain E-mails With Postfix And Gmail: The Missing Tutorial</em></a>, we set up a Postfix mail server on a custom domain that integrates seamlessly with Gmail.</p>
-<p>However, the tutorial skipped two important security standards that will help prevent e-mails routed through our server from being marked as spam: <a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a> and <a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>. This article will show you how to add support for DKIM and SRS to a Postfix server.</p>
+<p>However, the tutorial skipped two important security standards that will help prevent e-mails routed through our server from being marked as spam: <a href="https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a> and <a href="https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>. This article will show you how to add support for DKIM and SRS to a Postfix server.</p>
 <p>Similar to the <a href="https://jichu4n.com/posts/custom-domain-e-mails-with-postfix-and-gmail-the-missing-tutorial/">previous tutorial</a>, we will assume a Ubuntu server in our examples.</p>
 <h1 id="step1dkim">Step 1: DKIM</h1>
-<p><a href="http://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is a mechanism for</p>
+<p><a href="https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail">DKIM</a>, short for <em>DomainKeys Identified Mail</em>, is a mechanism for</p>
 <ol>
 <li>
 <p>A sender e-mail program to sign an outgoing e-mail message, and</p>
@@ -398,8 +400,8 @@ non_smtpd_milters = inet:localhost:12301
 </code></pre>
 <p>…and we’re done!</p>
 <h1 id="step2srs">Step 2: SRS</h1>
-<p><a href="http://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a standard for including forwarding / relay information in a forwarded / relayed e-mail message.</p>
-<p>For example, suppose <code>alice@hotmail.com</code> sends an e-mail to <code>john@example.com</code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code>john123@gmail.com</code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
+<p><a href="https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a standard for including forwarding / relay information in a forwarded / relayed e-mail message.</p>
+<p>For example, suppose <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4f2e23262c2a0f27203b222e2623612c2022">[email&#160;protected]</a></code> sends an e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3e545156507e5b465f534e525b105d5153">[email&#160;protected]</a></code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="90fafff8fea1a2a3d0f7fdf1f9fcbef3fffd">[email&#160;protected]</a></code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
 <p>We will use <a href="https://github.com/roehling/postsrsd">PostSRSd</a> to implement SRS in our Postfix server. It works out of the box with Postfix and is a breeze to set up, but unfortunately is not included in the official Ubuntu / Debian package repositories.</p>
 <h2 id="opensrsd">OpenSRSd</h2>
 <p>Let’s build and install OpenSRSd from source:</p>
@@ -440,7 +442,7 @@ recipient_canonical_classes= envelope_recipient,header_recipient
 	<div id="social-bar">
 	<ul class="rrssb-buttons clearfix">
       <li class="email">
-          <a href="mailto:?subject=Setting%20Up%20DKIM%20And%20SRS%20In%20Postfix&amp;body=https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/">
+          <a href="/cdn-cgi/l/email-protection#427d313720282721367f112736362b2c25677072173267707206090b0f677072032c266770721110116770720b2c677072122d3136242b3a64232f3279202d263b7f2a36363231786d6d252a2d31366c212a37762c6c212d2f6d322d3136316d312736362b2c256f37326f26292b2f6f232c266f3130316f2b2c6f322d3136242b3a6d">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
@@ -460,7 +462,7 @@ recipient_canonical_classes= envelope_recipient,header_recipient
           </a>
       </li>
 			<li class="twitter">
-          <a href="http://twitter.com/home?status=Setting%20Up%20DKIM%20And%20SRS%20In%20Postfix%20https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/" class="popup">
+          <a href="https://twitter.com/home?status=Setting%20Up%20DKIM%20And%20SRS%20In%20Postfix%20https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/" class="popup">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
 		                  <path d="M24.253,8.756C24.689,17.08,18.297,24.182,9.97,24.62c-3.122,0.162-6.219-0.646-8.861-2.32 c2.703,0.179,5.376-0.648,7.508-2.321c-2.072-0.247-3.818-1.661-4.489-3.638c0.801,0.128,1.62,0.076,2.399-0.155 C4.045,15.72,2.215,13.6,2.115,11.077c0.688,0.275,1.426,0.407,2.168,0.386c-2.135-1.65-2.729-4.621-1.394-6.965 C5.575,7.816,9.54,9.84,13.803,10.071c-0.842-2.739,0.694-5.64,3.434-6.482c2.018-0.623,4.212,0.044,5.546,1.683 c1.186-0.213,2.318-0.662,3.329-1.317c-0.385,1.256-1.247,2.312-2.399,2.942c1.048-0.106,2.069-0.394,3.019-0.851 C26.275,7.229,25.39,8.196,24.253,8.756z"/>
@@ -477,7 +479,7 @@ Tutorial
 with Gmail.
 
 However, the tutorial skipped two important security standards that will help
-prevent e-mails..." class="popup">
+prevent e-mails routed..." class="popup">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path d="M25.424,15.887v8.447h-4.896v-7.882c0-1.979-0.709-3.331-2.48-3.331c-1.354,0-2.158,0.911-2.514,1.803 c-0.129,0.315-0.162,0.753-0.162,1.194v8.216h-4.899c0,0,0.066-13.349,0-14.731h4.899v2.088c-0.01,0.016-0.023,0.032-0.033,0.048 h0.033V11.69c0.65-1.002,1.812-2.435,4.414-2.435C23.008,9.254,25.424,11.361,25.424,15.887z M5.348,2.501 c-1.676,0-2.772,1.092-2.772,2.539c0,1.421,1.066,2.538,2.717,2.546h0.032c1.709,0,2.771-1.132,2.771-2.546 C8.054,3.593,7.019,2.501,5.343,2.501H5.348z M2.867,24.334h4.897V9.603H2.867V24.334z"/>
@@ -487,7 +489,7 @@ prevent e-mails..." class="popup">
           </a>
       </li>
       <li class="tumblr">
-					<script>
+					<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 						document.write('<a href="http://www.tumblr.com/share?v=3&amp;u=' + encodeURIComponent('https://jichu4n.com/posts/setting-up-dkim-and-srs-in-postfix/') + '&amp;t=Setting%20Up%20DKIM%20And%20SRS%20In%20Postfix" class="popup">');
 					</script>
               <span class="icon">
@@ -558,7 +560,7 @@ prevent e-mails..." class="popup">
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=1a8304be59"></script>
+<script src="/assets/js/rrssb.min.js?v=5f30b01520"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>

@@ -9,7 +9,7 @@
                         <link href='//fonts.googleapis.com/css?family=Inter:400italic,700italic,400,700&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=1a8304be59">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=5f30b01520">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=1a8304be59">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=5f30b01520">
 	<meta property="og:title" content="How X Window Managers Work, And How To Write One (Part I)" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="Window managers are one of the core components of the modern Linux/BSD desktop.
@@ -100,9 +100,9 @@ windows look, move around, react to input, and organize themselves." />
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.3" />
+    <meta name="generator" content="Ghost 5.32" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
-    <script defer src="https://unpkg.com/@tryghost/portal@~2.3.0/umd/portal.min.js" data-ghost="https://jichu4n.com/" data-key="1e7b8730b75794685463d33094" data-api="https://jichu4n.com/ghost/api/content/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
+    <script defer src="https://cdn.jsdelivr.net/ghost/portal@~2.24/umd/portal.min.js" data-ghost="https://jichu4n.com/" data-key="1e7b8730b75794685463d33094" data-api="https://jichu4n.com/ghost/api/content/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
 .gh-post-upgrade-cta {
     display: flex;
     flex-direction: column;
@@ -166,9 +166,11 @@ windows look, move around, react to input, and organize themselves." />
 .gh-post-upgrade-cta a.gh-btn:hover {
     opacity: 0.92;
 }</style>
-    <script defer src="https://unpkg.com/@tryghost/sodo-search@~1.0.0/umd/sodo-search.min.js" data-sodo-search="https://jichu4n.com/" data-version="1.0.0" data-key="1e7b8730b75794685463d33094" crossorigin="anonymous"></script>
-    <script defer src="/public/cards.min.js?v=1a8304be59"></script>
-    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=1a8304be59">
+    <script defer src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/sodo-search.min.js" data-key="1e7b8730b75794685463d33094" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/main.css" data-sodo-search="https://jichu4n.com/" crossorigin="anonymous"></script>
+    <link href="https://jichu4n.com/webmentions/receive/" rel="webmention" />
+    <script defer src="/public/cards.min.js?v=5f30b01520"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=5f30b01520">
+    <script defer src="/public/member-attribution.min.js?v=5f30b01520"></script>
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -203,8 +205,8 @@ windows look, move around, react to input, and organize themselves." />
 			<h6></h6>
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
-	<a href="http://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
-	<a href="mailto:chuan@jichu4n.com" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+	<a href="https://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	<a href="/cdn-cgi/l/email-protection#a1c2c9d4c0cfe1cbc8c2c9d495cf8fc2cecc" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
 </div>                                                                  
 
 <!--
@@ -230,7 +232,7 @@ windows look, move around, react to input, and organize themselves." />
   <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Dark mode toggle button handler.
   $(document).ready(function() {
     $('#dark-mode-toggle-button').click(function() {
@@ -286,9 +288,9 @@ windows look, move around, react to input, and organize themselves." />
 			<article id="5bc6cde4f21e630001a84ab4" class="post tag-window-manager tag-technical-notes no-image">
 	<div class="post-stamp">April 10, 2014<span class="taglist"> &middot; <a href="/tag/window-manager/">Window Manager</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
 	<h1 class="post-title">How X Window Managers Work, And How To Write One (Part I)</h1>
-	<!--kg-card-begin: markdown--><p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves. Hence, almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager">the first X window manager</a>, we still argue over the merits of different window managers, and new window managers continue to reinvent how we interact with our digital world.</p>
+	<!--kg-card-begin: markdown--><p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves. Hence, almost 30 years since <a href="https://en.wikipedia.org/wiki/Ultrix_Window_Manager">the first X window manager</a>, we still argue over the merits of different window managers, and new window managers continue to reinvent how we interact with our digital world.</p>
 <p>In this series of posts, I hope to demystify how window managers work, and how you might go about writing one yourself.</p>
-<p>I will be quoting quite heavily from the seminal <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O’Reilly. Despite its age, it remains amazingly relevant and is the best available introductory text to the internals of X, which has not changed over the past two decades as much as you’d think. Since you could buy the book plus shipping for less than the price of a cup of coffee, I strongly recommend it to anyone interested in learning more about X. In addition, its chapter 16 also covers the basics of window management.</p>
+<p>I will be quoting quite heavily from the seminal <a href="https://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O’Reilly. Despite its age, it remains amazingly relevant and is the best available introductory text to the internals of X, which has not changed over the past two decades as much as you’d think. Since you could buy the book plus shipping for less than the price of a cup of coffee, I strongly recommend it to anyone interested in learning more about X. In addition, its chapter 16 also covers the basics of window management.</p>
 <h1 id="theroleofanxwindowmanager">The Role of an X Window Manager</h1>
 <p>Let’s start with an examination of the role of the window manager in a modern Linux/BSD desktop environment.</p>
 <h2 id="therightsofxwindowmanagers">The Rights of X Window Managers</h2>
@@ -304,7 +306,7 @@ windows look, move around, react to input, and organize themselves." />
 </blockquote>
 <p>This is in stark contrast to the integrative approach of other GUI systems. On Mac OS X and <a href="https://unity.ubuntu.com/">Unity</a>, for example, an application could not possibly function without the window manager, as the latter is responsible for rendering a part of the application’s interface (e.g., menus).</p>
 <h2 id="theresponsibilitiesofxwindowmanagers">The Responsibilities of X Window Managers</h2>
-<p>As you probably already know, X operates in a server-client model. An X <em>server</em> controls one or more physical display devices as well as input devices (mouse, keyboard, etc.). An application that wants to interact with these devices assumes the role of an X <em>client</em>. An X server and its clients may run on the same computer, in which case they communicate via <a href="http://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different computers, in which case they communicate through TCP/IP.</p>
+<p>As you probably already know, X operates in a server-client model. An X <em>server</em> controls one or more physical display devices as well as input devices (mouse, keyboard, etc.). An application that wants to interact with these devices assumes the role of an X <em>client</em>. An X server and its clients may run on the same computer, in which case they communicate via <a href="https://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different computers, in which case they communicate through TCP/IP.</p>
 <p><strong>A window manager is a regular X client.</strong> It doesn’t have any superuser privileges or keys to kernel backdoors; it is a normal user process that is allowed by the X server to call a set of special APIs. X ensures that no more than one window manager is running at any given point by denying a client access to these APIs if another client currently has access. The first client to attempt to access these APIs always succeeds.</p>
 <p>A window manager communicates with the windows it manages through two X mechanisms: properties and events. We will discuss these in detail in later sections, but the takeaway is that the communication happens through the X server, not directly between the window manager and other applications.</p>
 <p>This is illustrated by the following diagram:</p>
@@ -359,13 +361,13 @@ windows look, move around, react to input, and organize themselves." />
 <p>If a window manager does not draw window decorations around top level windows , it obviously has no need to reparent them. Examples: <a href="http://xmonad.org">xmonad</a>, <a href="http://dwm.suckless.org">dwm</a>.</p>
 </li>
 <li>
-<p>Compositing window managers do not always need to reparent windows; we will discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true for all compositing window managers, however; for example, GNOME’s default window manager, <a href="http://github.com/GNOME/mutter/">Mutter</a>, is a reparenting comopositing window manager.</p>
+<p>Compositing window managers do not always need to reparent windows; we will discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true for all compositing window managers, however; for example, GNOME’s default window manager, <a href="https://github.com/GNOME/mutter/">Mutter</a>, is a reparenting comopositing window manager.</p>
 </li>
 </ol>
 <p>Let’s now consider substructure redirection in the context of reparenting. When a top level window <em>W</em> is first shown (<em>map</em>'ped in X jargon), the window manager is notified because it has registered for substructure redirection on the root window, and a top level window is a direct child of the root window. It then creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes a child of <em>F</em>, which itself is a child of the root window. But since now <em>W</em> is no longer a direct child of the root window, the window manager will no longer be able to intercept changes to <em>W</em>!</p>
 <p>Therefore, a reparenting window manager must also subsequently register for substructure redirection on each frame window it creates.</p>
 <h2 id="compositing">Compositing</h2>
-<p>Compositing window managers are a relatively new development. Compositing support in X was added in late 2004, a full decade after the last edition of <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>. The first compositing window managers, <a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early 2005.</p>
+<p>Compositing window managers are a relatively new development. Compositing support in X was added in late 2004, a full decade after the last edition of <a href="https://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>. The first compositing window managers, <a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early 2005.</p>
 <p>So, what exactly does a compositing window manager do?</p>
 <p>In our discussion above on substructure redirection and reparenting, we saw how a window manager can respond to various requests for a top level window - to display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But we didn’t talk about how to deal with what’s <em>inside</em> the top level windows.</p>
 <p>Indeed, from the perspective of the window manager, top level windows are black boxes; they each manage their own descendant windows (UI elements), perhaps through a framework such as <a href="http://www.gtk.org">GTK+</a> or <a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere there. The application that creates a top level window is responsible for rendering and handling events for any descendant windows (UI elements), and does so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p>
@@ -439,7 +441,7 @@ windows look, move around, react to input, and organize themselves." />
 	<div id="social-bar">
 	<ul class="rrssb-buttons clearfix">
       <li class="email">
-          <a href="mailto:?subject=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20I)&amp;body=https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">
+          <a href="/cdn-cgi/l/email-protection#eed19d9b8c848b8d9ad3a68199cbdcdeb6cbdcdeb987808a8199cbdcdea38f808f898b9c9dcbdcdeb9819c85cbdcadcbdcdeaf808acbdcdea68199cbdcdeba81cbdcdeb99c879a8bcbdcdea1808bcbdcdec6be8f9c9acbdcdea7c7c88f839ed58c818a97d3869a9a9e9dd4c1c18986819d9ac08d869bda80c08d8183c19e819d9a9dc1868199c396c39987808a8199c3838f808f898b9c9dc399819c85c38f808ac3868199c39a81c3999c879a8bc381808bc39e8f9c9ac387c1">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
@@ -459,7 +461,7 @@ windows look, move around, react to input, and organize themselves." />
           </a>
       </li>
 			<li class="twitter">
-          <a href="http://twitter.com/home?status=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20I)%20https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" class="popup">
+          <a href="https://twitter.com/home?status=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20I)%20https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" class="popup">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
 		                  <path d="M24.253,8.756C24.689,17.08,18.297,24.182,9.97,24.62c-3.122,0.162-6.219-0.646-8.861-2.32 c2.703,0.179,5.376-0.648,7.508-2.321c-2.072-0.247-3.818-1.661-4.489-3.638c0.801,0.128,1.62,0.076,2.399-0.155 C4.045,15.72,2.215,13.6,2.115,11.077c0.688,0.275,1.426,0.407,2.168,0.386c-2.135-1.65-2.729-4.621-1.394-6.965 C5.575,7.816,9.54,9.84,13.803,10.071c-0.842-2.739,0.694-5.64,3.434-6.482c2.018-0.623,4.212,0.044,5.546,1.683 c1.186-0.213,2.318-0.662,3.329-1.317c-0.385,1.256-1.247,2.312-2.399,2.942c1.048-0.106,2.069-0.394,3.019-0.851 C26.275,7.229,25.39,8.196,24.253,8.756z"/>
@@ -482,7 +484,7 @@ windows look, move around, react to input, and organize themselves...." class="p
           </a>
       </li>
       <li class="tumblr">
-					<script>
+					<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 						document.write('<a href="http://www.tumblr.com/share?v=3&amp;u=' + encodeURIComponent('https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/') + '&amp;t=How%20X%20Window%20Managers%20Work%2C%20And%20How%20To%20Write%20One%20(Part%20I)" class="popup">');
 					</script>
               <span class="icon">
@@ -553,7 +555,7 @@ windows look, move around, react to input, and organize themselves...." class="p
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=1a8304be59"></script>
+<script src="/assets/js/rrssb.min.js?v=5f30b01520"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>

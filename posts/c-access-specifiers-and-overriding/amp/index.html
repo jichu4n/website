@@ -122,7 +122,7 @@ int main() {
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.3" />
+    <meta name="generator" content="Ghost 5.32" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
 
     <style amp-custom>
@@ -298,6 +298,16 @@ int main() {
 
     amp-img img {
         object-fit: cover;
+    }
+    
+    amp-youtube {
+        height: calc(100vw / 1.78);
+        width: 100vw;
+        position: relative;
+    }
+
+    amp-youtube img {
+        position: absolute;
     }
 
     .page-header {

@@ -9,7 +9,7 @@
                         <link href='//fonts.googleapis.com/css?family=Inter:400italic,700italic,400,700&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=1a8304be59">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=5f30b01520">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=1a8304be59">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=5f30b01520">
 	<meta property="og:title" content="How Rooting Works: A Technical Explanation of the Android Rooting Process" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="I have always been curious how rooting actually worked behind the scenes. After
@@ -100,9 +100,9 @@ of hardware with so much potential led" />
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.3" />
+    <meta name="generator" content="Ghost 5.32" />
     <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
-    <script defer src="https://unpkg.com/@tryghost/portal@~2.3.0/umd/portal.min.js" data-ghost="https://jichu4n.com/" data-key="1e7b8730b75794685463d33094" data-api="https://jichu4n.com/ghost/api/content/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
+    <script defer src="https://cdn.jsdelivr.net/ghost/portal@~2.24/umd/portal.min.js" data-ghost="https://jichu4n.com/" data-key="1e7b8730b75794685463d33094" data-api="https://jichu4n.com/ghost/api/content/" crossorigin="anonymous"></script><style id="gh-members-styles">.gh-post-upgrade-cta-content,
 .gh-post-upgrade-cta {
     display: flex;
     flex-direction: column;
@@ -166,9 +166,11 @@ of hardware with so much potential led" />
 .gh-post-upgrade-cta a.gh-btn:hover {
     opacity: 0.92;
 }</style>
-    <script defer src="https://unpkg.com/@tryghost/sodo-search@~1.0.0/umd/sodo-search.min.js" data-sodo-search="https://jichu4n.com/" data-version="1.0.0" data-key="1e7b8730b75794685463d33094" crossorigin="anonymous"></script>
-    <script defer src="/public/cards.min.js?v=1a8304be59"></script>
-    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=1a8304be59">
+    <script defer src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/sodo-search.min.js" data-key="1e7b8730b75794685463d33094" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/main.css" data-sodo-search="https://jichu4n.com/" crossorigin="anonymous"></script>
+    <link href="https://jichu4n.com/webmentions/receive/" rel="webmention" />
+    <script defer src="/public/cards.min.js?v=5f30b01520"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=5f30b01520">
+    <script defer src="/public/member-attribution.min.js?v=5f30b01520"></script>
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -203,8 +205,8 @@ of hardware with so much potential led" />
 			<h6></h6>
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
-	<a href="http://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
-	<a href="mailto:chuan@jichu4n.com" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+	<a href="https://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	<a href="/cdn-cgi/l/email-protection#1f7c776a7e715f75767c776a2b71317c7072" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
 </div>                                                                  
 
 <!--
@@ -230,7 +232,7 @@ of hardware with so much potential led" />
   <i class="fa fa-sun-o"></i> / <i class="fa fa-moon-o"></i>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Dark mode toggle button handler.
   $(document).ready(function() {
     $('#dark-mode-toggle-button').click(function() {
@@ -290,13 +292,13 @@ of hardware with so much potential led" />
 <p>This is NOT a noob-friendly guide to rooting a particular Android device. Rather, it is a general explanation of how stock Android ROMs try to prevent unprivileged access, how hackers attack this problem and how rooting software leverage various exploits to defeat these security mechanisms.</p>
 <h1 id="ithegoal">I. The Goal</h1>
 <p>Let us first take a step back and consider <em>exactly</em> what we mean by rooting. Forget flashing custom ROMs, enabling WiFi tethering or installing Superuser.apk; fundamentally, rooting is about obtaining root access to the underlying Linux system beneath Android and thus gaining absolute control over the software that is running on the device. Things that require root access on a typical Linux system — mounting and unmounting file systems, starting your favorite SSH or HTTP or DHCP or DNS or proxy servers, killing system processes, chroot-ing, etc., — require root access on Android as well. Being able to run arbitrary commands as the root user allows you to do absolutely <em>anything</em> on a Linux / Android system, and this is real goal of rooting.</p>
-<p>Stock OEM Android builds typically do not allow users to execute arbitrary code as root. This essentially means that you as a user are granted only limited control over your own device; you can make your device do task <em>X</em> only if the manufacturer explicitly decided to allow it and shipped a program to do it. You will not be able to use third-party apps to accomplish a task that your manufacturer does not wish you to do. WiFi tethering is a good example of this. Cell phone carriers obviously do not want you to tether your phone without paying them additional charges. Therefore, many phones come pre-packaged with their own proprietary WiFi tethering apps that demand extraneous fees. But without root access, you will not be able to install a free alternative like <a href="http://code.google.com/p/android-wifi-tether/">Wireless Tether For Root Users</a>. Why this is accepted practice in the industry is a mystery to me. The only difference between cell phones, tablets and computers is their form factor; but while a PC vendor would fail spectacularly if they tried to prevent users from running arbitrary programs on their machines, cell phone vendors are clearly not judged along the same lines. But such arguments would belong to another article.</p>
+<p>Stock OEM Android builds typically do not allow users to execute arbitrary code as root. This essentially means that you as a user are granted only limited control over your own device; you can make your device do task <em>X</em> only if the manufacturer explicitly decided to allow it and shipped a program to do it. You will not be able to use third-party apps to accomplish a task that your manufacturer does not wish you to do. WiFi tethering is a good example of this. Cell phone carriers obviously do not want you to tether your phone without paying them additional charges. Therefore, many phones come pre-packaged with their own proprietary WiFi tethering apps that demand extraneous fees. But without root access, you will not be able to install a free alternative like <a href="https://code.google.com/p/android-wifi-tether/">Wireless Tether For Root Users</a>. Why this is accepted practice in the industry is a mystery to me. The only difference between cell phones, tablets and computers is their form factor; but while a PC vendor would fail spectacularly if they tried to prevent users from running arbitrary programs on their machines, cell phone vendors are clearly not judged along the same lines. But such arguments would belong to another article.</p>
 <h1 id="iitheenemyprotectionmechanismsonastockoemandroidrom">II. The Enemy: Protection Mechanisms On A Stock OEM Android ROM</h1>
 <h2 id="bootloaderandrecovery">Bootloader and Recovery</h2>
 <p>The bootloader, the first piece of code executed when your device is powered on, is responsible for loading the Android OS and the recovery system and flashing a new ROM. People refer to some bootloaders as &quot;unlocked&quot; if a user can flash and boot arbitrary ROMs without hacking; unfortunately, many Android devices have locked bootloaders that you would have to hack around in order to make them do anything other than boot the stock ROM. A Samsung smartphone I had used some months ago had an unlocked bootloader; I could press a certain combination of hardware keys on the phone, connect it to my computer, and flash any custom ROM onto it using Samsung’s utilities without having to circumvent any protection mechanisms. The same is not true for my Motorola Droid 2 Global; the bootloader, as far as I know, cannot be hacked. The Eee Pad Slider, on the other hand, is an interesting beast; as with other nVidia Tegra 2 based devices, its bootloader is controllable through the <code>nvflash</code> utility, but only if you know the <em>secure boot key</em> (SBK) of the device. (The SBK is a private AES key used to encrypt the commands sent to the bootloader; the bootloader will only accept the command if it has been encrypted by the particular key of the device.) Currently, as the SBK of the Eee Pad Slider is not publicly known, the bootloader remains inaccessible.</p>
 <p>System recovery is the second piece of low-level code on board any Android device. It is separate from the Android userland and is typically located on its own partition; it is usually booted by the bootloader when you press a certain combination of hardware keys. It is important to understand that it is a totally independent program; Linux and the Android userland is not loaded when you boot into recovery, and any high-level concept such as root does not exist here. It is simple program that really is a very primitive OS, and it has absolute control over the system and will do anything you want as long as the code to do it is built in. Stock recovery varies with the manufacturer, but often includes functionalities like reformatting the <code>/data</code> partition (factory reset) and flashing an update ROM (<code>update.zip</code>, located at the root of the external microSD card) signed by the manufacturer. Note I said <em>signed by the manufacturer</em>; typically it is not possible to flash custom update files unless you obtain the private key of the manufacturer and sign your custom update with it, which is both impossible for most and illegal under certain jurisdictions. However, since recovery is stored in a partition just like <code>/system</code>, <code>/data</code> and <code>/cache</code> (more about that later), you can replace it with a custom recovery if you have root access in Linux / Android. Most people do just that upon rooting their device; <a href="http://www.clockworkmod.com/">ClockworkMod Recovery</a> is a popular third-party recovery image, and allows you to flash arbitrary ROMs, backup and restore partitions, and lots of other magic.</p>
 <h2 id="adb">ADB</h2>
-<p>ADB (see <a href="http://developer.android.com/guide/developing/tools/adb.html">the official documentation for ADB</a>) allows a PC or a Mac to connect to an Android device and perform certain operations. One such operation is to launch a simple shell on the device, using the command <code>adb shell</code>. The real question is what user do the commands executed by that shell process run as. It turns out that it depends on the value of an Android system property, named <code>ro.secure</code>. (You can view the value of this property by typing <code>getprop ro.secure</code> either through an ADB shell or on a terminal emulator on the device.) If <code>ro.secure=0</code>, an ADB shell will run commands as the root user on the device. But if <code>ro.secure=1</code>, an ADB shell will run commands as an unprivileged user on the device. Guess what <code>ro.secure</code> is set to on almost every stock OEM Android build. But can we change the value of <code>ro.secure</code> on a system? The answer is no, as implied by the <code>ro</code> in the name of the property. The value of this property is set at boot time from the <code>default.prop</code> file in the root directory. The contents of the root directory are essentially <em>copied</em> from a partition in the internal storage on boot, but you cannot write to the partition if you are not already root. In other words, this property denies root access via ADB, and the only way you could change it is by gaining root access in the first place. Thus, it is secure.</p>
+<p>ADB (see <a href="https://developer.android.com/guide/developing/tools/adb.html">the official documentation for ADB</a>) allows a PC or a Mac to connect to an Android device and perform certain operations. One such operation is to launch a simple shell on the device, using the command <code>adb shell</code>. The real question is what user do the commands executed by that shell process run as. It turns out that it depends on the value of an Android system property, named <code>ro.secure</code>. (You can view the value of this property by typing <code>getprop ro.secure</code> either through an ADB shell or on a terminal emulator on the device.) If <code>ro.secure=0</code>, an ADB shell will run commands as the root user on the device. But if <code>ro.secure=1</code>, an ADB shell will run commands as an unprivileged user on the device. Guess what <code>ro.secure</code> is set to on almost every stock OEM Android build. But can we change the value of <code>ro.secure</code> on a system? The answer is no, as implied by the <code>ro</code> in the name of the property. The value of this property is set at boot time from the <code>default.prop</code> file in the root directory. The contents of the root directory are essentially <em>copied</em> from a partition in the internal storage on boot, but you cannot write to the partition if you are not already root. In other words, this property denies root access via ADB, and the only way you could change it is by gaining root access in the first place. Thus, it is secure.</p>
 <h2 id="androidui">Android UI</h2>
 <p>On an Android system, all Android applications that you can see or interact with directly are running as _un_privileged users in sandboxes. Logically, a program running as an unprivileged user cannot start another program that is run as the privileged user; otherwise any program can simply start another copy of itself in privileged mode and gain privileged access to everything. On the other hand, a program running as root can start another program as root or as an unprivileged user. On Linux, privilege escalation is usually accomplished via the <code>su</code> and <code>sudo</code> programs; they are often the only programs in the system that are able to execute the system call <code>setuid(0)</code> that changes the current program from running as an unprivileged user to running as root. Apps that label themselves as requiring root are in reality just executing other programs (often just native binaries packaged with the app) through <code>su</code>. Unsurprisingly, stock OEM ROMs never come with these <code>su</code>. You cannot just download it or copy it over either; it needs to have its SUID bit set, which indicates to the system that the programs this allowed to escalate its runtime privileges to root. But of course, if you are not root, you cannot set the SUID bit on a program. To summarize, what this means is that any program that you can interact with on Android (and hence running in unprivileged mode) is unable to either 1) gain privileged access and execute in privileged mode, or 2) start another program that executes in privileged mode. If this holds, the Android system by itself is pretty much immune to privilege escalation attempts. We will see the loophole exploited by on-device rooting applications in the next section.</p>
 <h1 id="iiifightingthesystem">III. Fighting the System</h1>
@@ -313,7 +315,7 @@ of hardware with so much potential led" />
 	<div id="social-bar">
 	<ul class="rrssb-buttons clearfix">
       <li class="email">
-          <a href="mailto:?subject=How%20Rooting%20Works%3A%20A%20Technical%20Explanation%20of%20the%20Android%20Rooting%20Process&amp;body=https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/">
+          <a href="/cdn-cgi/l/email-protection#053a7670676f606671384d6a72203735576a6a716c6b62203735526a776e76203644203735442037355160666d6b6c666469203735407d7569646b64716c6a6b2037356a63203735716d60203735446b61776a6c61203735576a6a716c6b6220373555776a66607676236468753e676a617c386d717175763f2a2a626d6a76712b666d70316b2b666a682a756a7671762a6d6a7228776a6a716c6b6228726a776e762864287160666d6b6c66646928607d7569646b64716c6a6b286a6328716d6028646b61776a6c6128776a6a716c6b622875776a666076762a">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
@@ -333,7 +335,7 @@ of hardware with so much potential led" />
           </a>
       </li>
 			<li class="twitter">
-          <a href="http://twitter.com/home?status=How%20Rooting%20Works%3A%20A%20Technical%20Explanation%20of%20the%20Android%20Rooting%20Process%20https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/" class="popup">
+          <a href="https://twitter.com/home?status=How%20Rooting%20Works%3A%20A%20Technical%20Explanation%20of%20the%20Android%20Rooting%20Process%20https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/" class="popup">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
 		                  <path d="M24.253,8.756C24.689,17.08,18.297,24.182,9.97,24.62c-3.122,0.162-6.219-0.646-8.861-2.32 c2.703,0.179,5.376-0.648,7.508-2.321c-2.072-0.247-3.818-1.661-4.489-3.638c0.801,0.128,1.62,0.076,2.399-0.155 C4.045,15.72,2.215,13.6,2.115,11.077c0.688,0.275,1.426,0.407,2.168,0.386c-2.135-1.65-2.729-4.621-1.394-6.965 C5.575,7.816,9.54,9.84,13.803,10.071c-0.842-2.739,0.694-5.64,3.434-6.482c2.018-0.623,4.212,0.044,5.546,1.683 c1.186-0.213,2.318-0.662,3.329-1.317c-0.385,1.256-1.247,2.312-2.399,2.942c1.048-0.106,2.069-0.394,3.019-0.851 C26.275,7.229,25.39,8.196,24.253,8.756z"/>
@@ -356,7 +358,7 @@ of hardware with so much potential led..." class="popup">
           </a>
       </li>
       <li class="tumblr">
-					<script>
+					<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 						document.write('<a href="http://www.tumblr.com/share?v=3&amp;u=' + encodeURIComponent('https://jichu4n.com/posts/how-rooting-works-a-technical-explanation-of-the-android-rooting-process/') + '&amp;t=How%20Rooting%20Works%3A%20A%20Technical%20Explanation%20of%20the%20Android%20Rooting%20Process" class="popup">');
 					</script>
               <span class="icon">
@@ -427,7 +429,7 @@ of hardware with so much potential led..." class="popup">
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=1a8304be59"></script>
+<script src="/assets/js/rrssb.min.js?v=5f30b01520"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
