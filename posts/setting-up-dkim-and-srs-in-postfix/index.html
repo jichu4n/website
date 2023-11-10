@@ -218,7 +218,7 @@ prevent e-mails routed" />
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
 	<a href="https://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
-	<a href="/cdn-cgi/l/email-protection#b2d1dac7d3dcf2d8dbd1dac786dc9cd1dddf" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+	<a href="/cdn-cgi/l/email-protection#4c2f24392d220c26252f24397822622f2321" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
 </div>                                                                  
 
 <!--
@@ -401,7 +401,7 @@ non_smtpd_milters = inet:localhost:12301
 <p>…and we’re done!</p>
 <h1 id="step2srs">Step 2: SRS</h1>
 <p><a href="https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a standard for including forwarding / relay information in a forwarded / relayed e-mail message.</p>
-<p>For example, suppose <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b6d7dadfd5d3f6ded9c2dbd7dfda98d5d9db">[email&#160;protected]</a></code> sends an e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="90fafff8fed0f5e8f1fde0fcf5bef3fffd">[email&#160;protected]</a></code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd97929593cccfcebd9a909c9491d39e9290">[email&#160;protected]</a></code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
+<p>For example, suppose <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9dfcf1f4fef8ddf5f2e9f0fcf4f1b3fef2f0">[email&#160;protected]</a></code> sends an e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="761c191e1836130e171b061a135815191b">[email&#160;protected]</a></code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e68c898e88d7d4d5a6818b878f8ac885898b">[email&#160;protected]</a></code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
 <p>We will use <a href="https://github.com/roehling/postsrsd">PostSRSd</a> to implement SRS in our Postfix server. It works out of the box with Postfix and is a breeze to set up, but unfortunately is not included in the official Ubuntu / Debian package repositories.</p>
 <h2 id="opensrsd">OpenSRSd</h2>
 <p>Let’s build and install OpenSRSd from source:</p>
@@ -442,7 +442,7 @@ recipient_canonical_classes= envelope_recipient,header_recipient
 	<div id="social-bar">
 	<ul class="rrssb-buttons clearfix">
       <li class="email">
-          <a href="/cdn-cgi/l/email-protection#91aee2e4f3fbf4f2e5acc2f4e5e5f8fff6b4a3a1c4e1b4a3a1d5dad8dcb4a3a1d0fff5b4a3a1c2c3c2b4a3a1d8ffb4a3a1c1fee2e5f7f8e9b7f0fce1aaf3fef5e8acf9e5e5e1e2abbebef6f9fee2e5bff2f9e4a5ffbff2fefcbee1fee2e5e2bee2f4e5e5f8fff6bce4e1bcf5faf8fcbcf0fff5bce2e3e2bcf8ffbce1fee2e5f7f8e9be">
+          <a href="/cdn-cgi/l/email-protection#c7f8b4b2a5ada2a4b3fa94a2b3b3aea9a0e2f5f792b7e2f5f7838c8e8ae2f5f786a9a3e2f5f7949594e2f5f78ea9e2f5f797a8b4b3a1aebfe1a6aab7fca5a8a3befaafb3b3b7b4fde8e8a0afa8b4b3e9a4afb2f3a9e9a4a8aae8b7a8b4b3b4e8b4a2b3b3aea9a0eab2b7eaa3acaeaaeaa6a9a3eab4b5b4eaaea9eab7a8b4b3a1aebfe8">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
