@@ -212,7 +212,7 @@ support. Wouldn’t it be great if we could send and receive e-mail as" />
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
 	<a href="https://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
-	<a href="/cdn-cgi/l/email-protection#0d6e65786c634d67646e65783963236e6260" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+	<a href="/cdn-cgi/l/email-protection#b9dad1ccd8d7f9d3d0dad1cc8dd797dad6d4" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
 </div>                                                                  
 
 <!--
@@ -294,8 +294,8 @@ support. Wouldn’t it be great if we could send and receive e-mail as" />
 			<article id="5bc6de6560307a000159bd6f" class="post tag-linux tag-technical-notes no-image">
 	<div class="post-stamp">November 6, 2014<span class="taglist"> &middot; <a href="/tag/linux/">Linux</a> <a href="/tag/technical-notes/">Technical Notes</a></span></div>
 	<h1 class="post-title">Custom Domain E-mails With Postfix and Gmail: The Missing Tutorial</h1>
-	<!--kg-card-begin: markdown--><p>Custom domain e-mail addresses, like <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ea80858284aa80858284998985879a8b8493c4898587">[email&#160;protected]</a></code>, are cool and professional-looking. Would <em>you</em> want to e-mail potential clients as <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="52383d3a3c63606112353f333b3e7c313d3f">[email&#160;protected]</a></code>?</p>
-<p>On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="53393c3b3d13393c3b3d20303c3e23323d2a7d303c3e">[email&#160;protected]</a></code>, but right from the comfort of our Gmail account?</p>
+	<!--kg-card-begin: markdown--><p>Custom domain e-mail addresses, like <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d7bdb8bfb997bdb8bfb9a4b4b8baa7b6b9aef9b4b8ba">[email&#160;protected]</a></code>, are cool and professional-looking. Would <em>you</em> want to e-mail potential clients as <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b212423257a79780b2c262a222765282426">[email&#160;protected]</a></code>?</p>
+<p>On the other hand, Gmail has great reliability, speed, spam filtration, and app support. Wouldn’t it be great if we could send and receive e-mail as <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="573d383f39173d383f392434383a2736392e7934383a">[email&#160;protected]</a></code>, but right from the comfort of our Gmail account?</p>
 <p>Today, if we want to <strong>use Gmail to send and receive e-mails on a custom domain</strong>, we have a couple of options:</p>
 <ul>
 <li>
@@ -328,7 +328,7 @@ support. Wouldn’t it be great if we could send and receive e-mail as" />
 <p>We have a server <code>myserver.example.com</code>;</p>
 </li>
 <li>
-<p>We want to use the Gmail account <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="03696c6b6d32313043646e626a6f2d606c6e">[email&#160;protected]</a></code> to manage <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="503a3f383e103528313d203c357e333f3d">[email&#160;protected]</a></code>.</p>
+<p>We want to use the Gmail account <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f2989d9a9cc3c0c1b2959f939b9edc919d9f">[email&#160;protected]</a></code> to manage <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e983868187a98c91888499858cc78a8684">[email&#160;protected]</a></code>.</p>
 </li>
 </ul>
 <h1 id="step1dnssetup">Step 1: DNS Setup</h1>
@@ -378,7 +378,7 @@ virtual_alias_maps = hash:/etc/postfix/virtual
 
 # Forwarding mapping, one from-to address pair per line. The format is:
 #     &lt;forward-from-addr&gt; &lt;whitespace&gt; &lt;forward-to-addr&gt;
-<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e2888d8a8ca2879a838f928e87cc818d8f">[email&#160;protected]</a>        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1abaea9aff0f3f281a6aca0a8adefa2aeac">[email&#160;protected]</a>
+<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="660c090e0826031e070b160a034805090b">[email&#160;protected]</a>        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="016b6e696f30333241666c60686d2f626e6c">[email&#160;protected]</a>
 </code></pre>
 <p>We can add as many forwarding rules as you want, one on each line. We can use any number of tabs / whitespaces between the forward-from and forward-to addresses.</p>
 <h2 id="updatelookuptable">Update lookup table</h2>
@@ -394,7 +394,7 @@ $ sudo postfix reload
 <h2 id="testing">Testing</h2>
 <p>We should test our brand-new Postfix server by sending an e-mail to our forward-from address. You might want to check out <a href="http://articles.slicehost.com/2008/8/6/postfix-using-telnet-to-test-postfix">these</a> <a href="https://workaround.org/ispmail/lenny/test-mail-through-telnet">tutorials</a> for testing directly with the <code>telnet</code> command.</p>
 <p>If you received the e-mail in your Gmail inbox, congratulations! Otherwise, check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for errors. The most likely cause of issues is that DNS records have not propagated yet, in which case we’re likely to see a &quot;rate limited&quot; or &quot;rejected for spam&quot; type error message.</p>
-<p>If we only want to <em>receive</em> but don’t care about <em>sending</em> e-mails as <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="701a1f181e301508111d001c155e131f1d">[email&#160;protected]</a></code>, then this is all we need.</p>
+<p>If we only want to <em>receive</em> but don’t care about <em>sending</em> e-mails as <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0dadfd8def0d5c8d1ddc0dcd59ed3dfdd">[email&#160;protected]</a></code>, then this is all we need.</p>
 <p>Otherwise, let’s move on to configuring Postfix to support sending e-mails from Gmail.</p>
 <h1 id="step3sendingemail">Step 3: Sending E-mail</h1>
 <p>Gmail requires a relay server (a server that will send e-mails to their destination on behalf it) to speak <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS</a>, which protects the communication between Gmail and the relay server.</p>
@@ -486,8 +486,8 @@ $ sudo chown postfix /etc/postfix/example.pem
 <p><img src="https://jichu4n.com/content/images/2018/10/gmail_3.png" alt="gmail_3" loading="lazy"></p>
 <p>If all goes well, we should see a dialog like the following:</p>
 <p><img src="https://jichu4n.com/content/images/2018/10/gmail_4.png" alt="gmail_4" loading="lazy"></p>
-<p>And we should receive an e-mail, forwarded by our mail server set up in the first part, to our <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dfb5b0b7b1eeedec9fb8b2beb6b3f1bcb0b2">[email&#160;protected]</a></code> address. Click on the link inside the e-mail and we’re done!</p>
-<p>Now, in any e-mail compose / reply window, you should be able to select <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="315b5e595f715449505c415d541f525e5c">[email&#160;protected]</a></code> in the drop-down list next to &quot;From&quot;. Congrats!</p>
+<p>And we should receive an e-mail, forwarded by our mail server set up in the first part, to our <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="204a4f484e11121360474d41494c0e434f4d">[email&#160;protected]</a></code> address. Click on the link inside the e-mail and we’re done!</p>
+<p>Now, in any e-mail compose / reply window, you should be able to select <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="016b6e696f416479606c716d642f626e6c">[email&#160;protected]</a></code> in the drop-down list next to &quot;From&quot;. Congrats!</p>
 <p>If, on the other hand, you see an error like the following:</p>
 <p><img src="https://jichu4n.com/content/images/2018/10/gmail_5.png" alt="gmail_5" loading="lazy"></p>
 <p>You should check the Postfix logs at <code>/var/log/mail.log</code> (or with <code>journalctl -u postfix</code> if using Systemd) for any errors.</p>
@@ -499,10 +499,10 @@ $ sudo chown postfix /etc/postfix/example.pem
 <p>In this post, we have set up a Postfix e-mail server that accomplishes the following:</p>
 <ul>
 <li>
-<p>E-mails sent to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="345e5b5c5a74514c55594458511a575b59">[email&#160;protected]</a></code> is received by Postfix on <code>myserver.example.com</code> port 25, and forwarded to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f59f9a9d9bc4c7c6b59298949c99db969a98">[email&#160;protected]</a></code>;</p>
+<p>E-mails sent to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="355f5a5d5b75504d54584559501b565a58">[email&#160;protected]</a></code> is received by Postfix on <code>myserver.example.com</code> port 25, and forwarded to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f59f9a9d9bc4c7c6b59298949c99db969a98">[email&#160;protected]</a></code>;</p>
 </li>
 <li>
-<p>Gmail will let you select <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6a000502042a0f120b071a060f44090507">[email&#160;protected]</a></code> as a &quot;from&quot; address when composing / replying to an e-mail, and will relay such e-mails through Postfix on <code>myserver.example.com</code> port 587 using a configured user name / password combination.</p>
+<p>Gmail will let you select <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="99f3f6f1f7d9fce1f8f4e9f5fcb7faf6f4">[email&#160;protected]</a></code> as a &quot;from&quot; address when composing / replying to an e-mail, and will relay such e-mails through Postfix on <code>myserver.example.com</code> port 587 using a configured user name / password combination.</p>
 </li>
 </ul>
 <p>I hope you found this guide useful, and if you have any thoughts / questions, you’re more than welcome to leave a comment below. Cheers!</p>
@@ -510,7 +510,7 @@ $ sudo chown postfix /etc/postfix/example.pem
 	<div id="social-bar">
 	<ul class="rrssb-buttons clearfix">
       <li class="email">
-          <a href="/cdn-cgi/l/email-protection#dfe0acaabdb5babcabe29caaacabb0b2faedef9bb0b2beb6b1faedef9af2b2beb6b3acfaedef88b6abb7faedef8fb0acabb9b6a7faedefbeb1bbfaedef98b2beb6b3faec9efaedef8bb7bafaedef92b6acacb6b1b8faedef8baaabb0adb6beb3f9beb2afe4bdb0bba6e2b7ababaface5f0f0b8b7b0acabf1bcb7aaebb1f1bcb0b2f0afb0acabacf0bcaaacabb0b2f2bbb0b2beb6b1f2baf2b2beb6b3acf2a8b6abb7f2afb0acabb9b6a7f2beb1bbf2b8b2beb6b3f2abb7baf2b2b6acacb6b1b8f2abaaabb0adb6beb3f0">
+          <a href="/cdn-cgi/l/email-protection#b38cc0c6d1d9d6d0c78ef0c6c0c7dcde968183f7dcded2dadd968183f69eded2dadfc0968183e4dac7db968183e3dcc0c7d5dacb968183d2ddd7968183f4ded2dadf9680f2968183e7dbd6968183fedac0c0daddd4968183e7c6c7dcc1dad2df95d2dec388d1dcd7ca8edbc7c7c3c0899c9cd4dbdcc0c79dd0dbc687dd9dd0dcde9cc3dcc0c7c09cd0c6c0c7dcde9ed7dcded2dadd9ed69eded2dadfc09ec4dac7db9ec3dcc0c7d5dacb9ed2ddd79ed4ded2dadf9ec7dbd69ededac0c0daddd49ec7c6c7dcc1dad2df9c">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
