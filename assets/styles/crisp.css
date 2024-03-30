@@ -56,12 +56,9 @@ article {
   margin: 0 auto 0 auto;
 }
 p,
-hr,
-h4,
-h5,
-h6 {
-  margin-top: 0.9em;
-  margin-bottom: 0.9em;
+hr {
+  margin-top: 0.7em;
+  margin-bottom: 0.7em;
 }
 /* Headings */
 h1,
@@ -91,23 +88,29 @@ h1 {
 h2 {
   font-size: 1.5em;
   line-height: 1.2em;
-  margin-top: 1em;
+  margin-top: 1.2em;
   margin-bottom: 0.7em;
 }
 h3 {
   font-size: 1.3em;
-  line-height: 1.3em;
-  margin-top: 0.8em;
-  margin-bottom: 0.8em;
+  line-height: 1.1em;
+  margin-top: 1.2em;
+  margin-bottom: 0.7em;
 }
 h4 {
   font-size: 1.1em;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
 }
 h5 {
   font-size: 1.05em;
+  margin-top: 1.2em;
+  margin-bottom: 0.7em;
 }
 h6 {
   font-size: 1.0em;
+  margin-top: 1.2em;
+  margin-bottom: 0.7em;
 }
 /* Page Elements */
 img,
