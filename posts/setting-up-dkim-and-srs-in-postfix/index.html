@@ -9,7 +9,7 @@
                         <link href='//fonts.googleapis.com/css?family=Inter:400italic,700italic,400,700&display=swap' rel='stylesheet' type='text/css'>
 			<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=07cb2c55c8">
+			<link rel="stylesheet" type="text/css" href="/assets/styles/crisp.css?v=c5f843298f">
 
 	    <meta name="HandheldFriendly" content="True" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=07cb2c55c8">
+				<link rel="stylesheet" type="text/css" href="/assets/styles/rrssb.css?v=c5f843298f">
 	<meta property="og:title" content="Setting Up DKIM And SRS In Postfix" />
 	<meta property="og:type" content="article" />
 	<meta property="og:description" content="In my previous post Custom Domain E-mails With Postfix And Gmail: The Missing
@@ -180,9 +180,9 @@ prevent e-mails routed" />
 }</style>
     <script defer src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/sodo-search.min.js" data-key="1e7b8730b75794685463d33094" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/main.css" data-sodo-search="https://jichu4n.com/" crossorigin="anonymous"></script>
     <link href="https://jichu4n.com/webmentions/receive/" rel="webmention" />
-    <script defer src="/public/cards.min.js?v=07cb2c55c8"></script>
-    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=07cb2c55c8">
-    <script defer src="/public/member-attribution.min.js?v=07cb2c55c8"></script>
+    <script defer src="/public/cards.min.js?v=c5f843298f"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=c5f843298f">
+    <script defer src="/public/member-attribution.min.js?v=c5f843298f"></script>
     <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(["setDomains", ["*.jichu4n.com","*.seasonofcode.com"]]);
@@ -218,7 +218,7 @@ prevent e-mails routed" />
 			<div id="follow-icons">
 	<a href="http://linkedin.com/in/chuanji" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
 	<a href="https://github.com/jichu4n" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
-	<a href="/cdn-cgi/l/email-protection#8deee5f8ece3cde7e4eee5f8b9e3a3eee2e0" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
+	<a href="/cdn-cgi/l/email-protection#adcec5d8ccc3edc7c4cec5d899c383cec2c0" target="_blank"><i class="fa fa-envelope-square fa-2x"></i></a>
 </div>                                                                  
 
 <!--
@@ -401,7 +401,7 @@ non_smtpd_milters = inet:localhost:12301
 <p>…and we’re done!</p>
 <h1 id="step2srs">Step 2: SRS</h1>
 <p><a href="https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme">SRS</a>, short for <em>Sender Rewriting Scheme</em>, is a standard for including forwarding / relay information in a forwarded / relayed e-mail message.</p>
-<p>For example, suppose <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a2b2623292f0a22253e272b232664292527">[email&#160;protected]</a></code> sends an e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1a707572745a7f627b776a767f34797577">[email&#160;protected]</a></code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="610b0e090f50535221060c00080d4f020e0c">[email&#160;protected]</a></code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
+<p>For example, suppose <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="11707d78727451797e657c70787d3f727e7c">[email&#160;protected]</a></code> sends an e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7812171016381d00191508141d561b1715">[email&#160;protected]</a></code>, and our Postfix server on <code>myserver.example.com</code> forwards this e-mail to <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bdd7d2d5d38c8f8efddad0dcd4d193ded2d0">[email&#160;protected]</a></code>. SRS allows our Postfix server on <code>myserver.example.com</code> to attach a virtual sticky note on the e-mail message explaining this situation to Gmail. Otherwise, Gmail might become suspicious of why <code>myserver.example.com</code> is producing messages that purport to come from <code>hotmail.com</code>, which spammers and phishers are wont to do.</p>
 <p>We will use <a href="https://github.com/roehling/postsrsd">PostSRSd</a> to implement SRS in our Postfix server. It works out of the box with Postfix and is a breeze to set up, but unfortunately is not included in the official Ubuntu / Debian package repositories.</p>
 <h2 id="opensrsd">OpenSRSd</h2>
 <p>Let’s build and install OpenSRSd from source:</p>
@@ -442,7 +442,7 @@ recipient_canonical_classes= envelope_recipient,header_recipient
 	<div id="social-bar">
 	<ul class="rrssb-buttons clearfix">
       <li class="email">
-          <a href="/cdn-cgi/l/email-protection#417e3234232b2422357c12243535282f266473711431647371050a080c647371002f25647371121312647371082f647371112e323527283967202c317a232e25387c29353531327b6e6e26292e32356f222934752f6f222e2c6e312e3235326e32243535282f266c34316c252a282c6c202f256c3233326c282f6c312e32352728396e">
+          <a href="/cdn-cgi/l/email-protection#26195553444c4345521b754352524f48410314167356031416626d6f6b0314166748420314167574750314166f4803141676495552404f5e00474b561d4449425f1b4e525256551c0909414e49555208454e5312480845494b09564955525509554352524f48410b53560b424d4f4b0b4748420b5554550b4f480b56495552404f5e09">
               <span class="icon">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 28 28" enable-background="new 0 0 28 28" xml:space="preserve">
                       <path transform="scale(0.014,-0.014) translate(0,-1670)" d="M1792 826v-794q0 -66 -47 -113t-113 -47h-1472q-66 0 -113 47t-47 113v794q44 -49 101 -87q362 -246 497 -345q57 -42 92.5 -65.5t94.5 -48t110 -24.5h1h1q51 0 110 24.5t94.5 48t92.5 65.5q170 123 498 345q57 39 100 87zM1792 1120q0 -79 -49 -151t-122 -123 q-376 -261 -468 -325q-10 -7 -42.5 -30.5t-54 -38t-52 -32.5t-57.5 -27t-50 -9h-1h-1q-23 0 -50 9t-57.5 27t-52 32.5t-54 38t-42.5 30.5q-91 64 -262 182.5t-205 142.5q-62 42 -117 115.5t-55 136.5q0 78 41.5 130t118.5 52h1472q65 0 112.5 -47t47.5 -113z"/>
@@ -560,7 +560,7 @@ prevent e-mails routed..." class="popup">
   </ul>	
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="/assets/js/rrssb.min.js?v=07cb2c55c8"></script>
+<script src="/assets/js/rrssb.min.js?v=c5f843298f"></script>
   <div id="comments">
 	<div id="disqus_thread"></div>
 	<script>
