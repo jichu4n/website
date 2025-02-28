@@ -1,40 +1,40 @@
 <!DOCTYPE html>
-<html ⚡>
+<html ⚡ lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
     <title>How X Window Managers Work, And How To Write One (Part I)</title>
 
-    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/2023/01/me-6-circular.png" type="image/png" />
-    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
-    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/format/jpeg/2025/02/me-9-1.jpg" type="image/jpeg">
+    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     
-    <meta property="og:site_name" content="Chuan Ji" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part I)" />
+    <meta property="og:site_name" content="Chuan Ji">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part I)">
     <meta property="og:description" content="Window managers are one of the core components of the modern Linux/BSD desktop.
 It is not an exaggeration to say that they define to a large degree our
 day-to-day user experience, as they are responsible for deciding how individual
-windows look, move around, react to input, and organize themselves." />
-    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
-    <meta property="article:published_time" content="2014-04-11T05:54:00.000Z" />
-    <meta property="article:modified_time" content="2021-02-12T21:23:42.000Z" />
-    <meta property="article:tag" content="Window Manager" />
-    <meta property="article:tag" content="Technical Notes" />
+windows look, move around, react to input, and organize themselves.">
+    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">
+    <meta property="article:published_time" content="2014-04-11T05:54:00.000Z">
+    <meta property="article:modified_time" content="2021-02-12T21:23:42.000Z">
+    <meta property="article:tag" content="Window Manager">
+    <meta property="article:tag" content="Technical Notes">
     
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part I)" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part I)">
     <meta name="twitter:description" content="Window managers are one of the core components of the modern Linux/BSD desktop.
 It is not an exaggeration to say that they define to a large degree our
 day-to-day user experience, as they are responsible for deciding how individual
-windows look, move around, react to input, and organize themselves." />
-    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/" />
-    <meta name="twitter:label1" content="Written by" />
-    <meta name="twitter:data1" content="Chuan Ji" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Window Manager, Technical Notes" />
-    <meta name="twitter:site" content="@jichu4n" />
+windows look, move around, react to input, and organize themselves.">
+    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Chuan Ji">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Window Manager, Technical Notes">
+    <meta name="twitter:site" content="@jichu4n">
     
     <script type="application/ld+json">
 {
@@ -46,7 +46,7 @@ windows look, move around, react to input, and organize themselves." />
         "url": "https://jichu4n.com/",
         "logo": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/f7ea693304bc48dd54feb0e1e61df516-1.jpeg",
+            "url": "https://jichu4n.com/content/images/2025/02/me-9-2.jpg",
             "width": 60,
             "height": 60
         }
@@ -56,9 +56,9 @@ windows look, move around, react to input, and organize themselves." />
         "name": "Chuan Ji",
         "image": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/me-4.jpg",
-            "width": 1600,
-            "height": 1600
+            "url": "https://jichu4n.com/content/images/2025/02/me-9.jpg",
+            "width": 1077,
+            "height": 1077
         },
         "url": "https://jichu4n.com/author/chuan/",
         "sameAs": []
@@ -69,15 +69,12 @@ windows look, move around, react to input, and organize themselves." />
     "dateModified": "2021-02-12T21:23:42.000Z",
     "keywords": "Window Manager, Technical Notes",
     "description": "Window managers are one of the core components of the modern Linux/BSD desktop.\nIt is not an exaggeration to say that they define to a large degree our\nday-to-day user experience, as they are responsible for deciding how individual\nwindows look, move around, react to input, and organize themselves. Hence,\nalmost 30 years since the first X window manager\n[http://en.wikipedia.org/wiki/Ultrix_Window_Manager], we still argue over the\nmerits of different window managers, and new window managers conti",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://jichu4n.com/"
-    }
+    "mainEntityOfPage": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/"
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.32" />
-    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <meta name="generator" content="Ghost 5.110">
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/">
 
     <style amp-custom>
     *,
@@ -1065,7 +1062,7 @@ windows look, move around, react to input, and organize themselves." />
 <body class="amp-template">
     <header class="page-header">
         <a href="https://jichu4n.com">
-                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         </a>
     </header>
 
@@ -1081,9 +1078,9 @@ windows look, move around, react to input, and organize themselves." />
             </header>
             <section class="post-content">
 
-                <p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves. Hence, almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager">the first X window manager</a>, we still argue over the merits of different window managers, and new window managers continue to reinvent how we interact with our digital world.</p>
+                <p>Window managers are one of the core components of the modern Linux/BSD desktop. It is not an exaggeration to say that they define to a large degree our day-to-day user experience, as they are responsible for deciding how individual windows look, move around, react to input, and organize themselves. Hence, almost 30 years since <a href="http://en.wikipedia.org/wiki/Ultrix_Window_Manager?ref=ghost.chu4n.com">the first X window manager</a>, we still argue over the merits of different window managers, and new window managers continue to reinvent how we interact with our digital world.</p>
 <p>In this series of posts, I hope to demystify how window managers work, and how you might go about writing one yourself.</p>
-<p>I will be quoting quite heavily from the seminal <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O’Reilly. Despite its age, it remains amazingly relevant and is the best available introductory text to the internals of X, which has not changed over the past two decades as much as you’d think. Since you could buy the book plus shipping for less than the price of a cup of coffee, I strongly recommend it to anyone interested in learning more about X. In addition, its chapter 16 also covers the basics of window management.</p>
+<p>I will be quoting quite heavily from the seminal <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023?ref=ghost.chu4n.com">Xlib Programming Manual (3rd Ed, 1994)</a> by Adrian Nye and published by O’Reilly. Despite its age, it remains amazingly relevant and is the best available introductory text to the internals of X, which has not changed over the past two decades as much as you’d think. Since you could buy the book plus shipping for less than the price of a cup of coffee, I strongly recommend it to anyone interested in learning more about X. In addition, its chapter 16 also covers the basics of window management.</p>
 <h1 id="theroleofanxwindowmanager">The Role of an X Window Manager</h1>
 <p>Let’s start with an examination of the role of the window manager in a modern Linux/BSD desktop environment.</p>
 <h2 id="therightsofxwindowmanagers">The Rights of X Window Managers</h2>
@@ -1097,9 +1094,9 @@ windows look, move around, react to input, and organize themselves." />
 <p>Unlike citizens, the window manager has rights but not responsibilities. Programs must be prepared to cooperate with any type of window manager or with none at all […].</p>
 <p>—  Xlib Programming Manual §1.2.3</p>
 </blockquote>
-<p>This is in stark contrast to the integrative approach of other GUI systems. On Mac OS X and <a href="https://unity.ubuntu.com/">Unity</a>, for example, an application could not possibly function without the window manager, as the latter is responsible for rendering a part of the application’s interface (e.g., menus).</p>
+<p>This is in stark contrast to the integrative approach of other GUI systems. On Mac OS X and <a href="https://unity.ubuntu.com/?ref=ghost.chu4n.com">Unity</a>, for example, an application could not possibly function without the window manager, as the latter is responsible for rendering a part of the application’s interface (e.g., menus).</p>
 <h2 id="theresponsibilitiesofxwindowmanagers">The Responsibilities of X Window Managers</h2>
-<p>As you probably already know, X operates in a server-client model. An X <em>server</em> controls one or more physical display devices as well as input devices (mouse, keyboard, etc.). An application that wants to interact with these devices assumes the role of an X <em>client</em>. An X server and its clients may run on the same computer, in which case they communicate via <a href="http://en.wikipedia.org/wiki/Unix_domain_socket">domain sockets</a>, or on different computers, in which case they communicate through TCP/IP.</p>
+<p>As you probably already know, X operates in a server-client model. An X <em>server</em> controls one or more physical display devices as well as input devices (mouse, keyboard, etc.). An application that wants to interact with these devices assumes the role of an X <em>client</em>. An X server and its clients may run on the same computer, in which case they communicate via <a href="http://en.wikipedia.org/wiki/Unix_domain_socket?ref=ghost.chu4n.com">domain sockets</a>, or on different computers, in which case they communicate through TCP/IP.</p>
 <p><strong>A window manager is a regular X client.</strong> It doesn’t have any superuser privileges or keys to kernel backdoors; it is a normal user process that is allowed by the X server to call a set of special APIs. X ensures that no more than one window manager is running at any given point by denying a client access to these APIs if another client currently has access. The first client to attempt to access these APIs always succeeds.</p>
 <p>A window manager communicates with the windows it manages through two X mechanisms: properties and events. We will discuss these in detail in later sections, but the takeaway is that the communication happens through the X server, not directly between the window manager and other applications.</p>
 <p>This is illustrated by the following diagram:</p>
@@ -1108,10 +1105,10 @@ windows look, move around, react to input, and organize themselves." />
 <p>Let’s now dive into the details of how a window manager does its job.</p>
 <h2 id="thewindowhierarchy">The Window Hierarchy</h2>
 <p>When we think about modern GUIs, we usually use the term <em>widgets</em> or <em>controls</em> to refer to UI elements such as buttons, scrollbars, or text boxes, and the term <em>windows</em> to refer to a container for such widgets that has its own name and can be independently moved around, closed, resized, etc..</p>
-<p>X, however, was designed to be as low-level as possible. The fundamental UI model that X provides, upon which UI frameworks such as <a href="http://www.gtk.org/">GTK+</a> and <a href="http://qt-project.org">Qt</a> are built, is that of an <em>hierarchy of rectangles</em>. In X terminology, all top level windows and all UI elements within are <em>windows</em>. In other words, a <em>window</em>, is any rectangular area that is an unit of user interaction and/or graphic display.</p>
+<p>X, however, was designed to be as low-level as possible. The fundamental UI model that X provides, upon which UI frameworks such as <a href="http://www.gtk.org/?ref=ghost.chu4n.com">GTK+</a> and <a href="http://qt-project.org/?ref=ghost.chu4n.com">Qt</a> are built, is that of an <em>hierarchy of rectangles</em>. In X terminology, all top level windows and all UI elements within are <em>windows</em>. In other words, a <em>window</em>, is any rectangular area that is an unit of user interaction and/or graphic display.</p>
 <p>Windows are organized into a tree hierarchy. At the root of the hierarchy is the <em>root window</em>, a virtual, invisible window that has the same size as the screen, and is always present. Top level windows are direct children of the root window. UI elements within a top level window are descendants of that window.</p>
 <p><amp-img src="https://jichu4n.com/content/images/2018/10/wm_sample_dialog.png" alt="wm_sample_dialog" width="402" height="110" layout="responsive"></amp-img></p>
-<p>For example, consider the dialog box above from the <a href="http://www.xfce.org/">Xfce</a> desktop environment. The entire dialog is an X <em>window</em>. All UI elements in the dialog box - the magnifying glass icon, the text box, the green down arrow, the Close and Launch buttons, and the icons inside those buttons - are also X _window_s.</p>
+<p>For example, consider the dialog box above from the <a href="http://www.xfce.org/?ref=ghost.chu4n.com">Xfce</a> desktop environment. The entire dialog is an X <em>window</em>. All UI elements in the dialog box - the magnifying glass icon, the text box, the green down arrow, the Close and Launch buttons, and the icons inside those buttons - are also X _window_s.</p>
 <p>The whole dialog window is a child of the root window. The magnifying glass icon, the text box, and the Close and Launch buttons are children of the dialog window. The green down arrow is a child of the text box window, and the icons in the Close and Launch buttons are children of those buttons respectively.</p>
 <p>An important thing to note about X windows is that a child window is clipped to the boundaries of its parent:</p>
 <blockquote>
@@ -1142,29 +1139,29 @@ windows look, move around, react to input, and organize themselves." />
 <p>In the example dialog box above, we see a title bar with, for example, little buttons for minimizing, maximizing, and closing the window. These UI elements are not created by the application, but by the window manager, via a process known as <em>reparenting</em> or <em>framing</em>:</p>
 <blockquote>
 <p>A window manager can decorate [top level] windows on the screen with titlebars and place little boxes on the titlebar with which the window can be moved or resized. This is only one possibility […].</p>
-<p>To do this, the window manager creates a child of the root somewhat larger than the top level window of the application. Then it calls <a href="http://manpages.ubuntu.com/manpages/en/man3/XReparentWindow.3.html"><code>XReparentWindow()</code></a>, specifying the top level window of the application as <code>win</code> and the new parent [window it just created] as <code>parent</code>. <code>win</code> and all its descendants will then be descendants of <code>parent</code>.</p>
+<p>To do this, the window manager creates a child of the root somewhat larger than the top level window of the application. Then it calls <a href="http://manpages.ubuntu.com/manpages/en/man3/XReparentWindow.3.html?ref=ghost.chu4n.com"><code>XReparentWindow()</code></a>, specifying the top level window of the application as <code>win</code> and the new parent [window it just created] as <code>parent</code>. <code>win</code> and all its descendants will then be descendants of <code>parent</code>.</p>
 <p>—  Xlib Programming Manual §16.3</p>
 </blockquote>
 <p>In other words, if we were to run an X application without a window manager present, the top level window of the application would be a direct child of the root window. With a window manager running, however, the top level window of the application may be <em>reparented</em> by the window manager; it becomes a child of a frame window which is created by the window manager, and which is itself a direct child of the root window. The window manager can add other UI elements inside this frame window alongside the application’s top level window as it sees fit.</p>
-<p>Therefore, I’ve kind of lied to you several paragraphs ago: the dialog box shown earlier is really a child window within a frame window created by <a href="http://www.xfce.org">Xfce</a>'s window manager, Xfwm, along with other UI elements for window management:</p>
+<p>Therefore, I’ve kind of lied to you several paragraphs ago: the dialog box shown earlier is really a child window within a frame window created by <a href="http://www.xfce.org/?ref=ghost.chu4n.com">Xfce</a>'s window manager, Xfwm, along with other UI elements for window management:</p>
 <p><amp-img src="https://jichu4n.com/content/images/2018/10/snfQMUpwYCAfp6q_mmpEVoQ.png" alt="snfQMUpwYCAfp6q_mmpEVoQ" width="412" height="247" layout="responsive"></amp-img></p>
 <p>Reparenting is what allows different window managers to draw different window decorations, and thereby achieve a consistent look-and-feel across windows. However, there are also window managers that do <em>not</em> reparent at all: these are called <em>non-reparenting</em> window managers. There are two reasons why a window manager would not want to reparent:</p>
 <ol>
 <li>
-<p>If a window manager does not draw window decorations around top level windows , it obviously has no need to reparent them. Examples: <a href="http://xmonad.org">xmonad</a>, <a href="http://dwm.suckless.org">dwm</a>.</p>
+<p>If a window manager does not draw window decorations around top level windows , it obviously has no need to reparent them. Examples: <a href="http://xmonad.org/?ref=ghost.chu4n.com">xmonad</a>, <a href="http://dwm.suckless.org/?ref=ghost.chu4n.com">dwm</a>.</p>
 </li>
 <li>
-<p>Compositing window managers do not always need to reparent windows; we will discuss why below. Example: <a href="http://www.compiz.org/">Compiz</a>. This is not true for all compositing window managers, however; for example, GNOME’s default window manager, <a href="http://github.com/GNOME/mutter/">Mutter</a>, is a reparenting comopositing window manager.</p>
+<p>Compositing window managers do not always need to reparent windows; we will discuss why below. Example: <a href="http://www.compiz.org/?ref=ghost.chu4n.com">Compiz</a>. This is not true for all compositing window managers, however; for example, GNOME’s default window manager, <a href="http://github.com/GNOME/mutter/?ref=ghost.chu4n.com">Mutter</a>, is a reparenting comopositing window manager.</p>
 </li>
 </ol>
 <p>Let’s now consider substructure redirection in the context of reparenting. When a top level window <em>W</em> is first shown (<em>map</em>'ped in X jargon), the window manager is notified because it has registered for substructure redirection on the root window, and a top level window is a direct child of the root window. It then creates a frame <em>F</em> and reparents <em>W</em>, so that <em>W</em> becomes a child of <em>F</em>, which itself is a child of the root window. But since now <em>W</em> is no longer a direct child of the root window, the window manager will no longer be able to intercept changes to <em>W</em>!</p>
 <p>Therefore, a reparenting window manager must also subsequently register for substructure redirection on each frame window it creates.</p>
 <h2 id="compositing">Compositing</h2>
-<p>Compositing window managers are a relatively new development. Compositing support in X was added in late 2004, a full decade after the last edition of <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>. The first compositing window managers, <a href="http://www.xfce.org">Xfwm</a> and <a href="http://www.compiz.org/">Compiz</a>, launched in early 2005.</p>
+<p>Compositing window managers are a relatively new development. Compositing support in X was added in late 2004, a full decade after the last edition of <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023?ref=ghost.chu4n.com">Xlib Programming Manual</a>. The first compositing window managers, <a href="http://www.xfce.org/?ref=ghost.chu4n.com">Xfwm</a> and <a href="http://www.compiz.org/?ref=ghost.chu4n.com">Compiz</a>, launched in early 2005.</p>
 <p>So, what exactly does a compositing window manager do?</p>
 <p>In our discussion above on substructure redirection and reparenting, we saw how a window manager can respond to various requests for a top level window - to display/hide it (<em>map</em>/<em>unmap</em> in X jargon), to resize it, to move it, etc.. But we didn’t talk about how to deal with what’s <em>inside</em> the top level windows.</p>
-<p>Indeed, from the perspective of the window manager, top level windows are black boxes; they each manage their own descendant windows (UI elements), perhaps through a framework such as <a href="http://www.gtk.org">GTK+</a> or <a href="http://qt-project.org/">Qt</a>, and the window manager has no right to interfere there. The application that creates a top level window is responsible for rendering and handling events for any descendant windows (UI elements), and does so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p>
-<p>As the computing power of graphics hardware grew, so did people’s expectations from their window managers. With hardware acceleration, it became possible to build much more computationally intensive user interfaces, such as the (in)famous Desktop Cube in <a href="http://www.compiz.org">Compiz</a>:</p>
+<p>Indeed, from the perspective of the window manager, top level windows are black boxes; they each manage their own descendant windows (UI elements), perhaps through a framework such as <a href="http://www.gtk.org/?ref=ghost.chu4n.com">GTK+</a> or <a href="http://qt-project.org/?ref=ghost.chu4n.com">Qt</a>, and the window manager has no right to interfere there. The application that creates a top level window is responsible for rendering and handling events for any descendant windows (UI elements), and does so directly through X. This is shown in <a href="#role-of-a-window-manager">the first diagram above</a>.</p>
+<p>As the computing power of graphics hardware grew, so did people’s expectations from their window managers. With hardware acceleration, it became possible to build much more computationally intensive user interfaces, such as the (in)famous Desktop Cube in <a href="http://www.compiz.org/?ref=ghost.chu4n.com">Compiz</a>:</p>
 <p><amp-img src="https://jichu4n.com/content/images/2018/10/wm_compiz.png" alt="wm_compiz" width="640" height="480" layout="responsive"></amp-img></p>
 <p>or the Shift Switcher:</p>
 <p><amp-img src="https://jichu4n.com/content/images/2018/10/wm_compiz_2.png" alt="wm_compiz_2" width="640" height="360" layout="responsive"></amp-img></p>
@@ -1201,7 +1198,7 @@ windows look, move around, react to input, and organize themselves." />
 <p>All this complex compositing process is computationally intensive and requires hardware acceleration to function adequately.</p>
 </li>
 </ul>
-<p>It is clear that none of this would be possible without some heavy cooperation from the X server. Enter the <a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt">Composite extension</a>:</p>
+<p>It is clear that none of this would be possible without some heavy cooperation from the X server. Enter the <a href="http://cgit.freedesktop.org/xorg/proto/compositeproto/tree/compositeproto.txt?ref=ghost.chu4n.com">Composite extension</a>:</p>
 <blockquote>
 <p>Many user interface operations would benefit from having pixel contents of window hierarchies available without respect to sibling and antecedent clipping. In addition, placing control over the composition of these pixel contents into a final screen image in an external application will enable a flexible system for dynamic application content presentation.</p>
 <p>—  X Composite Extension</p>
@@ -1215,7 +1212,7 @@ windows look, move around, react to input, and organize themselves." />
 <p>On the other hand, a window manager may need to support both a compositing and a non-compositing mode, for compatibility with older or unsupported graphics hardware. In this case, it needs to implement reparenting and frame windows for non-compositing mode anyway, so additionally implementing drawing window decorations using graphics operations becomes redundant. This is why may other compositing window managers still choose to reparent.</p>
 <h1 id="readyforsomecode">Ready For Some Code?</h1>
 <p>If you’ve read everything up to this point, you’re probably holding back the urge to cry out "<em>Enough talk - show me some code!</em>" I don’t blame you.</p>
-<p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">the next installment</a> in this series, I will walk you through a basic implementation of a reparenting, non-compositing window manager. Impatient? Check out the code <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>!</p>
+<p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">the next installment</a> in this series, I will walk you through a basic implementation of a reparenting, non-compositing window manager. Impatient? Check out the code <a href="https://github.com/jichu4n/basic_wm?ref=ghost.chu4n.com">on GitHub</a>!</p>
 <blockquote>
 <p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/"><strong>How X Window Managers Work, And How To Write One (Part II)</strong></a></p>
 <ul>
@@ -1237,7 +1234,7 @@ windows look, move around, react to input, and organize themselves." />
         </article>
     </main>
     <footer class="page-footer">
-            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         <h3>Chuan Ji</h3>
         <p><a href="https://jichu4n.com">Read more posts →</a></p>
         <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>

@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html ⚡>
+<html ⚡ lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
     <title>How X Window Managers Work, And How To Write One (Part II)</title>
 
-    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/2023/01/me-6-circular.png" type="image/png" />
-    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/" />
-    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/format/jpeg/2025/02/me-9-1.jpg" type="image/jpeg">
+    <link rel="canonical" href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     
-    <meta property="og:site_name" content="Chuan Ji" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part II)" />
+    <meta property="og:site_name" content="Chuan Ji">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How X Window Managers Work, And How To Write One (Part II)">
     <meta property="og:description" content="In Part I of this series
 [https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/],
 we examined the role of X window managers in a modern Linux/BSD desktop
 environment, and how they interact with the X server and applications. In Part
-II, we will dig into the dirty details and walk through" />
-    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/" />
-    <meta property="article:published_time" content="2014-06-09T06:41:00.000Z" />
-    <meta property="article:modified_time" content="2021-02-12T21:22:09.000Z" />
-    <meta property="article:tag" content="Window Manager" />
-    <meta property="article:tag" content="Technical Notes" />
+II, we will dig into the dirty details and walk through">
+    <meta property="og:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">
+    <meta property="article:published_time" content="2014-06-09T06:41:00.000Z">
+    <meta property="article:modified_time" content="2021-02-12T21:22:09.000Z">
+    <meta property="article:tag" content="Window Manager">
+    <meta property="article:tag" content="Technical Notes">
     
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part II)" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="How X Window Managers Work, And How To Write One (Part II)">
     <meta name="twitter:description" content="In Part I of this series
 [https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/],
 we examined the role of X window managers in a modern Linux/BSD desktop
 environment, and how they interact with the X server and applications. In Part
-II, we will dig into the dirty details and walk through" />
-    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/" />
-    <meta name="twitter:label1" content="Written by" />
-    <meta name="twitter:data1" content="Chuan Ji" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Window Manager, Technical Notes" />
-    <meta name="twitter:site" content="@jichu4n" />
+II, we will dig into the dirty details and walk through">
+    <meta name="twitter:url" content="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Chuan Ji">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Window Manager, Technical Notes">
+    <meta name="twitter:site" content="@jichu4n">
     
     <script type="application/ld+json">
 {
@@ -48,7 +48,7 @@ II, we will dig into the dirty details and walk through" />
         "url": "https://jichu4n.com/",
         "logo": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/f7ea693304bc48dd54feb0e1e61df516-1.jpeg",
+            "url": "https://jichu4n.com/content/images/2025/02/me-9-2.jpg",
             "width": 60,
             "height": 60
         }
@@ -58,9 +58,9 @@ II, we will dig into the dirty details and walk through" />
         "name": "Chuan Ji",
         "image": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/me-4.jpg",
-            "width": 1600,
-            "height": 1600
+            "url": "https://jichu4n.com/content/images/2025/02/me-9.jpg",
+            "width": 1077,
+            "height": 1077
         },
         "url": "https://jichu4n.com/author/chuan/",
         "sameAs": []
@@ -71,15 +71,12 @@ II, we will dig into the dirty details and walk through" />
     "dateModified": "2021-02-12T21:22:09.000Z",
     "keywords": "Window Manager, Technical Notes",
     "description": "In Part I of this series\n[https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/],\nwe examined the role of X window managers in a modern Linux/BSD desktop\nenvironment, and how they interact with the X server and applications. In Part\nII, we will dig into the dirty details and walk through the code of an example\nreparenting non-compositing window manager, basic_wm\n[https://github.com/jichu4n/basic_wm].\n\nIntroduction\nBefore we start with the code, let’s go over a cou",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://jichu4n.com/"
-    }
+    "mainEntityOfPage": "https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-ii/"
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.32" />
-    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <meta name="generator" content="Ghost 5.110">
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/">
 
     <style amp-custom>
     *,
@@ -1067,7 +1064,7 @@ II, we will dig into the dirty details and walk through" />
 <body class="amp-template">
     <header class="page-header">
         <a href="https://jichu4n.com">
-                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         </a>
     </header>
 
@@ -1083,22 +1080,22 @@ II, we will dig into the dirty details and walk through" />
             </header>
             <section class="post-content">
 
-                <p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">Part I of this series</a>, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting non-compositing window manager, <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>.</p>
+                <p>In <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/">Part I of this series</a>, we examined the role of X window managers in a modern Linux/BSD desktop environment, and how they interact with the X server and applications. In Part II, we will dig into the dirty details and walk through the code of an example reparenting non-compositing window manager, <a href="https://github.com/jichu4n/basic_wm?ref=ghost.chu4n.com">basic_wm</a>.</p>
 <h1 id="introduction">Introduction</h1>
 <p>Before we start with the code, let’s go over a couple of basic implementation choices such as language and API.</p>
 <h2 id="language">Language</h2>
-<p>You can write a window manager in <a href="http://xmonad.org">Haskell</a>, <a href="http://qtile.org">Python</a>, <a href="http://www.nongnu.org/stumpwm/">Lisp</a>, <a href="https://github.com/BurntSushi/wingo">Go</a>, <a href="http://escher.sourceforge.net/">Java</a>, or any other language that has X bindings, i.e. a library for communicating with X servers.</p>
-<p>I chose C++ for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, our example window manager, mainly because the C libraries for X11 are the best documented. In addition to books such as the <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023">Xlib Programming Manual</a>, documentation can be found in the form of widely available <a href="http://www.xfree86.org/current/manindex3.html">man pages</a> (e.g., try <code>man XOpenDisplay</code> at a terminal). Example usage and common patterns abound in the source code of many great window managers written in the past three decades.</p>
+<p>You can write a window manager in <a href="http://xmonad.org/?ref=ghost.chu4n.com">Haskell</a>, <a href="http://qtile.org/?ref=ghost.chu4n.com">Python</a>, <a href="http://www.nongnu.org/stumpwm/?ref=ghost.chu4n.com">Lisp</a>, <a href="https://github.com/BurntSushi/wingo?ref=ghost.chu4n.com">Go</a>, <a href="http://escher.sourceforge.net/?ref=ghost.chu4n.com">Java</a>, or any other language that has X bindings, i.e. a library for communicating with X servers.</p>
+<p>I chose C++ for <a href="https://github.com/jichu4n/basic_wm?ref=ghost.chu4n.com">basic_wm</a>, our example window manager, mainly because the C libraries for X11 are the best documented. In addition to books such as the <a href="http://www.amazon.com/Programming-Manual-Version-Definitive-Guides/dp/1565920023?ref=ghost.chu4n.com">Xlib Programming Manual</a>, documentation can be found in the form of widely available <a href="http://www.xfree86.org/current/manindex3.html?ref=ghost.chu4n.com">man pages</a> (e.g., try <code>man XOpenDisplay</code> at a terminal). Example usage and common patterns abound in the source code of many great window managers written in the past three decades.</p>
 <p>We will use C++11 and C++14 features where convenient, so you will need a compatible compiler (GCC 4.9 or higher, or Clang 3.4 or higher) if you want to play with the example source code.</p>
 <h2 id="ataleoftwoxlibraries">A Tale of Two X Libraries</h2>
-<p>There are two official C libraries for X: <a href="http://en.wikipedia.org/wiki/Xlib">Xlib</a> and <a href="http://en.wikipedia.org/wiki/Xcb">XCB</a>. Xlib, hailing from 1985, was the original X client library, and was the only official X client library until the introduction of XCB in 2001. The two libraries have very different philosophies: whereas Xlib tries to hide the X protocol behind a friendly C API with lots of bells and whistles, XCB directly exposes the plumbing beneath.</p>
+<p>There are two official C libraries for X: <a href="http://en.wikipedia.org/wiki/Xlib?ref=ghost.chu4n.com">Xlib</a> and <a href="http://en.wikipedia.org/wiki/Xcb?ref=ghost.chu4n.com">XCB</a>. Xlib, hailing from 1985, was the original X client library, and was the only official X client library until the introduction of XCB in 2001. The two libraries have very different philosophies: whereas Xlib tries to hide the X protocol behind a friendly C API with lots of bells and whistles, XCB directly exposes the plumbing beneath.</p>
 <p>In practice, this different manifests itself most prominently in how the two libraries handle the fundamental asynchronous nature of X’s client-server architecture. Xlib attempts to hide the asynchronous X protocol behind a mixed synchronous and asynchronous API, whereas XCB exposes a fully asynchronous API.</p>
 <p>For example, to lookup the attributes (e.g., size and position) of a window, you would write the following code using Xlib:</p>
 <pre><code>XWindowAttributes attrs;
 XGetWindowAttributes(display, window, &amp;attrs);
 // Do stuff.
 </code></pre>
-<p>Under the hood, <a href="http://manpages.ubuntu.com/manpages/en/man3/XGetWindowAttributes.3.html"><code>XGetWindowAttributes</code>()</a> sends a request to the X server and blocks until it receives a response; in other words, it is <em>synchronous</em>. On the other hand, using XCB, you would write this instead:</p>
+<p>Under the hood, <a href="http://manpages.ubuntu.com/manpages/en/man3/XGetWindowAttributes.3.html?ref=ghost.chu4n.com"><code>XGetWindowAttributes</code>()</a> sends a request to the X server and blocks until it receives a response; in other words, it is <em>synchronous</em>. On the other hand, using XCB, you would write this instead:</p>
 <pre><code>xcb_get_window_attributes_cookie_t cookie =
     xcb_get_window_attributes(
         connection, window);
@@ -1112,7 +1109,7 @@ free(reply);
 <p>The function <code>xcb_get_window_attributes</code> merely sends the request to the X server, and returns immediately without waiting for the reply; in other words, it is <em>asynchronous</em>. The client program must subsequently call <code>xcb_get_window_attributes_reply</code> to block on the response.</p>
 <p>The advantage of the asynchronous approach is obvious if we consider an example where we need to retrieve the attributes of, say, 5 windows at once. Using XCB, we can immediately fire off all 5 requests to the X server, and then wait for all of them to return. With Xlib, we have send one request at a time and wait for its response to come back before we can send the next request. Therefore, we’d expect to only block for the duration of one round-trip to the X server using XCB, compared to 5 with Xlib.</p>
 <p>The downside of XCB’s fully asynchronous approach is verbosity and a less programmer-friendly interface. The Xlib code above looks like your average C library call; the XCB code above is significantly more involved.</p>
-<p>However, it is important to note that Xlib isn’t fully synchronous. Rather, <strong>Xlib has a mixture of synchronous and asynchronous APIs</strong>. In general, functions that do not return values (e.g., <a href="http://manpages.ubuntu.com/manpages/en/man3/XConfigureWindow.3.html">XResizeWindow</a>, which changes the size of a window) are asynchronous, while functions that return values (e.g., <a href="http://manpages.ubuntu.com/manpages/en/man3/XGetWindowAttributes.3.html">XGetGeometry</a>, which return the size and position of a window) are synchronous:</p>
+<p>However, it is important to note that Xlib isn’t fully synchronous. Rather, <strong>Xlib has a mixture of synchronous and asynchronous APIs</strong>. In general, functions that do not return values (e.g., <a href="http://manpages.ubuntu.com/manpages/en/man3/XConfigureWindow.3.html?ref=ghost.chu4n.com">XResizeWindow</a>, which changes the size of a window) are asynchronous, while functions that return values (e.g., <a href="http://manpages.ubuntu.com/manpages/en/man3/XGetWindowAttributes.3.html?ref=ghost.chu4n.com">XGetGeometry</a>, which return the size and position of a window) are synchronous:</p>
 <blockquote>
 <p>Xlib saves up requests instead of sending them to the server immediately, so that the client program can continue running instead of waiting to gain access to the network after every Xlib call. This is possible because most Xlib calls do not require immediate action by the server. This grouping of requests by the client before sending them over the network also increases the performance of most networks, because it makes the network transactions longer and less numerous, reducing the total overhead involved.</p>
 <p>Xlib sends the buffer full of requests to the server under three conditions.</p>
@@ -1122,17 +1119,17 @@ free(reply);
 <p>—  Xlib Programming Manual §2.1.2</p>
 </blockquote>
 <p>This is <em>the</em> most confusing aspect of Xlib, and a source of endless frustration for those new to X programming. One of the major motivations for the creation of XCB was to eliminate this complexity.</p>
-<p>Many popular window managers have already been ported to XCB from Xlib for the performance benefits. If you are interested, you can read up on how the <a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf">Awesome</a> and <a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/">KWin</a> window managers were ported to XCB.</p>
-<p>I chose to use Xlib for <a href="https://github.com/jichu4n/basic_wm">basic_wm</a>, however, because as a pedagogical example, readability and simplicity is much more important than performance. In fact, I would recommend starting with Xlib first for any project and worry about porting to XCB later, as Xlib is much easier to learn and prototype with.</p>
-<p>While an in-depth discussion of the merits of Xlib and XCB is beyond the scope of this discussion, I do recommend you check out <a href="http://www.x.org/wiki/guide/xlib-and-xcb/">the official article on Xlib vs. XCB</a> as it presents a fascinating case study of API design.</p>
+<p>Many popular window managers have already been ported to XCB from Xlib for the performance benefits. If you are interested, you can read up on how the <a href="http://www.mini-dweeb.org/~arnau/docs/dueti/project/report.pdf?ref=ghost.chu4n.com">Awesome</a> and <a href="http://blog.martin-graesslin.com/blog/2013/02/porting-kwin-to-xcb-making-c-usable-through-raii/?ref=ghost.chu4n.com">KWin</a> window managers were ported to XCB.</p>
+<p>I chose to use Xlib for <a href="https://github.com/jichu4n/basic_wm?ref=ghost.chu4n.com">basic_wm</a>, however, because as a pedagogical example, readability and simplicity is much more important than performance. In fact, I would recommend starting with Xlib first for any project and worry about porting to XCB later, as Xlib is much easier to learn and prototype with.</p>
+<p>While an in-depth discussion of the merits of Xlib and XCB is beyond the scope of this discussion, I do recommend you check out <a href="http://www.x.org/wiki/guide/xlib-and-xcb/?ref=ghost.chu4n.com">the official article on Xlib vs. XCB</a> as it presents a fascinating case study of API design.</p>
 <h2 id="dependenciesandbuilding">Dependencies and Building</h2>
 <p>Firstly, you will need Xlib development headers in order to compile against Xlib. They are available on Debian/Ubuntu as <code>libx11-dev</code>, on Fedora as <code>libX11-devel</code>, and on Arch Linux as part of <code>libx11</code>.</p>
-<p>The only additional library used by the example <a href="https://github.com/jichu4n/basic_wm">basic_wm</a> code is <a href="https://code.google.com/p/google-glog/">google-glog</a>, Google’s open source C++ logging library. It is available on Debian/Ubuntu as <code>libgoogle-glog-dev</code>, on Fedora as <code>glog-devel</code>, and on Arch Linux as <code>google-glog</code>.</p>
-<p>The recommended way to build the source code is with <a href="https://www.gnu.org/software/make/manual/html_node/Running.html">GNU Make</a>: just run <code>make</code> in the source directory. Alternatively, <code>g++ *.cpp</code> will also do the trick if you supply all the libraries correctly.</p>
-<p>To test the window manager, you will likely need <a href="http://www.freedesktop.org/wiki/Software/Xephyr/">Xephyr</a> along with a couple of simple X programs such as <code>xeyes</code> or <code>xterm</code>.</p>
+<p>The only additional library used by the example <a href="https://github.com/jichu4n/basic_wm?ref=ghost.chu4n.com">basic_wm</a> code is <a href="https://code.google.com/p/google-glog/?ref=ghost.chu4n.com">google-glog</a>, Google’s open source C++ logging library. It is available on Debian/Ubuntu as <code>libgoogle-glog-dev</code>, on Fedora as <code>glog-devel</code>, and on Arch Linux as <code>google-glog</code>.</p>
+<p>The recommended way to build the source code is with <a href="https://www.gnu.org/software/make/manual/html_node/Running.html?ref=ghost.chu4n.com">GNU Make</a>: just run <code>make</code> in the source directory. Alternatively, <code>g++ *.cpp</code> will also do the trick if you supply all the libraries correctly.</p>
+<p>To test the window manager, you will likely need <a href="http://www.freedesktop.org/wiki/Software/Xephyr/?ref=ghost.chu4n.com">Xephyr</a> along with a couple of simple X programs such as <code>xeyes</code> or <code>xterm</code>.</p>
 <h1 id="step1setupandteardown">Step 1: Setup and Teardown</h1>
 <p>Let’s start off with a skeleton implementation of the <code>WindowManager</code> class, which will encapsulate all the window management logic in our example. All it will do for now is set up a connection to the X server on construction, and close that connection on destruction.</p>
-<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p>
+<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp?ref=ghost.chu4n.com"><code>window_manager.hpp</code></a>:</p>
 <pre><code>extern "C" {
 #include &lt;X11/Xlib.h&gt;
 }
@@ -1158,7 +1155,7 @@ class WindowManager {
   const Window root_;
 };
 </code></pre>
-<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp?ref=ghost.chu4n.com"><code>window_manager.cpp</code></a>:</p>
 <pre><code>#include "window_manager.hpp"
 #include &lt;glog/logging.h&gt;
 
@@ -1186,7 +1183,7 @@ WindowManager::~WindowManager() {
 
 void WindowManager::Run() { /* TODO */ }
 </code></pre>
-<p>The <code>main</code> function in <a href="https://github.com/jichu4n/basic_wm/blob/master/main.cpp"><code>main.cpp</code></a>:</p>
+<p>The <code>main</code> function in <a href="https://github.com/jichu4n/basic_wm/blob/master/main.cpp?ref=ghost.chu4n.com"><code>main.cpp</code></a>:</p>
 <pre><code>#include &lt;cstdlib&gt;
 #include &lt;glog/logging.h&gt;
 #include "window_manager.hpp"
@@ -1207,11 +1204,11 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 </code></pre>
-<p>Even if you have never programmed Xlib before, this should not be hard to understand. <code>WindowManager::Create()</code> is a <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Doing_Work_in_Constructors">static factory method</a> that sets up a connection to an X server via <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html"><code>XOpenDisplay()</code></a>; we will let <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html"><code>XOpenDisplay()</code></a> figure out which X server to connect to from the <code>DISPLAY</code> environment variable. The connection is represented by the opaque <code>Display</code> structure. We call <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html"><code>XCloseDisplay()</code></a> on the saved <code>Display*</code> in the destructor to close the connection.</p>
-<p>The other function of note is <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/AllPlanes.3.html"><code>DefaultRootWindow()</code></a>, which returns the default root window for a given X server. Technically, an X server may have several root windows in some rare multihead setups, but let’s not worry about that here.</p>
+<p>Even if you have never programmed Xlib before, this should not be hard to understand. <code>WindowManager::Create()</code> is a <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml?ref=ghost.chu4n.com#Doing_Work_in_Constructors">static factory method</a> that sets up a connection to an X server via <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html?ref=ghost.chu4n.com"><code>XOpenDisplay()</code></a>; we will let <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html?ref=ghost.chu4n.com"><code>XOpenDisplay()</code></a> figure out which X server to connect to from the <code>DISPLAY</code> environment variable. The connection is represented by the opaque <code>Display</code> structure. We call <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/XOpenDisplay.3.html?ref=ghost.chu4n.com"><code>XCloseDisplay()</code></a> on the saved <code>Display*</code> in the destructor to close the connection.</p>
+<p>The other function of note is <a href="http://manpages.ubuntu.com/manpages/trusty/en/man3/AllPlanes.3.html?ref=ghost.chu4n.com"><code>DefaultRootWindow()</code></a>, which returns the default root window for a given X server. Technically, an X server may have several root windows in some rare multihead setups, but let’s not worry about that here.</p>
 <p>If you run this program now, it should connect to the X server, close the connection, and exit. Hooray!</p>
 <h1 id="step2initialization">Step 2: Initialization</h1>
-<p>Now, let’s dig into the mysterious <code>Run()</code> function above. We’ll start with the initialization steps required after opening an X server connection. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp"><code>window_manager.hpp</code></a>:</p>
+<p>Now, let’s dig into the mysterious <code>Run()</code> function above. We’ll start with the initialization steps required after opening an X server connection. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.hpp?ref=ghost.chu4n.com"><code>window_manager.hpp</code></a>:</p>
 <pre><code>class WindowManager {
   ...
   // Xlib error handler. It must be static as its address is passed to Xlib.
@@ -1227,7 +1224,7 @@ int main(int argc, char** argv) {
   static bool wm_detected_;
 };
 </code></pre>
-<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<p>In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp?ref=ghost.chu4n.com"><code>window_manager.cpp</code></a>:</p>
 <pre><code>void WindowManager::Run() {
   // 1. Initialization.
   //   a. Select events on root window. Use a special error handler so we can
@@ -1265,10 +1262,10 @@ int WindowManager::OnWMDetected(Display* display, XErrorEvent* e) {
 int WindowManager::OnXError(Display* display, XErrorEvent* e) { /* Print e */ }
 </code></pre>
 <p>We first select substructure redirection and substructure notify events on the root window. This is discussed in more detail in the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i/#substructure-redirection">Substructure Redirection</a> section in Part I; to recap, this allows the window manager to intercept requests from top level windows, and subscribe to events concerning the same. Only one X client can select substructure redirection on the root window at any given time; the second client to attempt to do so will get a <code>BadAccess</code> error.</p>
-<p>Catching this error is somewhat tricky, however. <a href="http://manpages.ubuntu.com/manpages/en/man3/XSelectInput.3.html"><code>XSelectInput</code></a>, like all asynchronous Xlib functions, does not actually send a request to the X server, but instead only <em>queues</em> the request and returns. Hence, we have to explicitly flush the request queue with <a href="http://manpages.ubuntu.com/manpages/en/man3/XSync.3.html"><code>XSync</code></a> (see our discussion above in <a href="#a-tale-of-two-x-libraries">A Tale of Two X Libraries</a>). We set up a temporary error handler, <code>OnWMDetected</code>, to catch errors during this <code>XSync</code> invocation.</p>
-<p>Next, we set up our regular error handler which will be invoked for any future errors. Our implementation, which logs the error and continues, will be an important debugging aid as we implement and test our window manager. I will not show it here for the sake of brevity; for reference, check it out in <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>.</p>
+<p>Catching this error is somewhat tricky, however. <a href="http://manpages.ubuntu.com/manpages/en/man3/XSelectInput.3.html?ref=ghost.chu4n.com"><code>XSelectInput</code></a>, like all asynchronous Xlib functions, does not actually send a request to the X server, but instead only <em>queues</em> the request and returns. Hence, we have to explicitly flush the request queue with <a href="http://manpages.ubuntu.com/manpages/en/man3/XSync.3.html?ref=ghost.chu4n.com"><code>XSync</code></a> (see our discussion above in <a href="#a-tale-of-two-x-libraries">A Tale of Two X Libraries</a>). We set up a temporary error handler, <code>OnWMDetected</code>, to catch errors during this <code>XSync</code> invocation.</p>
+<p>Next, we set up our regular error handler which will be invoked for any future errors. Our implementation, which logs the error and continues, will be an important debugging aid as we implement and test our window manager. I will not show it here for the sake of brevity; for reference, check it out in <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp?ref=ghost.chu4n.com"><code>window_manager.cpp</code></a>.</p>
 <h1 id="step3theeventloop">Step 3: The Event Loop</h1>
-<p>Now let’s add to <code>Run()</code> method above the signature construct of every modern GUI program - the event loop. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp"><code>window_manager.cpp</code></a>:</p>
+<p>Now let’s add to <code>Run()</code> method above the signature construct of every modern GUI program - the event loop. In <a href="https://github.com/jichu4n/basic_wm/blob/master/window_manager.cpp?ref=ghost.chu4n.com"><code>window_manager.cpp</code></a>:</p>
 <pre><code>void WindowManager::Run() {
   // 1. Initialization.
   ...
@@ -1300,7 +1297,7 @@ int WindowManager::OnXError(Display* display, XErrorEvent* e) { /* Print e */ }
   }
 }
 </code></pre>
-<p>If you have done low-level GUI programming before, this should look very familiar. We sit in an event loop and repeatedly fetch the next event with <a href="http://manpages.ubuntu.com/manpages/en/man3/XNextEvent.3.html"><code>XNextEvent()</code></a> and dispatch it to the appropriate handlers.</p>
+<p>If you have done low-level GUI programming before, this should look very familiar. We sit in an event loop and repeatedly fetch the next event with <a href="http://manpages.ubuntu.com/manpages/en/man3/XNextEvent.3.html?ref=ghost.chu4n.com"><code>XNextEvent()</code></a> and dispatch it to the appropriate handlers.</p>
 <p>The structure of the <code>XEvent</code> type is typical of a polymorphic C structure. Each type of event carries different attributes and corresponds to an event <code>struct</code>, such as <code>XKeyEvent</code>, <code>XButtonEvent</code>, and <code>XConfigureEvent</code>. The first field of each <code>struct</code> is always <code>int type</code>. The <code>XEvent</code> type is a C <code>union</code> of all the event <code>structs</code> plus <code>int type</code>:</p>
 <pre><code>typedef struct _XKeyEvent {
   int type;
@@ -1325,11 +1322,11 @@ typedef union _XEvent {
   ...
 } XEvent;
 </code></pre>
-<p>This way, the type is always available regardless of the type of event and requires no additional storage. The same pattern can be observed in <a href="http://en.wikipedia.org/wiki/GObject">GTK+/GLib</a>, <a href="https://docs.python.org/3/c-api/structures.html">Python’s C API</a>, and many other object-oriented C APIs.</p>
+<p>This way, the type is always available regardless of the type of event and requires no additional storage. The same pattern can be observed in <a href="http://en.wikipedia.org/wiki/GObject?ref=ghost.chu4n.com">GTK+/GLib</a>, <a href="https://docs.python.org/3/c-api/structures.html?ref=ghost.chu4n.com">Python’s C API</a>, and many other object-oriented C APIs.</p>
 <p>In <code>basic_wm</code>, the event handlers follow the naming convention of <code>OnFoo()</code>, where <code>Foo</code> is the type of the event, so it should be straightforward to figure out who does what.</p>
 <h1 id="whatsnext">What’s Next</h1>
 <p>We now have a basic skeleton for our window manager, and we can start filling in the meat - the event handlers. The million-dollar question is, what events does a window manager handle, and what should it do with them?</p>
-<p>In the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">next installment</a> in this series, we’ll answer that question by diving into the complex ways window managers, clients and the user interact with each other via X events. In the meantime, you’re more than welcome to check out the code for <code>basic_wm</code> <a href="https://github.com/jichu4n/basic_wm">on GitHub</a>.</p>
+<p>In the <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/">next installment</a> in this series, we’ll answer that question by diving into the complex ways window managers, clients and the user interact with each other via X events. In the meantime, you’re more than welcome to check out the code for <code>basic_wm</code> <a href="https://github.com/jichu4n/basic_wm?ref=ghost.chu4n.com">on GitHub</a>.</p>
 <blockquote>
 <p><strong>Next chapter:</strong> <a href="https://jichu4n.com/posts/how-x-window-managers-work-and-how-to-write-one-part-iii/"><strong>How X Window Managers Work, And How To Write One (Part III)</strong></a></p>
 <ul>
@@ -1351,7 +1348,7 @@ typedef union _XEvent {
         </article>
     </main>
     <footer class="page-footer">
-            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         <h3>Chuan Ji</h3>
         <p><a href="https://jichu4n.com">Read more posts →</a></p>
         <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>

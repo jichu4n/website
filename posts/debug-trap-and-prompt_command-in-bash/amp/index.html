@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html ⚡>
+<html ⚡ lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
     <title>DEBUG trap and PROMPT_COMMAND in Bash</title>
 
-    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/2023/01/me-6-circular.png" type="image/png" />
-    <link rel="canonical" href="https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/" />
-    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/format/jpeg/2025/02/me-9-1.jpg" type="image/jpeg">
+    <link rel="canonical" href="https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     
-    <meta property="og:site_name" content="Chuan Ji" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="DEBUG trap and PROMPT_COMMAND in Bash" />
+    <meta property="og:site_name" content="Chuan Ji">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="DEBUG trap and PROMPT_COMMAND in Bash">
     <meta property="og:description" content="&gt; Update 03/08/2016: A patch
 [https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html] by Dan
 Stromberg adds a PS0 variable to Bash that greatly simplifies what’s described
 in this article. This patch will likely be merged into Bash 4.4. Please refer to 
-his post [http:" />
-    <meta property="og:url" content="https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/" />
-    <meta property="article:published_time" content="2014-06-08T07:13:00.000Z" />
-    <meta property="article:modified_time" content="2018-10-17T07:16:04.000Z" />
-    <meta property="article:tag" content="Linux" />
-    <meta property="article:tag" content="Technical Notes" />
+his post [http:">
+    <meta property="og:url" content="https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/">
+    <meta property="article:published_time" content="2014-06-08T07:13:00.000Z">
+    <meta property="article:modified_time" content="2018-10-17T07:16:04.000Z">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Technical Notes">
     
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="DEBUG trap and PROMPT_COMMAND in Bash" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="DEBUG trap and PROMPT_COMMAND in Bash">
     <meta name="twitter:description" content="&gt; Update 03/08/2016: A patch
 [https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html] by Dan
 Stromberg adds a PS0 variable to Bash that greatly simplifies what’s described
 in this article. This patch will likely be merged into Bash 4.4. Please refer to 
-his post [http:" />
-    <meta name="twitter:url" content="https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/" />
-    <meta name="twitter:label1" content="Written by" />
-    <meta name="twitter:data1" content="Chuan Ji" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Linux, Technical Notes" />
-    <meta name="twitter:site" content="@jichu4n" />
+his post [http:">
+    <meta name="twitter:url" content="https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Chuan Ji">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Linux, Technical Notes">
+    <meta name="twitter:site" content="@jichu4n">
     
     <script type="application/ld+json">
 {
@@ -48,7 +48,7 @@ his post [http:" />
         "url": "https://jichu4n.com/",
         "logo": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/f7ea693304bc48dd54feb0e1e61df516-1.jpeg",
+            "url": "https://jichu4n.com/content/images/2025/02/me-9-2.jpg",
             "width": 60,
             "height": 60
         }
@@ -58,9 +58,9 @@ his post [http:" />
         "name": "Chuan Ji",
         "image": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/me-4.jpg",
-            "width": 1600,
-            "height": 1600
+            "url": "https://jichu4n.com/content/images/2025/02/me-9.jpg",
+            "width": 1077,
+            "height": 1077
         },
         "url": "https://jichu4n.com/author/chuan/",
         "sameAs": []
@@ -71,15 +71,12 @@ his post [http:" />
     "dateModified": "2018-10-17T07:16:04.000Z",
     "keywords": "Linux, Technical Notes",
     "description": "&gt; Update 03/08/2016: A patch\n[https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html] by Dan\nStromberg adds a PS0 variable to Bash that greatly simplifies what’s described\nin this article. This patch will likely be merged into Bash 4.4. Please refer to \nhis post [http://stromberg.dnsalias.org/~strombrg/PS0-prompt/] for details.\n\n\nThe DEBUG trap\nThe DEBUG trap is an extremely handy feature of Bash. The idea is pretty\nstraightforward: if you run\n\ntrap &quot;echo Hello&quot; DEBUG\n\n\nthen Bash will",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://jichu4n.com/"
-    }
+    "mainEntityOfPage": "https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/"
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.32" />
-    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <meta name="generator" content="Ghost 5.110">
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/">
 
     <style amp-custom>
     *,
@@ -1067,7 +1064,7 @@ his post [http:" />
 <body class="amp-template">
     <header class="page-header">
         <a href="https://jichu4n.com">
-                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         </a>
     </header>
 
@@ -1084,7 +1081,7 @@ his post [http:" />
             <section class="post-content">
 
                 <blockquote>
-<p><strong>Update 03/08/2016</strong>: A <a href="https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html">patch</a> by Dan Stromberg adds a <code>PS0</code> variable to Bash that greatly simplifies what’s described in this article. This patch will likely be merged into Bash 4.4. Please refer to <a href="http://stromberg.dnsalias.org/~strombrg/PS0-prompt/">his post</a> for details.</p>
+<p><strong>Update 03/08/2016</strong>: A <a href="https://lists.gnu.org/archive/html/bug-bash/2015-10/msg00247.html?ref=ghost.chu4n.com">patch</a> by Dan Stromberg adds a <code>PS0</code> variable to Bash that greatly simplifies what’s described in this article. This patch will likely be merged into Bash 4.4. Please refer to <a href="http://stromberg.dnsalias.org/~strombrg/PS0-prompt/?ref=ghost.chu4n.com">his post</a> for details.</p>
 </blockquote>
 <h1 id="thedebugtrap">The DEBUG trap</h1>
 <p>The DEBUG trap is an extremely handy feature of Bash. The idea is pretty straightforward: if you run</p>
@@ -1111,7 +1108,7 @@ Hello
 Hello
 /etc/passwd exists
 </code></pre>
-<p>What if we only want to run a command once per composite command, like the <a href="http://zsh.sourceforge.net/Doc/Release/Functions.html"><code>preexec</code></a> hook in <a href="http://en.wikipedia.org/wiki/Z_shell">zsh</a>?</p>
+<p>What if we only want to run a command once per composite command, like the <a href="http://zsh.sourceforge.net/Doc/Release/Functions.html?ref=ghost.chu4n.com"><code>preexec</code></a> hook in <a href="http://en.wikipedia.org/wiki/Z_shell?ref=ghost.chu4n.com">zsh</a>?</p>
 <p>Enter <code>PROMPT_COMMAND</code>.</p>
 <h1 id="prompt_command">PROMPT_COMMAND</h1>
 <p>The idea behind <code>PROMPT_COMMAND</code> is also very simple: if you run</p>
@@ -1166,9 +1163,9 @@ Running PreCommand
 3
 Running PostCommand
 </code></pre>
-<p>This gives rise to some neat applications, such as <a href="https://github.com/jichuan89/bash-command-timer">a command timer script</a> I wrote that prints out the execution time of each command:</p>
+<p>This gives rise to some neat applications, such as <a href="https://github.com/jichuan89/bash-command-timer?ref=ghost.chu4n.com">a command timer script</a> I wrote that prints out the execution time of each command:</p>
 <p><amp-anim src="https://jichu4n.com/content/images/2018/10/bash_command_timer_screenshot-1.gif" alt="bash_command_timer_screenshot-1" width="657" height="304" layout="responsive"></amp-anim></p>
-<p>Please feel free to <a href="https://github.com/jichuan89/bash-command-timer">check it out on GitHub</a> :)</p>
+<p>Please feel free to <a href="https://github.com/jichuan89/bash-command-timer?ref=ghost.chu4n.com">check it out on GitHub</a> :)</p>
 <p>Happy Bash hacking!</p>
 
 
@@ -1177,7 +1174,7 @@ Running PostCommand
         </article>
     </main>
     <footer class="page-footer">
-            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         <h3>Chuan Ji</h3>
         <p><a href="https://jichu4n.com">Read more posts →</a></p>
         <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html ⚡>
+<html ⚡ lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
     <title>Unicode I/O and Locales in Python</title>
 
-    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/2023/01/me-6-circular.png" type="image/png" />
-    <link rel="canonical" href="https://jichu4n.com/posts/unicode-io-and-locales-in-python/" />
-    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="icon" href="https://jichu4n.com/content/images/size/w256h256/format/jpeg/2025/02/me-9-1.jpg" type="image/jpeg">
+    <link rel="canonical" href="https://jichu4n.com/posts/unicode-io-and-locales-in-python/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     
-    <meta property="og:site_name" content="Chuan Ji" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="Unicode I/O and Locales in Python" />
+    <meta property="og:site_name" content="Chuan Ji">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Unicode I/O and Locales in Python">
     <meta property="og:description" content="I recently ran into a weird error when running some Python code in a chroot
 jail.
 
@@ -25,15 +25,15 @@ gave me
 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26,&lt;/module&gt;&lt;/stdin&gt;" />
-    <meta property="og:url" content="https://jichu4n.com/posts/unicode-io-and-locales-in-python/" />
-    <meta property="article:published_time" content="2014-02-20T08:35:00.000Z" />
-    <meta property="article:modified_time" content="2018-10-17T07:36:49.000Z" />
-    <meta property="article:tag" content="Python" />
-    <meta property="article:tag" content="Technical Notes" />
+  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26,&lt;/module&gt;&lt;/stdin&gt;">
+    <meta property="og:url" content="https://jichu4n.com/posts/unicode-io-and-locales-in-python/">
+    <meta property="article:published_time" content="2014-02-20T08:35:00.000Z">
+    <meta property="article:modified_time" content="2018-10-17T07:36:49.000Z">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Technical Notes">
     
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Unicode I/O and Locales in Python" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Unicode I/O and Locales in Python">
     <meta name="twitter:description" content="I recently ran into a weird error when running some Python code in a chroot
 jail.
 
@@ -46,13 +46,13 @@ gave me
 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26,&lt;/module&gt;&lt;/stdin&gt;" />
-    <meta name="twitter:url" content="https://jichu4n.com/posts/unicode-io-and-locales-in-python/" />
-    <meta name="twitter:label1" content="Written by" />
-    <meta name="twitter:data1" content="Chuan Ji" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Python, Technical Notes" />
-    <meta name="twitter:site" content="@jichu4n" />
+  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26,&lt;/module&gt;&lt;/stdin&gt;">
+    <meta name="twitter:url" content="https://jichu4n.com/posts/unicode-io-and-locales-in-python/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Chuan Ji">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Python, Technical Notes">
+    <meta name="twitter:site" content="@jichu4n">
     
     <script type="application/ld+json">
 {
@@ -64,7 +64,7 @@ Traceback (most recent call last):
         "url": "https://jichu4n.com/",
         "logo": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/f7ea693304bc48dd54feb0e1e61df516-1.jpeg",
+            "url": "https://jichu4n.com/content/images/2025/02/me-9-2.jpg",
             "width": 60,
             "height": 60
         }
@@ -74,9 +74,9 @@ Traceback (most recent call last):
         "name": "Chuan Ji",
         "image": {
             "@type": "ImageObject",
-            "url": "https://jichu4n.com/content/images/2023/01/me-4.jpg",
-            "width": 1600,
-            "height": 1600
+            "url": "https://jichu4n.com/content/images/2025/02/me-9.jpg",
+            "width": 1077,
+            "height": 1077
         },
         "url": "https://jichu4n.com/author/chuan/",
         "sameAs": []
@@ -87,15 +87,12 @@ Traceback (most recent call last):
     "dateModified": "2018-10-17T07:36:49.000Z",
     "keywords": "Python, Technical Notes",
     "description": "I recently ran into a weird error when running some Python code in a chroot\njail.\n\ns &#x3D; &#x27;你好&#x27;\nwith open(&#x27;/tmp/asdf&#x27;, &#x27;w&#x27;) as f:\n  f.write(s)\n\n\ngave me\n\nTraceback (most recent call last):\n  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;\n  File &quot;/usr/lib/python3.3/encodings/ascii.py&quot;, line 26, in decode\n    return codecs.ascii_decode(input, self.errors)[0]\nUnicodeDecodeError: &#x27;ascii&#x27; codec can&#x27;t decode byte 0xe4 in position 0: ordinal not in range(128)\n\n\nThe same happened with interprocess I/O:\n\nwith subproces",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://jichu4n.com/"
-    }
+    "mainEntityOfPage": "https://jichu4n.com/posts/unicode-io-and-locales-in-python/"
 }
     </script>
 
-    <meta name="generator" content="Ghost 5.32" />
-    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/" />
+    <meta name="generator" content="Ghost 5.110">
+    <link rel="alternate" type="application/rss+xml" title="Chuan Ji" href="https://jichu4n.com/posts/rss/">
 
     <style amp-custom>
     *,
@@ -1083,7 +1080,7 @@ Traceback (most recent call last):
 <body class="amp-template">
     <header class="page-header">
         <a href="https://jichu4n.com">
-                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+                <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         </a>
     </header>
 
@@ -1164,12 +1161,12 @@ export LANG=en_US.utf-8
 <p>In fact, it’s probably a good idea to add the <code>export</code> line to your <code>~/.bashrc</code>, or follow however your Linux distro decides locales should be set.</p>
 <h1 id="solutionb">Solution B</h1>
 <p>On the other hand, you can explicitly set the encoding used during I/O in your Python code.</p>
-<p>For file I/O, in Python 3.x, you can set the <code>encoding</code> argument of <a href="http://docs.python.org/3.3/library/functions.html#open"><code>open</code></a>:</p>
+<p>For file I/O, in Python 3.x, you can set the <code>encoding</code> argument of <a href="http://docs.python.org/3.3/library/functions.html?ref=ghost.chu4n.com#open"><code>open</code></a>:</p>
 <pre><code># Python 3.x
 with open('/tmp/asdf', 'w', encoding='utf-8') as f:
   f.write('你好')
 </code></pre>
-<p>In Python 2.x, you can use <a href="http://docs.python.org/2/library/codecs.html#codecs.open"><code>codecs.open</code></a>:</p>
+<p>In Python 2.x, you can use <a href="http://docs.python.org/2/library/codecs.html?ref=ghost.chu4n.com#codecs.open"><code>codecs.open</code></a>:</p>
 <pre><code># Python 2.x
 import codecs
 with codecs.open('/tmp/asdf', 'w', encoding='utf-8') as f:
@@ -1195,7 +1192,7 @@ with codecs.open('/tmp/asdf', 'w', encoding='utf-8') as f:
         </article>
     </main>
     <footer class="page-footer">
-            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2023/01/me-6-circular.png" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
+            <amp-img class="site-icon" src="https://jichu4n.com/content/images/2025/02/me-9-1.jpg" width="50" height="50" layout="fixed" alt="Chuan Ji"></amp-img>
         <h3>Chuan Ji</h3>
         <p><a href="https://jichu4n.com">Read more posts →</a></p>
         <a class="powered" href="https://ghost.org" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156"><g fill="none" fill-rule="evenodd"><rect fill="#15212B" width="156" height="156" rx="27"/><g transform="translate(36 36)" fill="#F6F8FA"><path d="M0 71.007A4.004 4.004 0 014 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0130 84H4a4 4 0 01-4-4.007v-8.986zM50 71.007A4.004 4.004 0 0154 67h26a4 4 0 014 4.007v8.986A4.004 4.004 0 0180 84H54a4 4 0 01-4-4.007v-8.986z"/><rect y="34" width="84" height="17" rx="4"/><path d="M0 4.007A4.007 4.007 0 014.007 0h41.986A4.003 4.003 0 0150 4.007v8.986A4.007 4.007 0 0145.993 17H4.007A4.003 4.003 0 010 12.993V4.007z"/><rect x="67" width="17" height="17" rx="4"/></g></g></svg> Published with Ghost</a>
